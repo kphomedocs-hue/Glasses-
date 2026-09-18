@@ -25,7 +25,7 @@ Primary navigation:
 ## Frozen physical-test baseline
 **K G1 Discovery v0.1**
 
-Status: software build gate complete; first physical read-only test pending.
+Status: software build gate **and clean-room recovery gate complete**; first physical read-only test pending.
 
 ### Verified artifacts
 - Repository APK: `releases/v0.1/K_G1_Discovery_v0_1.apk`
@@ -139,3 +139,13 @@ Forbidden:
 8. Only after review, design the next controlled test.
 
 This file remains authoritative for resuming the project.
+
+
+## Software recovery verification
+
+- Cold Recovery Gate run `35387241734`: PASS
+- Core Module Regression run `35387408775`: PASS
+- Frozen v0.1 reference branch: `frozen/discovery-v0.1-readonly`
+- Detailed record: `docs/testing/results/2026-09-19_SOFTWARE_RECOVERY_GATE.md`
+
+This confirms GitHub is sufficient to recover and rebuild the current project without the previous chat/workspace.
