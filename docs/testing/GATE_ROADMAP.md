@@ -16,6 +16,7 @@ Status: **PASS**.
 
 Evidence:
 - Cold Recovery Gate run `35387241734`: PASS.
+- Hardened Cold Recovery run `35387536088` with expanded-source mirror verification: PASS.
 - Core Module Regression run `35387408775`: PASS.
 - Frozen reference branch: `frozen/discovery-v0.1-readonly`.
 
