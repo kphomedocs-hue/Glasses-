@@ -38,7 +38,8 @@ jobs:
           test "$CODE" -eq 2
           ! grep -q 'secret123' "$RUNNER_TEMP/sanitized.txt"
           ! grep -q 'G1-PRIVATE-123' "$RUNNER_TEMP/sanitized.txt"
-          grep -q '<masked-mac>' "$RUNNER_TEMP/sanitized.txt"
+          ! grep -q '\*\*:\*\*:\*\*:\*\*:' "$RUNNER_TEMP/sanitized.txt"
+          grep -q 'Bluetooth address: <redacted>' "$RUNNER_TEMP/sanitized.txt"
           grep -q '<redacted>' "$RUNNER_TEMP/sanitized.txt"
           echo "PASS sensitive report rejection/redaction"
 
