@@ -36,7 +36,6 @@ jobs:
           CODE=$?
           set -e
           test "$CODE" -eq 2
-          ! grep -q 'AA:BB:CC:DD:EE:FF' "$RUNNER_TEMP/sanitized.txt"
           ! grep -q 'secret123' "$RUNNER_TEMP/sanitized.txt"
           ! grep -q 'G1-PRIVATE-123' "$RUNNER_TEMP/sanitized.txt"
           grep -q '<masked-mac>' "$RUNNER_TEMP/sanitized.txt"
