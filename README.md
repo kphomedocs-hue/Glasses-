@@ -20,9 +20,15 @@ Current safety boundary:
 
 ## Verified build
 
-APK SHA-256:
+Repository-built APK SHA-256:
+
+`c32758f898b91041bc7e13a272096d2629836e4465542ee00c1fbd9764e7479a`
+
+Earlier first-build debug APK SHA-256 (provenance only):
 
 `ab37790ad13028aa6e8f1e3d16b957c72f8038df0638e8e852b31488d9fc762a`
+
+Both were built from the same frozen source; debug signing/build-environment differences can change APK bytes.
 
 Source ZIP SHA-256:
 
@@ -46,3 +52,8 @@ Expected candidate service family:
 - `de5bf72a-d711-4e47-af26-65e3012a5dc7`
 
 Do not add media-transfer, reset, OTA, or generic BLE-write functionality until the read-only physical discovery gate is reviewed.
+
+
+Repository package SHA-256:
+
+`e6b23d5d0eaed6a07112f7f14343e011299bf706fe0e98f447a74d24f92c827a`
