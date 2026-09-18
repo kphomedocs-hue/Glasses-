@@ -52,6 +52,24 @@ jobs:
           javac -d "$OUT"             modules/device-network/src/main/java/com/parkarsite/g1/network/LocalNetworkPolicy.java             modules/device-network/src/test/java/com/parkarsite/g1/network/LocalNetworkPolicySelfTest.java
           java -cp "$OUT" com.parkarsite.g1.network.LocalNetworkPolicySelfTest
 
+      - name: Diagnostics redaction
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/diagnostics"
+          mkdir -p "$OUT"
+          javac -d "$OUT"             modules/diagnostics/src/main/java/com/parkarsite/g1/diagnostics/DiagnosticSanitizer.java             modules/diagnostics/src/test/java/com/parkarsite/g1/diagnostics/DiagnosticSanitizerSelfTest.java
+          java -cp "$OUT" com.parkarsite.g1.diagnostics.DiagnosticSanitizerSelfTest
+
+      - name: Sync ledger state model
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/ledger"
+          mkdir -p "$OUT"
+          javac -d "$OUT"             modules/sync-ledger/src/main/java/com/parkarsite/g1/ledger/SyncState.java             modules/sync-ledger/src/main/java/com/parkarsite/g1/ledger/MediaIdentity.java             modules/sync-ledger/src/main/java/com/parkarsite/g1/ledger/SyncTransitions.java             modules/sync-ledger/src/test/java/com/parkarsite/g1/ledger/SyncLedgerSelfTest.java
+          java -cp "$OUT" com.parkarsite.g1.ledger.SyncLedgerSelfTest
+
       - name: Architecture safety checks
         shell: bash
         run: |
@@ -59,6 +77,8 @@ jobs:
           ! grep -R -E 'android\.|writeCharacteristic|setCharacteristicNotification' modules/protocol/src/main/java
           ! grep -R -E 'android\.|Bluetooth|HttpClient|URLConnection' modules/media-storage/src/main/java
           ! grep -R -E 'android\.|Bluetooth' modules/device-network/src/main/java
+          ! grep -R -E 'android\.|Bluetooth|Wifi|HttpClient|URLConnection' modules/sync-ledger/src/main/java
+          ! grep -R -E 'android\.|Bluetooth|Wifi|HttpClient|URLConnection' modules/diagnostics/src/main/java
           echo "PASS architecture dependency guards"
 
       - name: Summary
@@ -70,5 +90,7 @@ jobs:
             echo "- Protocol CRC/frame vectors: PASS"
             echo "- Media numbering/day rollover: PASS"
             echo "- Local/private-network policy: PASS"
+            echo "- Diagnostics redaction: PASS"
+            echo "- Sync-ledger state transitions: PASS"
             echo "- Dependency guards: PASS"
           } >> "$GITHUB_STEP_SUMMARY"
