@@ -1,0 +1,93 @@
+diff -ruN source-v2/app/src/main/java/com/parkarsite/g1discovery/MainActivity.java source-v4/app/src/main/java/com/parkarsite/g1discovery/MainActivity.java
+--- source-v2/app/src/main/java/com/parkarsite/g1discovery/MainActivity.java
++++ source-v4/app/src/main/java/com/parkarsite/g1discovery/MainActivity.java
+@@ -140,23 +140,38 @@
+         if (bluetoothAdapter == null) {
+             setStatus("Bluetooth LE is unavailable on this phone.");
+             scanButton.setEnabled(false);
+-        } else if (!bluetoothAdapter.isEnabled()) {
+-            setStatus("Bluetooth is off. Turn Bluetooth on, then tap Scan.");
+-        } else {
+-            setStatus("Ready. Turn on AIMB-G1 and tap Scan.");
++            return;
++        }
++        if (!hasRuntimePermissions()) {
++            setStatus("Ready. Tap Scan and allow Nearby Devices permission.");
++            return;
++        }
++        try {
++            if (!bluetoothAdapter.isEnabled()) {
++                setStatus("Bluetooth is off. Turn Bluetooth on, then tap Scan.");
++            } else {
++                setStatus("Ready. Turn on AIMB-G1 and tap Scan.");
++            }
++        } catch (SecurityException e) {
++            setStatus("Bluetooth permission is required for discovery.");
+         }
+     }
+ 
+     private void beginScanFlow() {
+         if (bluetoothAdapter == null) return;
+-        if (!bluetoothAdapter.isEnabled()) {
+-            setStatus("Bluetooth is off. Turn it on first.");
+-            return;
+-        }
+         if (!hasRuntimePermissions()) {
+             requestRuntimePermissions();
+             return;
+         }
++        try {
++            if (!bluetoothAdapter.isEnabled()) {
++                setStatus("Bluetooth is off. Turn it on first.");
++                return;
++            }
++        } catch (SecurityException e) {
++            setStatus("Bluetooth permission is required for discovery.");
++            return;
++        }
+         startReadOnlyScan();
+     }
+ 
+@@ -201,16 +216,23 @@
+         append("Safety mode: READ ONLY");
+         append("");
+ 
+-        scanner = bluetoothAdapter.getBluetoothLeScanner();
+-        if (scanner == null) {
+-            setStatus("BLE scanner unavailable.");
++        try {
++            scanner = bluetoothAdapter.getBluetoothLeScanner();
++            if (scanner == null) {
++                setStatus("BLE scanner unavailable.");
++                return;
++            }
++
++            scanning = true;
++            scanButton.setEnabled(false);
++            setStatus("Scanning for AIMB-G1…");
++            scanner.startScan(scanCallback);
++        } catch (SecurityException e) {
++            scanning = false;
++            scanButton.setEnabled(true);
++            setStatus("Bluetooth permission is required for discovery.");
+             return;
+         }
+-
+-        scanning = true;
+-        scanButton.setEnabled(false);
+-        setStatus("Scanning for AIMB-G1…");
+-        scanner.startScan(scanCallback);
+         scanTimeout = () -> {
+             if (!scanning) return;
+             stopScanIfNeeded();
+@@ -422,7 +444,10 @@
+                 local.disconnect();
+             } catch (SecurityException ignored) {
+             }
+-            local.close();
++            try {
++                local.close();
++            } catch (SecurityException ignored) {
++            }
+         }
+     }
