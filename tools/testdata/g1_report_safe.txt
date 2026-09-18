@@ -1,0 +1,15 @@
+K G1 Discovery v0.1
+Safety mode: READ ONLY
+Scan result: AIMB-G1
+Connection: Connected
+GATT service discovery: success
+
+Service: de5bf728-d711-4e47-af26-65e3012a5dc7
+Characteristic: de5bf729-d711-4e47-af26-65e3012a5dc7
+Properties: NOTIFY
+Characteristic: de5bf72a-d711-4e47-af26-65e3012a5dc7
+Properties: WRITE WRITE_NO_RESPONSE
+
+Service: 0000180a-0000-1000-8000-00805f9b34fb
+Characteristic: 00002a26-0000-1000-8000-00805f9b34fb
+Properties: READ
