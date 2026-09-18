@@ -212,7 +212,7 @@ public final class MainActivity extends Activity {
         targetFound = false;
         append("K G1 DISCOVERY REPORT");
         append("Generated: " + isoNow());
-        append("App version: 0.1");
+        append("App version: 0.1.1");
         append("Safety mode: READ ONLY");
         append("");
 
@@ -256,7 +256,7 @@ public final class MainActivity extends Activity {
                 // Permission state changed mid-scan; fail closed below.
             }
 
-            if (name != null && TARGET_NAME.equalsIgnoreCase(name.trim()) && !targetFound) {
+            if (matchesTargetName(name) && !targetFound) {
                 targetFound = true;
                 stopScanIfNeeded();
                 append("TARGET");
@@ -544,6 +544,12 @@ public final class MainActivity extends Activity {
         } catch (SecurityException e) {
             return "masked";
         }
+    }
+
+    private static boolean matchesTargetName(String name) {
+        if (name == null) return false;
+        String normalized = name.trim().toUpperCase(Locale.US);
+        return normalized.equals(TARGET_NAME) || normalized.startsWith(TARGET_NAME + "_");
     }
 
     private static String yesNo(boolean value) {
