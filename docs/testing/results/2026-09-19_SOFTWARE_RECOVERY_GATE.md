@@ -25,7 +25,7 @@ This proves the current project can be recovered from GitHub without relying on 
 
 ## Core Module Regression Gate
 
-GitHub Actions run: `35387408775`
+GitHub Actions runs: initial `35387408775`; expanded final run `35387812463`
 
 Result: **PASS**
 
@@ -38,6 +38,8 @@ Passed:
 - unsafe media extension rejection,
 - private/local numeric IPv4 policy,
 - public IP/domain rejection,
+- diagnostics redaction of MAC/password/serial fields,
+- sync-ledger transition policy and stable identity model,
 - module dependency guards.
 
 ## Frozen reference
