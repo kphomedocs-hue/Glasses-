@@ -1,6 +1,6 @@
 K G1 Discovery v0.1
 Safety mode: READ ONLY
-Bluetooth address: AA:BB:CC:DD:EE:FF
+Bluetooth address: **:**:**:**:EE:FF
 Serial Number: G1-PRIVATE-123
 password=secret123
 Connection: Connected
