@@ -22,7 +22,7 @@ EXPECTED = {
 
 MAC = re.compile(r"(?i)\b(?:[0-9a-f]{2}[:-]){5}[0-9a-f]{2}\b")
 SECRET_LINE = re.compile(
-    r"(?i)\b(password|passphrase|psk|token|secret|serial(?:\s+number)?)\s*[:=]\s*([^\r\n]+)"
+    r"(?i)\b(password|passphrase|psk|token|secret|serial(?:\s+number)?|bluetooth\s+address)\s*[:=]\s*([^\r\n]+)"
 )
 UUID = re.compile(r"(?i)\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b")
 PROPERTY = re.compile(r"(?i)\b(READ|WRITE_NO_RESPONSE|WRITE|NOTIFY|INDICATE)\b")
