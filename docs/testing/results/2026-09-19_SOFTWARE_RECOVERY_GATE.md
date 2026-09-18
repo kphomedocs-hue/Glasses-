@@ -4,13 +4,14 @@ Date: 2026-09-19
 
 ## Cold Recovery Gate
 
-GitHub Actions run: `35387241734`
+GitHub Actions runs: `35387241734` and hardened rerun `35387536088`
 
 Result: **PASS**
 
 Passed from a fresh checkout:
 - repository artifact SHA verification,
 - frozen Discovery source verification,
+- expanded `source/v0.1/` byte-for-byte match against the frozen source ZIP (hardened rerun),
 - Discovery read-only safety audit,
 - Android SDK/toolchain setup,
 - Discovery v0.1 clean rebuild,
@@ -20,7 +21,7 @@ Passed from a fresh checkout:
 - legacy Python/XML diagnostic-tool validation,
 - v0.4 RealAimbG1Transport inertness check.
 
-This proves the current project can be recovered from GitHub without relying on the previous ChatGPT workspace.
+This proves the current project can be recovered from GitHub without relying on the previous ChatGPT workspace. The hardened rerun also proves the browsable expanded Discovery source cannot silently drift from the frozen release source archive.
 
 ## Core Module Regression Gate
 
