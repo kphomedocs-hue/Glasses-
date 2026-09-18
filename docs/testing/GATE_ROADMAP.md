@@ -12,7 +12,12 @@ Required:
 - legacy v0.4 pure-Java regression tests pass,
 - project rebuilds from a clean repository checkout.
 
-Status: pending cold-recovery workflow result.
+Status: **PASS**.
+
+Evidence:
+- Cold Recovery Gate run `35387241734`: PASS.
+- Core Module Regression run `35387408775`: PASS.
+- Frozen reference branch: `frozen/discovery-v0.1-readonly`.
 
 ## G1 — physical GATT confirmation
 
