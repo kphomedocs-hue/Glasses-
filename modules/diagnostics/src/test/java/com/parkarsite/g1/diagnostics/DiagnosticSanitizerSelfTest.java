@@ -4,17 +4,17 @@ public final class DiagnosticSanitizerSelfTest {
     public static void main(String[] args) {
         String raw = """
                 Device: AIMB-G1
-                Bluetooth address: AA:BB:CC:DD:EE:FF
+                Bluetooth address: **:**:**:**:EE:FF
                 password=supersecret
                 Serial Number: G1-123456
                 Service: de5bf728-d711-4e47-af26-65e3012a5dc7
                 """;
         String clean = DiagnosticSanitizer.sanitize(raw);
 
-        absent(clean, "AA:BB:CC:DD:EE:FF", "MAC");
+        absent(clean, "**:**:**:**:EE:FF", "partial Bluetooth address");
         absent(clean, "supersecret", "password");
         absent(clean, "G1-123456", "serial");
-        present(clean, "<masked-mac>", "masked MAC marker");
+        present(clean, "Bluetooth address: <redacted>", "Bluetooth address redaction");
         present(clean, "de5bf728-d711-4e47-af26-65e3012a5dc7", "protocol UUID retained");
 
         System.out.println("PASS diagnostics sanitizer");
