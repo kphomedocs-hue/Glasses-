@@ -1,0 +1,1 @@
+d7ddedc782ced77fda0f8b0a18237101a4124c3762a359888b20de017329a667  releases/v0.1.2/K_G1_Discovery_v0_1_2_package.zip
