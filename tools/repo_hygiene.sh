@@ -48,11 +48,19 @@ done < <(
 
 echo "Checking for literal Bluetooth MAC addresses in public text..."
 set +e
-MAC_HITS="$(
-  git grep -nEI '(^|[^0-9A-Fa-f])([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}([^0-9A-Fa-f]|$)' --     ':!tools/testdata/g1_report_sensitive.txt'     ':!tools/repo_hygiene.sh'
+MAC_HITS_RAW="$(
+  git grep -nEI '(^|[^0-9A-Fa-f])([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}([^0-9A-Fa-f]|$)'
 )"
 code=$?
 set -e
+
+MAC_HITS="$(
+  printf '%s\n' "$MAC_HITS_RAW" |
+    grep -v '^tools/testdata/g1_report_sensitive.txt:' |
+    grep -v '^modules/diagnostics/src/test/java/com/parkarsite/g1/diagnostics/DiagnosticSanitizerSelfTest.java:' |
+    grep -v '^tools/repo_hygiene.sh:' || true
+)"
+
 if [[ $code -eq 0 && -n "$MAC_HITS" ]]; then
   echo "FAIL possible literal Bluetooth MAC address:"
   printf '%s\n' "$MAC_HITS"
