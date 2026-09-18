@@ -3,56 +3,115 @@
 ## Project
 K Site Capture / AIMB-G1 glasses integration
 
-## Frozen baseline
+## Authoritative repository state
+
+The repository now separates:
+- frozen Discovery v0.1 release/source,
+- preserved Site Capture v0.4 media-engine source,
+- protocol evidence,
+- physical-test gates,
+- modular future architecture,
+- artifact/provenance manifest.
+
+Primary navigation:
+- `README.md`
+- `PROJECT_MANIFEST.md`
+- `docs/architecture/ARCHITECTURE.md`
+- `docs/architecture/MIGRATION_PLAN.md`
+- `docs/protocol/AIMB_G1_PROTOCOL.md`
+- `docs/testing/PHYSICAL_TEST_GATE.md`
+- `archive/site-capture/v0.4/`
+
+## Frozen physical-test baseline
 **K G1 Discovery v0.1**
 
 Status: software build gate complete; first physical read-only test pending.
 
 ### Verified artifacts
-- Repository-built APK SHA-256: `c32758f898b91041bc7e13a272096d2629836e4465542ee00c1fbd9764e7479a`
-- Frozen source v4 ZIP SHA-256: `84fb1b957290abdf2464a97b35b81f2d1e8e976ce9c067ecaf571c8c19f22c68`
+- Repository APK: `releases/v0.1/K_G1_Discovery_v0_1.apk`
+- APK SHA-256: `c32758f898b91041bc7e13a272096d2629836e4465542ee00c1fbd9764e7479a`
+- Frozen source ZIP SHA-256: `84fb1b957290abdf2464a97b35b81f2d1e8e976ce9c067ecaf571c8c19f22c68`
 - Repository package ZIP SHA-256: `e6b23d5d0eaed6a07112f7f14343e011299bf706fe0e98f447a74d24f92c827a`
-- Earlier first-build debug APK SHA-256 (provenance): `ab37790ad13028aa6e8f1e3d16b957c72f8038df0638e8e852b31488d9fc762a`
-- Earlier local package SHA-256 (provenance): `608c2645470cd7ade65a8126242b04391333408fb125b51d391278ae8d3906fe`
-
-The repository APK/package are fresh verified CI rebuilds from the exact same frozen source. Debug signing and ZIP metadata can make byte hashes differ from earlier locally produced files.
+- Earlier first-build debug APK hash retained for provenance: `ab37790ad13028aa6e8f1e3d16b957c72f8038df0638e8e852b31488d9fc762a`
 
 ### Build gates passed
 - exact source-integrity verification
 - read-only safety audit
-- Java/Android compilation
+- Android compilation
 - Android Lint: 0 errors
 - APK signature verification
 
-## Confirmed Cyan/AIMB-G1 findings
-The installed Cyan Glasses package analysed was `com.aitowe.aitoglasses`, version `1.0.2.18_20260811`.
+## Preserved legacy media engine
 
-Candidate BLE profile recovered from Cyan:
+**K Site Capture v0.4** is archived in expanded browsable form under `archive/site-capture/v0.4/`.
+
+Important reusable components:
+- `G1Transport`
+- `FakeAimbG1Transport`
+- `RemoteMedia`
+- `ProbeRunner`
+- `NumberingPolicy`
+- `FileMediaArchive`
+- `FileImportLedger`
+- protocol framing/CRC reference
+- core self-test suite
+- historical diagnostic tools
+
+Original v0.4 ZIP SHA-256:
+`2843b69ac743986d76a8c1d6821e88fc4978e10517a972184b4e32920b621a01`
+
+Earlier v0.1–v0.3 hashes are recorded in `PROJECT_MANIFEST.md`.
+
+## Confirmed Cyan evidence
+
+Analysed app:
+- package: `com.aitowe.aitoglasses`
+- version: `1.0.2.18_20260811`
+- export SHA-256: `1328b3c025f43c06b2a0674d4c17890ec4b76cb6487196a84aa27b2335c2fc49`
+
+Recovered BLE family:
 - Service: `de5bf728-d711-4e47-af26-65e3012a5dc7`
 - Notify: `de5bf729-d711-4e47-af26-65e3012a5dc7`
 - Write: `de5bf72a-d711-4e47-af26-65e3012a5dc7`
 
-Cyan media-mode payload recovered from app code:
-- payload: `02 01 04 01`
-- command ID: `0x41`
-- packet framing begins `BC 41`
-- CRC algorithm: CRC-16/MODBUS, payload-only, little-endian
-- candidate complete media-mode frame: `BC 41 04 00 93 5C 02 01 04 01`
+Recovered framing:
+- magic: `BC`
+- glasses-control command ID: `41`
+- length: little-endian
+- CRC: CRC-16/MODBUS over payload, little-endian
 
-Do **not** send this frame until the physical read-only discovery report confirms the expected GATT profile.
+Recovered media payloads:
+- P2P-associated: `02 01 04 01`
+- AP-associated: `02 01 04 02`
 
-Other Cyan findings:
+Confirmed local media-path evidence:
 - `media.config`
-- `WifiP2pManager`
-- local HTTP media retrieval
-- OPUS audio
-- local Wi-Fi name/password/IP fields
-- `glass_album` media metadata database
-- `02 01 04 02` appears to be an alternate AP-mode media path
-- `02 01 09` appears after download completion
-- `02 01 0F` is associated with P2P reset and must not be used in initial testing
+- Wi-Fi P2P/AP support
+- local glasses IP/name/password fields
+- local HTTP download
+- `/files/`
+- OPUS support
+- local `glass_album` metadata table
+
+See `docs/protocol/AIMB_G1_PROTOCOL.md` for evidence levels and limitations.
+
+## Architecture rule
+
+Do not merge the legacy v0.4 transport into Discovery v0.1.
+
+After physical confirmation, migrate proven v0.4 responsibilities into separate modules:
+- protocol
+- device-ble
+- device-network
+- media-transfer
+- media-storage
+- sync-ledger
+- diagnostics
+
+See `docs/architecture/MIGRATION_PLAN.md`.
 
 ## v0.1 safety boundary
+
 Allowed:
 - BLE scan
 - connect
@@ -61,22 +120,22 @@ Allowed:
 - disconnect
 - generate/share report
 
-Forbidden in v0.1:
-- BLE characteristic writes
-- descriptor writes
-- notification subscription
+Forbidden:
+- proprietary BLE characteristic writes
+- descriptor writes/notification subscription
 - Wi-Fi/network access
 - media-transfer commands
-- reset/OTA/firmware operations
+- reset/restart/OTA/firmware operations
 
 ## Next action
+
 1. Force-stop Cyan Glasses.
 2. Turn on AIMB-G1.
 3. Install K G1 Discovery v0.1.
 4. Grant Nearby Devices/Bluetooth permission.
 5. Scan and inspect AIMB-G1.
 6. Share the generated report.
-7. Confirm the physical G1 exposes the expected Cyan-family UUIDs.
-8. Only after review, design v0.2 for the first tightly controlled protocol write.
+7. Confirm the physical profile.
+8. Only after review, design the next controlled test.
 
-This file is authoritative for resuming the project.
+This file remains authoritative for resuming the project.
