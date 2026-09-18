@@ -8,7 +8,7 @@ public final class DiagnosticSanitizer {
     private static final Pattern MAC = Pattern.compile(
             "(?i)\\b(?:[0-9A-F]{2}[:-]){5}[0-9A-F]{2}\\b");
     private static final Pattern SECRET_FIELD = Pattern.compile(
-            "(?i)\\b(password|passphrase|psk|token|secret|serial(?: number)?)\\s*[:=]\\s*([^\\r\\n]+)");
+            "(?i)\\b(password|passphrase|psk|token|secret|serial(?: number)?|bluetooth address)\\s*[:=]\\s*([^\\r\\n]+)");
 
     private DiagnosticSanitizer() {}
 
