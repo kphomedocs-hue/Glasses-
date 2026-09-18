@@ -146,7 +146,17 @@ This file remains authoritative for resuming the project.
 - Cold Recovery Gate run `35387241734`: PASS
 - Hardened Cold Recovery run `35387536088` (expanded source == frozen ZIP): PASS
 - Core Module Regression run `35387408775`: PASS
+- Expanded Core Module Regression run `35387812463`: PASS
 - Frozen v0.1 reference branch: `frozen/discovery-v0.1-readonly`
 - Detailed record: `docs/testing/results/2026-09-19_SOFTWARE_RECOVERY_GATE.md`
 
 This confirms GitHub is sufficient to recover and rebuild the current project without the previous chat/workspace.
+
+
+## Additional pure-core readiness
+
+Diagnostics redaction and sync-ledger core models are now covered by CI without introducing Android, BLE, Wi-Fi or HTTP dependencies into those modules.
+
+- Diagnostics sanitizer: PASS
+- Sync-ledger state model: PASS
+- Expanded core regression run: `35387812463`
