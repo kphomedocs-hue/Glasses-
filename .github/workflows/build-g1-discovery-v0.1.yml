@@ -8,7 +8,7 @@ on:
       - ".github/workflows/build-g1-discovery-v0.1.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -66,11 +66,68 @@ jobs:
           sha256sum out/K_G1_Discovery_v0_1.apk | tee out/SHA256.txt
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose out/K_G1_Discovery_v0_1.apk
 
+      - name: Archive verified source and build into repository
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Keep a browsable copy of the exact frozen source, independent of build outputs.
+          rm -rf source/v0.1
+          mkdir -p source/v0.1
+          unzip -q releases/v0.1/K_G1_Discovery_v0_1_source_v4.zip -d source/v0.1
+
+          # Permanently archive the verified CI-built APK and QA outputs.
+          mkdir -p releases/v0.1
+          cp "$RUNNER_TEMP/kg1/out/K_G1_Discovery_v0_1.apk" releases/v0.1/K_G1_Discovery_v0_1.apk
+          cp "$RUNNER_TEMP/kg1/out/SHA256.txt" releases/v0.1/K_G1_Discovery_v0_1_APK_SHA256.txt
+          cp "$RUNNER_TEMP/kg1/app/build/reports/lint-results-debug.html" releases/v0.1/lint-results-debug.html
+
+          APK_SHA="$(sha256sum releases/v0.1/K_G1_Discovery_v0_1.apk | awk '{print $1}')"
+          SOURCE_SHA="$(sha256sum releases/v0.1/K_G1_Discovery_v0_1_source_v4.zip | awk '{print $1}')"
+
+          cat > releases/v0.1/BUILD_INFO.md <<EOF
+          # K G1 Discovery v0.1 — Verified Repository Build
+
+          - Source SHA-256: \`$SOURCE_SHA\`
+          - Repository-built APK SHA-256: \`$APK_SHA\`
+          - Git commit used for build: \`${GITHUB_SHA}\`
+          - GitHub Actions run: \`${GITHUB_RUN_ID}\`
+          - Android compile: PASS
+          - Android Lint: PASS
+          - Read-only safety audit: PASS
+          - APK signature verification: PASS
+
+          This APK is rebuilt from the exact frozen v0.1 source. Its byte hash may differ from an earlier debug APK because Android debug signing keys can differ between build environments.
+          EOF
+
+          rm -rf "$RUNNER_TEMP/package"
+          mkdir -p "$RUNNER_TEMP/package"
+          cp releases/v0.1/K_G1_Discovery_v0_1.apk "$RUNNER_TEMP/package/"
+          cp releases/v0.1/K_G1_Discovery_v0_1_source_v4.zip "$RUNNER_TEMP/package/"
+          cp releases/v0.1/K_G1_Discovery_v0_1_APK_SHA256.txt "$RUNNER_TEMP/package/"
+          cp releases/v0.1/BUILD_INFO.md "$RUNNER_TEMP/package/"
+          cp releases/v0.1/lint-results-debug.html "$RUNNER_TEMP/package/"
+          cp README.md "$RUNNER_TEMP/package/PROJECT_README.md"
+          cp LATEST_CHECKPOINT.md "$RUNNER_TEMP/package/LATEST_CHECKPOINT.md"
+          (cd "$RUNNER_TEMP/package" && zip -q -r "$GITHUB_WORKSPACE/releases/v0.1/K_G1_Discovery_v0_1_package.zip" .)
+          sha256sum releases/v0.1/K_G1_Discovery_v0_1_package.zip > releases/v0.1/K_G1_Discovery_v0_1_package_SHA256.txt
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add source/v0.1 releases/v0.1
+          if ! git diff --cached --quiet; then
+            git commit -m "Archive verified K G1 Discovery v0.1 build"
+            git push
+          fi
+
       - uses: actions/upload-artifact@v4
         with:
           name: K_G1_Discovery_v0_1
           path: |
-            ${{ runner.temp }}/kg1/out/K_G1_Discovery_v0_1.apk
-            ${{ runner.temp }}/kg1/out/SHA256.txt
-            ${{ runner.temp }}/kg1/app/build/reports/lint-results-debug.html
+            releases/v0.1/K_G1_Discovery_v0_1.apk
+            releases/v0.1/K_G1_Discovery_v0_1_APK_SHA256.txt
+            releases/v0.1/K_G1_Discovery_v0_1_package.zip
+            releases/v0.1/K_G1_Discovery_v0_1_package_SHA256.txt
+            releases/v0.1/BUILD_INFO.md
+            releases/v0.1/lint-results-debug.html
           if-no-files-found: error
