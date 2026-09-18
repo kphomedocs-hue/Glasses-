@@ -1,0 +1,74 @@
+name: Core Module Regression Tests
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "modules/**"
+      - ".github/workflows/core-module-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: true
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Protocol vectors
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/protocol"
+          mkdir -p "$OUT"
+          javac -d "$OUT"             modules/protocol/src/main/java/com/parkarsite/g1/protocol/AimbG1Protocol.java             modules/protocol/src/test/java/com/parkarsite/g1/protocol/AimbG1ProtocolSelfTest.java
+          java -cp "$OUT" com.parkarsite.g1.protocol.AimbG1ProtocolSelfTest
+
+      - name: Media storage numbering
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/storage"
+          mkdir -p "$OUT"
+          javac -d "$OUT"             modules/media-storage/src/main/java/com/parkarsite/g1/storage/DailyNumbering.java             modules/media-storage/src/test/java/com/parkarsite/g1/storage/DailyNumberingSelfTest.java
+          java -cp "$OUT" com.parkarsite.g1.storage.DailyNumberingSelfTest
+
+      - name: Local network safety policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/network"
+          mkdir -p "$OUT"
+          javac -d "$OUT"             modules/device-network/src/main/java/com/parkarsite/g1/network/LocalNetworkPolicy.java             modules/device-network/src/test/java/com/parkarsite/g1/network/LocalNetworkPolicySelfTest.java
+          java -cp "$OUT" com.parkarsite.g1.network.LocalNetworkPolicySelfTest
+
+      - name: Architecture safety checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -R -E 'android\.|writeCharacteristic|setCharacteristicNotification' modules/protocol/src/main/java
+          ! grep -R -E 'android\.|Bluetooth|HttpClient|URLConnection' modules/media-storage/src/main/java
+          ! grep -R -E 'android\.|Bluetooth' modules/device-network/src/main/java
+          echo "PASS architecture dependency guards"
+
+      - name: Summary
+        shell: bash
+        run: |
+          {
+            echo "## Core module regression"
+            echo
+            echo "- Protocol CRC/frame vectors: PASS"
+            echo "- Media numbering/day rollover: PASS"
+            echo "- Local/private-network policy: PASS"
+            echo "- Dependency guards: PASS"
+          } >> "$GITHUB_STEP_SUMMARY"
