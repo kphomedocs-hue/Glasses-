@@ -160,3 +160,19 @@ Diagnostics redaction and sync-ledger core models are now covered by CI without 
 - Diagnostics sanitizer: PASS
 - Sync-ledger state model: PASS
 - Expanded core regression run: `35387812463`
+
+
+## G1 report and repository hygiene readiness
+
+Pre-hardware report handling is complete:
+
+- Discovery Report Validation run `35389022993`: PASS
+- Repository Hygiene run `35389022968`: PASS
+- Report sanitizer: `tools/validate_g1_report.py`
+- Physical result template: `docs/testing/results/TEMPLATE_G1_DISCOVERY_REPORT.md`
+- Public data rules: `docs/security/PUBLIC_REPO_DATA_RULES.md`
+- Tracked G1 physical-test issue: #1
+
+The repository now rejects/sanitizes reports containing MAC addresses, passwords or serial data and blocks accidental third-party Cyan packages, packet captures, raw media and oversized files from normal tracked content.
+
+No further protocol implementation should be added before the physical G1 report is reviewed.
