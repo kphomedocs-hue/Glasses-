@@ -1,0 +1,47 @@
+name: Discovery Report Validation
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "tools/validate_g1_report.py"
+      - "tools/testdata/g1_report_*.txt"
+      - ".github/workflows/report-validation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: true
+
+      - name: Safe report must pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/validate_g1_report.py tools/testdata/g1_report_safe.txt
+
+      - name: Sensitive report must be rejected
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +e
+          python3 tools/validate_g1_report.py             tools/testdata/g1_report_sensitive.txt             --sanitized-out "$RUNNER_TEMP/sanitized.txt"
+          CODE=$?
+          set -e
+          test "$CODE" -eq 2
+          ! grep -q 'AA:BB:CC:DD:EE:FF' "$RUNNER_TEMP/sanitized.txt"
+          ! grep -q 'secret123' "$RUNNER_TEMP/sanitized.txt"
+          ! grep -q 'G1-PRIVATE-123' "$RUNNER_TEMP/sanitized.txt"
+          grep -q '<masked-mac>' "$RUNNER_TEMP/sanitized.txt"
+          grep -q '<redacted>' "$RUNNER_TEMP/sanitized.txt"
+          echo "PASS sensitive report rejection/redaction"
+
+      - name: Syntax check
+        run: python3 -m py_compile tools/validate_g1_report.py
