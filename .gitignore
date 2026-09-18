@@ -1,0 +1,49 @@
+# Android / Gradle
+.gradle/
+**/build/
+local.properties
+*.iml
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Temporary transfer/test files
+*.part
+.selftest-build/
+correlated/
+
+# Packet captures / device diagnostics
+*.pcap
+*.pcapng
+*.btsnoop
+*.btsnoop_hci
+bugreport*.zip
+device_preflight.txt
+session*_notes.txt
+
+# Third-party companion app packages
+*Cyan*Glasses*.apk
+*Cyan*Glasses*.zip
+cyan_apk_extract/
+*.apks
+*.xapk
+
+# User media / site media
+*.jpg
+*.jpeg
+*.png
+*.heic
+*.mp4
+*.mov
+*.m4a
+*.aac
+*.wav
+*.opus
+
+# Explicitly allow repository release APK/ZIP artifacts already curated
+!releases/**/*.apk
+!releases/**/*.zip
