@@ -1,0 +1,97 @@
+name: Build K G1 Discovery v0.1.2
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "source/v0.1.2/**"
+      - ".github/workflows/build-g1-discovery-v0.1.2.yml"
+      - "tools/archive_verified_build_v0.1.2.sh"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install Android SDK packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKMANAGER="/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0" "platform-tools"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.6.0"
+
+      - name: Verify diagnostic scope
+        shell: bash
+        working-directory: source/v0.1.2
+        run: |
+          set -euo pipefail
+          grep -Fq 'SCAN_TIMEOUT_MS = 30_000L' app/src/main/java/com/parkarsite/g1discovery/MainActivity.java
+          grep -Fq 'SCAN_MODE_LOW_LATENCY' app/src/main/java/com/parkarsite/g1discovery/MainActivity.java
+          grep -Fq 'getBondedDevices()' app/src/main/java/com/parkarsite/g1discovery/MainActivity.java
+          grep -Fq 'bondedTargetCount == 1' app/src/main/java/com/parkarsite/g1discovery/MainActivity.java
+          grep -Fq 'BluetoothDevice.TRANSPORT_LE' app/src/main/java/com/parkarsite/g1discovery/MainActivity.java
+          grep -Fq 'safeNameForReport' app/src/main/java/com/parkarsite/g1discovery/MainActivity.java
+          echo "PASS: observation + unique-bonded fallback scope present"
+
+      - name: Read-only safety audit
+        shell: bash
+        working-directory: source/v0.1.2
+        run: |
+          set -euo pipefail
+          chmod +x SAFETY_AUDIT.sh
+          ./SAFETY_AUDIT.sh
+
+      - name: Compile and lint
+        shell: bash
+        working-directory: source/v0.1.2
+        run: |
+          set -euo pipefail
+          gradle --no-daemon clean :app:assembleDebug :app:lintDebug
+
+      - name: Verify APK signature
+        shell: bash
+        working-directory: source/v0.1.2
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/kg1v012"
+          cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/kg1v012/K_G1_Discovery_v0_1_2.apk"
+          cp app/build/reports/lint-results-debug.html "$RUNNER_TEMP/kg1v012/lint-results-debug.html"
+          sha256sum "$RUNNER_TEMP/kg1v012/K_G1_Discovery_v0_1_2.apk"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$RUNNER_TEMP/kg1v012/K_G1_Discovery_v0_1_2.apk"
+
+      - name: Archive verified build into repository
+        shell: bash
+        run: bash tools/archive_verified_build_v0.1.2.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: K_G1_Discovery_v0_1_2
+          path: |
+            releases/v0.1.2/K_G1_Discovery_v0_1_2.apk
+            releases/v0.1.2/K_G1_Discovery_v0_1_2_APK_SHA256.txt
+            releases/v0.1.2/K_G1_Discovery_v0_1_2_source_v1.zip
+            releases/v0.1.2/K_G1_Discovery_v0_1_2_source_SHA256.txt
+            releases/v0.1.2/K_G1_Discovery_v0_1_2_package.zip
+            releases/v0.1.2/K_G1_Discovery_v0_1_2_package_SHA256.txt
+            releases/v0.1.2/BUILD_INFO.md
+            releases/v0.1.2/lint-results-debug.html
+          if-no-files-found: error
