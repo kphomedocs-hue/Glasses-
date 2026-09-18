@@ -51,32 +51,33 @@ if [[ ! -f "$REL_DIR/K_G1_Discovery_v0_1_1.apk" ]]; then
   cp "$APK_SRC" "$REL_DIR/K_G1_Discovery_v0_1_1.apk"
   cp "$LINT_SRC" "$REL_DIR/lint-results-debug.html"
   sha256sum "$REL_DIR/K_G1_Discovery_v0_1_1.apk" > "$REL_DIR/K_G1_Discovery_v0_1_1_APK_SHA256.txt"
-
-  APK_SHA="$(sha256sum "$REL_DIR/K_G1_Discovery_v0_1_1.apk" | awk '{print $1}')"
-  {
-    echo "# K G1 Discovery v0.1.1 — Verified Repository Build"
-    echo
-    echo "- Source SHA-256: `$SOURCE_SHA`"
-    echo "- Repository-built APK SHA-256: `$APK_SHA`"
-    echo "- Git commit used for build: `$GITHUB_SHA`"
-    echo "- GitHub Actions run: `$GITHUB_RUN_ID`"
-    echo "- Android compile: PASS"
-    echo "- Android Lint: PASS"
-    echo "- Read-only safety audit: PASS"
-    echo "- APK signature verification: PASS"
-    echo "- Source package contents: Git-tracked source files only"
-    echo
-    echo "v0.1 remains frozen. v0.1.1 changes only target-name recognition to accept AIMB-G1 and AIMB-G1_* while preserving the same read-only G1 boundary."
-  } > "$REL_DIR/BUILD_INFO.md"
+  CANONICAL_BUILD_COMMIT="$GITHUB_SHA"
+  CANONICAL_BUILD_RUN="$GITHUB_RUN_ID"
 else
-  # Preserve original canonical APK provenance while correcting/reverifying source packaging.
-  sed -i -E "s/^- Source SHA-256: `[0-9a-f]+`/- Source SHA-256: `$SOURCE_SHA`/" "$REL_DIR/BUILD_INFO.md"
-  if ! grep -q "Source package contents:" "$REL_DIR/BUILD_INFO.md"; then
-    sed -i "/^- APK signature verification: PASS/a - Source package contents: Git-tracked source files only" "$REL_DIR/BUILD_INFO.md"
-  fi
   test -f "$REL_DIR/K_G1_Discovery_v0_1_1_APK_SHA256.txt"
   test -f "$REL_DIR/lint-results-debug.html"
+  CANONICAL_BUILD_COMMIT="4182ea29d8e4086a2ee85de96601265860739582"
+  CANONICAL_BUILD_RUN="35393397232"
 fi
+
+APK_SHA="$(sha256sum "$REL_DIR/K_G1_Discovery_v0_1_1.apk" | awk '{print $1}')"
+{
+  echo "# K G1 Discovery v0.1.1 — Verified Repository Build"
+  echo
+  echo "- Source SHA-256: $SOURCE_SHA"
+  echo "- Repository-built APK SHA-256: $APK_SHA"
+  echo "- Canonical APK build commit: $CANONICAL_BUILD_COMMIT"
+  echo "- Canonical APK build run: $CANONICAL_BUILD_RUN"
+  echo "- Latest verification commit: $GITHUB_SHA"
+  echo "- Latest verification run: $GITHUB_RUN_ID"
+  echo "- Android compile: PASS"
+  echo "- Android Lint: PASS"
+  echo "- Read-only safety audit: PASS"
+  echo "- APK signature verification: PASS"
+  echo "- Source package contents: Git-tracked source files only"
+  echo
+  echo "v0.1 remains frozen. v0.1.1 changes only target-name recognition to accept AIMB-G1 and AIMB-G1_* while preserving the same read-only G1 boundary."
+} > "$REL_DIR/BUILD_INFO.md"
 
 # Rebuild the package around the canonical APK and corrected source archive.
 rm -rf "$RUNNER_TEMP/package-v011"
