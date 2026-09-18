@@ -1,0 +1,124 @@
+name: Cold Recovery Gate
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/cold-recovery.yml"
+      - "releases/v0.1/K_G1_Discovery_v0_1_source_v4.zip"
+      - "releases/v0.1/K_G1_Discovery_v0_1.apk"
+      - "archive/site-capture/v0.4/**"
+
+permissions:
+  contents: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
+    steps:
+      - name: Clean checkout
+        uses: actions/checkout@v4
+        with:
+          clean: true
+          fetch-depth: 1
+
+      - name: Verify repository artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "84fb1b957290abdf2464a97b35b81f2d1e8e976ce9c067ecaf571c8c19f22c68  releases/v0.1/K_G1_Discovery_v0_1_source_v4.zip" | sha256sum -c -
+          echo "c32758f898b91041bc7e13a272096d2629836e4465542ee00c1fbd9764e7479a  releases/v0.1/K_G1_Discovery_v0_1.apk" | sha256sum -c -
+          echo "e6b23d5d0eaed6a07112f7f14343e011299bf706fe0e98f447a74d24f92c827a  releases/v0.1/K_G1_Discovery_v0_1_package.zip" | sha256sum -c -
+          test -f LATEST_CHECKPOINT.md
+          test -f PROJECT_MANIFEST.md
+          test -f docs/architecture/ARCHITECTURE.md
+          test -f docs/protocol/AIMB_G1_PROTOCOL.md
+          test -f docs/testing/PHYSICAL_TEST_GATE.md
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install Android SDK packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKMANAGER="/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0" "platform-tools"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.6.0"
+
+      - name: Rebuild Discovery v0.1 from frozen source
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/discovery"
+          mkdir -p "$RUNNER_TEMP/discovery"
+          unzip -q releases/v0.1/K_G1_Discovery_v0_1_source_v4.zip -d "$RUNNER_TEMP/discovery"
+          cd "$RUNNER_TEMP/discovery"
+          chmod +x SAFETY_AUDIT.sh
+          ./SAFETY_AUDIT.sh
+          gradle --no-daemon clean :app:assembleDebug :app:lintDebug
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose app/build/outputs/apk/debug/app-debug.apk
+          sha256sum app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Run legacy v0.4 pure-Java regression suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash archive/site-capture/v0.4/tools/run_core_selftest.sh
+
+      - name: Validate legacy diagnostics tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile \
+            archive/site-capture/v0.4/tools/correlate_tshark.py \
+            archive/site-capture/v0.4/tools/scan_cyan_apk.py
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          for p in [
+              "archive/site-capture/v0.4/app/src/main/AndroidManifest.xml",
+              "archive/site-capture/v0.4/app/src/main/res/layout/activity_main.xml",
+              "archive/site-capture/v0.4/app/src/main/res/values/strings.xml",
+              "archive/site-capture/v0.4/app/src/main/res/values/styles.xml",
+          ]:
+              ET.parse(p)
+              print("XML PASS", p)
+          PY
+
+      - name: Verify v0.4 real transport remains inert
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE="archive/site-capture/v0.4/app/src/main/java/com/parkarsite/g1capture/g1/RealAimbG1Transport.java"
+          ! grep -Eiq 'de5bf7|192\.168\.|http://|https://|writeCharacteristic|setCharacteristicNotification' "$FILE"
+          grep -q 'UnsupportedOperationException' "$FILE"
+          echo "PASS: v0.4 real transport remains non-operational"
+
+      - name: Recovery summary
+        shell: bash
+        run: |
+          {
+            echo "## AIMB-G1 cold recovery"
+            echo
+            echo "- Repository artifact hashes: PASS"
+            echo "- Discovery source integrity: PASS"
+            echo "- Discovery read-only safety audit: PASS"
+            echo "- Discovery Android compile: PASS"
+            echo "- Discovery Android lint: PASS"
+            echo "- Discovery APK signature verification: PASS"
+            echo "- Site Capture v0.4 core self-tests: PASS"
+            echo "- Legacy Python/XML tooling validation: PASS"
+            echo "- Legacy real transport inertness check: PASS"
+          } >> "$GITHUB_STEP_SUMMARY"
