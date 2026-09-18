@@ -1,0 +1,21 @@
+AIMB-G1 CAPTURE SESSION
+Date/time:
+Phone model:
+Android version:
+CyanGlasses version:
+Glasses firmware (if visible):
+Internet disabled during offline test: YES/NO
+Offline media transfer result: PASS/FAIL
+
+CONTROLLED TRACE
+HCI capture started at:
+PCAPdroid started at:
+Cyan opened at:
+G1 connected at:
+Media sync tapped/started at:
+New photo appeared at:
+PCAPdroid stopped at:
+
+Observed G1 Wi-Fi SSID (if shown):
+Observed G1 IP/gateway (if shown):
+Anything unusual:
