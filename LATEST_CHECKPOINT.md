@@ -176,3 +176,36 @@ Pre-hardware report handling is complete:
 The repository now rejects/sanitizes reports containing MAC addresses, passwords or serial data and blocks accidental third-party Cyan packages, packet captures, raw media and oversized files from normal tracked content.
 
 No further protocol implementation should be added before the physical G1 report is reviewed.
+
+
+## G1 retry checkpoint — K G1 Discovery v0.1.1
+
+Two physical read-only scans using frozen v0.1 returned:
+- AIMB-G1 not found during the 12-second scan.
+
+Android separately confirms the paired glasses are present and exposes the device name in the `AIMB-G1_<suffix>` form. No full Bluetooth address or device-specific suffix is recorded in this public repository.
+
+Code review found v0.1 required an exact `AIMB-G1` name match. The frozen v0.1 release and `frozen/discovery-v0.1-readonly` branch remain unchanged.
+
+v0.1.1 changes only the target-name matcher:
+- exact `AIMB-G1`: accepted,
+- `AIMB-G1_*`: accepted,
+- no proprietary BLE writes,
+- no descriptor writes / notification subscription,
+- no Wi-Fi/P2P/AP,
+- no HTTP/media transfer,
+- no reset/restart/OTA.
+
+Verified v0.1.1 release:
+- Repository APK: `releases/v0.1.1/K_G1_Discovery_v0_1_1.apk`
+- APK SHA-256: `bdb73a04c2650fefbcd433a13674a32c18dd94a07a2c8ef16a90a8980d3f0358`
+- Source ZIP SHA-256: `0e2949500cfdc6d04f161164b2324cf811ec852f540a15b59684a3da9ec10d05`
+- Package ZIP SHA-256: `d7ae14fa0b42c063e7d857ecb119cff25b60a8192249b2835f9e2e5f140031b0`
+- Canonical APK build run: `35393397232`
+- Latest full verification run: `35393800836`
+- Android compile: PASS
+- Android Lint: PASS
+- Read-only safety audit: PASS
+- APK signature verification: PASS
+
+Next action: install v0.1.1 and repeat G1 read-only discovery without changing pairing, reset, Wi-Fi or firmware state.

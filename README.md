@@ -4,7 +4,8 @@ Authoritative repository for the AIMB-G1 glasses media-capture integration proje
 
 ## Current physical-test baseline
 
-**K G1 Discovery v0.1**
+**Frozen reference:** K G1 Discovery v0.1  
+**Current G1 retry candidate:** K G1 Discovery v0.1.1
 
 Purpose: read-only BLE/GATT confirmation on the user's physical AIMB-G1 before any proprietary control command is sent.
 
@@ -20,9 +21,13 @@ Safety boundary:
 
 ## Verified build
 
-Canonical repository APK:
+Frozen v0.1 repository APK:
 
 `releases/v0.1/K_G1_Discovery_v0_1.apk`
+
+Current v0.1.1 G1 retry APK:
+
+`releases/v0.1.1/K_G1_Discovery_v0_1_1.apk`
 
 SHA-256:
 
@@ -101,3 +106,21 @@ See `docs/testing/PHYSICAL_TEST_GATE.md`.
 ## Public-repository rule
 
 The third-party Cyan APK, credentials, personal data and future device-specific reports containing sensitive identifiers are not committed here. Their safe provenance/findings are documented instead.
+
+
+## G1 retry note — v0.1.1
+
+Two read-only v0.1 scans completed without finding the glasses. Android identifies the paired device using the `AIMB-G1_<suffix>` naming form rather than the exact `AIMB-G1` string expected by v0.1.
+
+v0.1.1 changes only target-name recognition:
+- accepts exact `AIMB-G1`,
+- accepts `AIMB-G1_*`,
+- preserves the same read-only BLE/GATT safety boundary.
+
+Verified v0.1.1 artifacts:
+- APK SHA-256: `bdb73a04c2650fefbcd433a13674a32c18dd94a07a2c8ef16a90a8980d3f0358`
+- source ZIP SHA-256: `0e2949500cfdc6d04f161164b2324cf811ec852f540a15b59684a3da9ec10d05`
+- package ZIP SHA-256: `d7ae14fa0b42c063e7d857ecb119cff25b60a8192249b2835f9e2e5f140031b0`
+- latest verification run: `35393800836`
+
+Do not unpair or reset AIMB-G1 for this retry.

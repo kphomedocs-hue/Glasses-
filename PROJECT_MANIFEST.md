@@ -4,6 +4,20 @@ Authoritative inventory for the AIMB-G1 / K Site Capture project.
 
 ## Current physical-test baseline
 
+### G1 retry candidate — v0.1.1
+
+| Item | Repository path | SHA-256 / status |
+|---|---|---|
+| Discovery v0.1.1 source | `releases/v0.1.1/K_G1_Discovery_v0_1_1_source_v1.zip` | `0e2949500cfdc6d04f161164b2324cf811ec852f540a15b59684a3da9ec10d05` |
+| Discovery v0.1.1 APK | `releases/v0.1.1/K_G1_Discovery_v0_1_1.apk` | `bdb73a04c2650fefbcd433a13674a32c18dd94a07a2c8ef16a90a8980d3f0358` |
+| Discovery v0.1.1 package | `releases/v0.1.1/K_G1_Discovery_v0_1_1_package.zip` | `d7ae14fa0b42c063e7d857ecb119cff25b60a8192249b2835f9e2e5f140031b0` |
+| Safety boundary | read-only G1 | PASS |
+| Full verification run | GitHub Actions `35393800836` | PASS |
+
+v0.1.1 is a narrow G1 retry candidate. It accepts the `AIMB-G1_*` name family while keeping the frozen v0.1 read-only behavior and forbidden-operation boundary unchanged.
+
+### Frozen v0.1 reference
+
 | Item | Repository path | SHA-256 / status |
 |---|---|---|
 | Discovery v0.1 frozen source | `releases/v0.1/K_G1_Discovery_v0_1_source_v4.zip` | `84fb1b957290abdf2464a97b35b81f2d1e8e976ce9c067ecaf571c8c19f22c68` |
