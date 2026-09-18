@@ -65,6 +65,8 @@ jobs:
           rm -rf "$RUNNER_TEMP/discovery"
           mkdir -p "$RUNNER_TEMP/discovery"
           unzip -q releases/v0.1/K_G1_Discovery_v0_1_source_v4.zip -d "$RUNNER_TEMP/discovery"
+          diff -ruN "$RUNNER_TEMP/discovery" source/v0.1
+          echo "PASS: expanded source matches frozen source ZIP"
           cd "$RUNNER_TEMP/discovery"
           chmod +x SAFETY_AUDIT.sh
           ./SAFETY_AUDIT.sh
