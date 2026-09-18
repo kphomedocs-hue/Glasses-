@@ -1,0 +1,14 @@
+diff -ruN source-v3/app/src/main/java/com/parkarsite/g1discovery/MainActivity.java source-v4/app/src/main/java/com/parkarsite/g1discovery/MainActivity.java
+--- source-v3/app/src/main/java/com/parkarsite/g1discovery/MainActivity.java
++++ source-v4/app/src/main/java/com/parkarsite/g1discovery/MainActivity.java
+@@ -444,7 +444,10 @@
+                 local.disconnect();
+             } catch (SecurityException ignored) {
+             }
+-            local.close();
++            try {
++                local.close();
++            } catch (SecurityException ignored) {
++            }
+         }
+     }
