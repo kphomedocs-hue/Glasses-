@@ -70,3 +70,16 @@ Only interoperability findings and provenance are stored in this public reposito
 ## Current gate
 
 No active protocol write is authorized yet. The next action remains the read-only physical GATT discovery test using Discovery v0.1.
+
+
+## Discovery v0.1.2 diagnostic candidate
+
+| Item | Repository path | SHA-256 / status |
+|---|---|---|
+| v0.1.2 source | `releases/v0.1.2/K_G1_Discovery_v0_1_2_source_v1.zip` | `de89fd0dd15d48c51e1f080158b426f455699187a0f42f28686cf957850f3271` |
+| v0.1.2 APK | `releases/v0.1.2/K_G1_Discovery_v0_1_2.apk` | `dc08b915581468f2d0d33fb317ca06b05e301b233cb0ced234edf7f0bc282297` |
+| v0.1.2 package | `releases/v0.1.2/K_G1_Discovery_v0_1_2_package.zip` | `d7ddedc782ced77fda0f8b0a18237101a4124c3762a359888b20de017329a667` |
+| GitHub Actions build/verification | run `35395830630` | PASS |
+| Safety scope | G1 read-only observation + unique bonded fallback | PASS |
+
+v0.1.2 does not replace the frozen v0.1 baseline. It is the next diagnostic G1 candidate after scan-identification ambiguity.

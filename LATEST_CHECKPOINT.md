@@ -209,3 +209,39 @@ Verified v0.1.1 release:
 - APK signature verification: PASS
 
 Next action: install v0.1.1 and repeat G1 read-only discovery without changing pairing, reset, Wi-Fi or firmware state.
+
+
+## G1 diagnostic checkpoint — K G1 Discovery v0.1.2
+
+Purpose: resolve the remaining ambiguity after the first read-only v0.1 scans did not identify the glasses.
+
+v0.1.2 is a diagnostic candidate, not a protocol-control release. It adds:
+- 30-second low-latency BLE observation,
+- sanitized AIMB-G1-family/Cyan-service candidate detection,
+- aggregate scan health metrics,
+- bonded-device type inspection,
+- direct LE GATT fallback only when one and only one bonded AIMB-G1-family device is identified,
+- 30-second GATT connection/service-discovery timeout.
+
+Safety remains read-only:
+- no proprietary characteristic writes,
+- no descriptor writes,
+- no notification subscription,
+- no pairing/unpairing/reset,
+- no Wi-Fi/P2P/AP,
+- no HTTP/media transfer,
+- no OTA/firmware command.
+
+Verified artifacts:
+- APK SHA-256: `dc08b915581468f2d0d33fb317ca06b05e301b233cb0ced234edf7f0bc282297`
+- source ZIP SHA-256: `de89fd0dd15d48c51e1f080158b426f455699187a0f42f28686cf957850f3271`
+- package ZIP SHA-256: `d7ddedc782ced77fda0f8b0a18237101a4124c3762a359888b20de017329a667`
+- canonical build commit: `f048418960255e1fa292be60da4012c2613eca98`
+- build/verification run: `35395830630`
+- diagnostic scope verification: PASS
+- read-only safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+
+The v0.1 frozen branch and v0.1/v0.1.1 source/release trees remain unchanged.

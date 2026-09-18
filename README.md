@@ -124,3 +124,26 @@ Verified v0.1.1 artifacts:
 - latest verification run: `35393800836`
 
 Do not unpair or reset AIMB-G1 for this retry.
+
+
+## G1 diagnostic candidate — v0.1.2
+
+After the v0.1 exact-name scan misses, v0.1.2 adds diagnostic resilience while preserving the read-only boundary.
+
+It adds:
+- a 30-second explicit low-latency BLE observation window,
+- AIMB-G1 / AIMB-G1_* family matching,
+- known Cyan service UUID observation,
+- aggregate BLE observation counts without logging unrelated nearby-device names,
+- read-only inspection of bonded-device metadata,
+- a read-only LE GATT fallback only when exactly one bonded AIMB-G1-family device is available,
+- a bounded GATT timeout.
+
+It still contains no proprietary BLE writes, descriptor writes, notification subscriptions, pairing/unpairing operations, Wi-Fi/P2P/AP, HTTP/media transfer, reset/restart/OTA or firmware commands.
+
+Verified release:
+- APK: `releases/v0.1.2/K_G1_Discovery_v0_1_2.apk`
+- APK SHA-256: `dc08b915581468f2d0d33fb317ca06b05e301b233cb0ced234edf7f0bc282297`
+- source ZIP SHA-256: `de89fd0dd15d48c51e1f080158b426f455699187a0f42f28686cf957850f3271`
+- package ZIP SHA-256: `d7ddedc782ced77fda0f8b0a18237101a4124c3762a359888b20de017329a667`
+- build/verification run: `35395830630`
