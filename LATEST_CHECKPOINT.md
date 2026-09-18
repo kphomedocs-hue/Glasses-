@@ -9,9 +9,13 @@ K Site Capture / AIMB-G1 glasses integration
 Status: software build gate complete; first physical read-only test pending.
 
 ### Verified artifacts
-- APK SHA-256: `ab37790ad13028aa6e8f1e3d16b957c72f8038df0638e8e852b31488d9fc762a`
-- Source v4 ZIP SHA-256: `84fb1b957290abdf2464a97b35b81f2d1e8e976ce9c067ecaf571c8c19f22c68`
-- Package ZIP SHA-256: `608c2645470cd7ade65a8126242b04391333408fb125b51d391278ae8d3906fe`
+- Repository-built APK SHA-256: `c32758f898b91041bc7e13a272096d2629836e4465542ee00c1fbd9764e7479a`
+- Frozen source v4 ZIP SHA-256: `84fb1b957290abdf2464a97b35b81f2d1e8e976ce9c067ecaf571c8c19f22c68`
+- Repository package ZIP SHA-256: `e6b23d5d0eaed6a07112f7f14343e011299bf706fe0e98f447a74d24f92c827a`
+- Earlier first-build debug APK SHA-256 (provenance): `ab37790ad13028aa6e8f1e3d16b957c72f8038df0638e8e852b31488d9fc762a`
+- Earlier local package SHA-256 (provenance): `608c2645470cd7ade65a8126242b04391333408fb125b51d391278ae8d3906fe`
+
+The repository APK/package are fresh verified CI rebuilds from the exact same frozen source. Debug signing and ZIP metadata can make byte hashes differ from earlier locally produced files.
 
 ### Build gates passed
 - exact source-integrity verification
