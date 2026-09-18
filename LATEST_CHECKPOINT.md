@@ -144,6 +144,7 @@ This file remains authoritative for resuming the project.
 ## Software recovery verification
 
 - Cold Recovery Gate run `35387241734`: PASS
+- Hardened Cold Recovery run `35387536088` (expanded source == frozen ZIP): PASS
 - Core Module Regression run `35387408775`: PASS
 - Frozen v0.1 reference branch: `frozen/discovery-v0.1-readonly`
 - Detailed record: `docs/testing/results/2026-09-19_SOFTWARE_RECOVERY_GATE.md`
