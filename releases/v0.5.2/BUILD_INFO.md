@@ -1,0 +1,21 @@
+# K G1 Disposable Photo Probe v0.5.2 — Verified Repository Build
+- Canonical build commit: 17e0a33c9d7490b57fc2f3d6f468f1c6be94d2c0
+- Canonical build run: 35436808167
+- G5.2 safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Package ID: com.parkarsite.g1singlephotoprobe52
+- Media-count query: 0x41 / 02 04 exactly once per phase
+- Count handoff: P2P enter waits for BOTH successful Android write callback and valid 02 04 response
+- Catalog readiness delay: exact Cyan 1000 ms per phase
+- Failure recovery: resets state to BASELINE and restores Start button
+- P2P enter: once per phase
+- Transfer exit: once per phase
+- Catalog GETs: one per phase
+- Media GETs: one maximum after exact single-JPG delta
+- Total HTTP GETs on success: three maximum
+- Media cap: 33554432 bytes
+- Redirects: disabled
+- Retry/resume/Range: absent
+- AP fallback / 02 03 / glasses mutation: absent
