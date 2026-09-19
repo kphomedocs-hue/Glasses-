@@ -1,0 +1,17 @@
+# K G1 Capture Visibility Probe v0.5.3 — Verified Repository Build
+- Canonical build commit: 245c9d944e1b2eed10494ad2e8d5fe4d7810c5f9
+- Canonical build run: 35438040193
+- BLE-only safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Package ID: com.parkarsite.g1capturevisibilityprobe
+- Proprietary payload: 0x41 / 02 04 only
+- Proprietary writes: two maximum total
+- BLE connection: continuous across physical capture
+- Passive 0x73: event IDs only; event 0x01 sanitized inventory fields
+- Post-capture watch: 60 seconds
+- P2P/Wi-Fi/HTTP/media access: absent
+- INTERNET permission: absent
+- Raw notification logging: absent
+- File write/delete: absent
