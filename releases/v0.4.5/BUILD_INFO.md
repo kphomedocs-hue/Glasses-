@@ -1,0 +1,20 @@
+# K G1 Catalog Line Probe v0.4.5 — Verified Repository Build
+- Canonical build commit: 2c7885a0970cdec5fe96d49178af83447a018d87
+- Canonical build run: 35433799612
+- G4B3 safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Package ID: com.parkarsite.g1cataloglineprobe
+- Parser: configFileType=1 line-list parity
+- HTTP requests: exactly one GET site
+- Catalog path: /files/media.config
+- Redirects: disabled
+- Catalog response cap: 65536 bytes
+- JSON/vf_list alternate branch: ABSENT
+- Raw body logging: ABSENT
+- Filename/path value logging: ABSENT
+- Catalog fingerprint/hash logging: ABSENT
+- Media-file GET/download/mutation: ABSENT
+- P2P-IP query 02 03: ABSENT
+- Proprietary writes: P2P enter once + transfer exit once only
