@@ -16,7 +16,8 @@ Evidence-gated status as of 2026-09-19:
 - **G4A — phone-side Wi-Fi Direct association:** PASS
 - **G4A2 — passive glasses P2P-IP notification capture:** PASS
 - **G4B — read-only media listing:** HTTP/body read reached; JSON parser unresolved
-- **G4B2 — catalog response-shape characterization:** HARDENED VERIFIED BUILD v0.4.4 READY; physical test pending
+- **G4B2 — catalog response-shape characterization:** PASS
+- **G4B3 — exact line-list parser parity:** SOFTWARE BUILD/VERIFICATION NEXT
 
 G4A2 physically confirmed the glasses-side Wi-Fi Direct client address as `192.168.49.176`. G4B v0.4.2 then reached the exact `/files/media.config` local read path with one GET, but Android `JSONObject` parsing failed with `JSONException`. Exact Cyan bytecode confirms it reads the whole file as text and hands that string to Moshi, so G4B2 now characterizes the physical response safely without widening network scope.
 
@@ -282,32 +283,24 @@ Physical G4A2 result: `0x73 / 0x08` was observed and resolved the glasses client
 
 Evidence: `docs/testing/results/2026-09-19_G4A2_P2P_IP_NOTIFY_PASS.md`.
 
-Next gate: G4B2 catalog response-shape characterization.
+Next gate: G4B3 exact line-list parser parity.
 
-Physical v0.4.2 result:
-- exact local GET path: `/files/media.config`,
-- P2P association and passive IP resolution: successful,
-- one GET only,
-- bounded body read completed,
-- Android `JSONObject` parsing failed with `JSONException`,
-- zero media-file GETs,
-- clean transfer exit.
+Physical G4B2 v0.4.4 established the exact response shape:
+- HTTP 200 / `text/plain`,
+- 67 bytes,
+- valid UTF-8,
+- no BOM,
+- line-oriented response,
+- zero media-file GETs.
 
-Evidence: `docs/testing/results/2026-09-19_G4B_CATALOG_PARSE_FAIL.md`.
+Corrected exact Cyan bytecode shows:
+- `configFileType == 2` → `vf_list.txt` + `readText()` + Moshi JSON;
+- `configFileType != 2` → `media.config` + Kotlin `readLines()`;
+- physical `configFileType=1`, so each line is a catalog media entry;
+- Cyan builds each later media URL as `http://<glassDeviceWifiIP>/files/<line>`.
 
-Exact Cyan bytecode confirms the current branch uses Kotlin `readText` followed by Moshi `PtPFileModel.fromJson`; the endpoint is unchanged.
+Evidence:
+- `docs/testing/results/2026-09-19_G4B2_RESPONSE_SHAPE_PASS.md`
+- `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
 
-Pre-physical privacy recheck: v0.4.3 was superseded before physical use because it reported a full-response SHA-256 fingerprint. The hardened v0.4.4 removes that field without changing network/protocol behavior.
-
-Verified candidate: **K G1 Catalog Shape Probe v0.4.4**
-- APK: `releases/v0.4.4/K_G1_Catalog_Shape_Probe_v0_4_4.apk`
-- APK SHA-256: `8d61807f8edf3a49a0d172a73695cc1a1422852a1b284b033e00cc58711d06c0`
-- source/build commit: `38483c269fbfdd987f0c9a3a9f5671a48e094d68`
-- build run: `35433077797` — PASS
-- archive commit: `892c82e9101cd8812468b770955b4fcd3d944062`
-- package ID: `com.parkarsite.g1catalogshapeprobe4`
-- same one GET to `/files/media.config`
-- no redirect/retry/raw-body logging/filename-path logging/catalog-fingerprint logging/media-file GET/mutation
-- response classification only: byte count, Content-Type/Encoding, UTF-8/BOM, JSON type, known protocol keys and counts
-
-G5 remains blocked until the G4B2 v0.4.4 physical report is reviewed.
+G4B3 will verify exact line-list parity without exposing any line/filename/path value and without requesting any media file. G5 remains blocked.

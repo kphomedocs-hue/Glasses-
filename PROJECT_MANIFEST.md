@@ -79,9 +79,10 @@ G3B bounded P2P transfer lifecycle: PASS.
 G4A phone-side Wi-Fi Direct association: PASS.  
 G4A2 passive glasses P2P-IP notification capture: **PASS**.  
 G4B read-only media listing: **PHYSICAL HTTP/BODY READ REACHED — JSON PARSER UNRESOLVED**.  
-G4B2 response-shape characterization: **VERIFIED BUILD READY — PHYSICAL TEST PENDING**.
+G4B2 response-shape characterization: **PASS**.  
+G4B3 exact line-list parser parity: **SOFTWARE BUILD/VERIFICATION NEXT**.
 
-v0.4.2 reached the exact `/files/media.config` read path with one GET and read the bounded body, then Android `JSONObject` parsing failed with `JSONException`. Exact Cyan bytecode confirms its current branch uses whole-file `readText` followed by Moshi `PtPFileModel.fromJson`. v0.4.3 added structural response characterization but was superseded before physical use because it still logged a SHA-256 fingerprint of the full private catalog response. v0.4.4 removes that fingerprint while keeping the exact same one-GET network boundary. G5 remains blocked.
+v0.4.2 reached `/files/media.config` but failed because our diagnostic applied the wrong parser. Physical v0.4.4 then established a 67-byte UTF-8 `text/plain` line-oriented response. Deeper exact Cyan bytecode proves `configFileType==2` is the JSON/vf_list branch, while `configFileType!=2` uses `/files/media.config` plus Kotlin `readLines()`. The physical value is 1, so every line is a catalog entry. G5 remains blocked pending one final sanitized line-list parity check.
 
 ## Discovery v0.1.2 diagnostic candidate
 
@@ -349,24 +350,34 @@ Issue #8 is complete. G4B is unblocked for separate read-only design and verific
 
 Exact static evidence: `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`.
 
-## G4B2 hardened verified candidate — v0.4.4
+## G4B2 physical result — PASS
 
-| Item | Repository path | SHA-256 / status |
-|---|---|---|
-| G4B2 source | `releases/v0.4.4/K_G1_Catalog_Shape_Probe_v0_4_4_source_v1.zip` | `8a87dcb8b09bf0b3df6f4ba42fd510b56371e6b48cec056b02c995526e88623e` |
-| G4B2 APK | `releases/v0.4.4/K_G1_Catalog_Shape_Probe_v0_4_4.apk` | `8d61807f8edf3a49a0d172a73695cc1a1422852a1b284b033e00cc58711d06c0` |
-| G4B2 package | `releases/v0.4.4/K_G1_Catalog_Shape_Probe_v0_4_4_package.zip` | `8f614c3a9bd0dd140e9c3091e7d7bcfa3dc26cd0a5473014485ac253f947bfa3` |
-| Canonical build commit | — | `38483c269fbfdd987f0c9a3a9f5671a48e094d68` |
-| Archive commit | — | `892c82e9101cd8812468b770955b4fcd3d944062` |
-| GitHub Actions build/verification | run `35433077797` | PASS |
-| Source-commit Repository Hygiene | run `35433077837` | PASS |
-| Hardened G4B2 safety audit / compile / lint / signature | — | PASS |
-| Package ID | — | `com.parkarsite.g1catalogshapeprobe4` |
-| HTTP scope | — | exactly one GET to `/files/media.config` |
-| Raw body / filename/path value logging | — | ABSENT |
-| Catalog fingerprint/hash logging | — | ABSENT |
-| Media-file GET/download/mutation | — | ABSENT |
-| Response output | — | byte count + encoding/BOM/JSON type/protocol key presence/counts only |
-| Physical G4B2 result | — | PENDING |
+| Item | Result |
+|---|---|
+| Physical report | `docs/testing/results/2026-09-19_G4B2_RESPONSE_SHAPE_PASS.md` |
+| HTTP status | 200 |
+| Content-Type | `text/plain` |
+| Response bytes | 67 |
+| UTF-8 | valid |
+| BOM | none |
+| Diagnostic line count | 4 |
+| JSON parse | not applicable to physical configFileType=1 |
+| Media-file GET requests | 0 |
+| Raw body / filename/path / fingerprint logging | ABSENT |
+| Transfer exit | SUCCESS |
 
-v0.4.3 is superseded pre-physical and must not be used. Issue #9 remains open for the v0.4.4 G4B2 physical report. G5 remains blocked.
+Corrected exact static evidence: `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`.
+
+## G4B3 next gate
+
+Purpose: mirror Cyan's physical `configFileType=1` line-list semantics while retaining the same one-GET boundary.
+
+Allowed result fields only:
+- line-list entry count,
+- blank/whitespace-entry count,
+- extension/type counts,
+- relative-vs-absolute/path-traversal/control-character safety counts.
+
+Actual line, filename and path values remain prohibited. Media-file GET/download remains prohibited.
+
+Issue #9 remains open. G5 remains blocked.

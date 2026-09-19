@@ -258,66 +258,43 @@ Evidence:
 
 ## G4B — physical result
 
-**NOT PASSED — parser compatibility unresolved.**
+**READ PATH CONFIRMED; initial parser assumption corrected.**
 
-v0.4.2 physically:
-- repeated the proven P2P association,
-- resolved the glasses IP passively,
-- made exactly one GET to `/files/media.config`,
-- read the bounded response body,
-- failed at Android `JSONObject` parsing with `JSONException`,
-- made zero media-file GET requests,
-- exited transfer mode successfully.
+v0.4.2 physically reached `/files/media.config` with one GET and read the bounded response. Its `JSONException` came from our diagnostic applying the wrong config-type parser.
 
 Evidence:
 `docs/testing/results/2026-09-19_G4B_CATALOG_PARSE_FAIL.md`
 
-The endpoint remains fixed by exact Cyan evidence. Do not change to another URL and do not proceed to G5.
+## G4B2 — physical result
 
-## G4B2 — next approved physical diagnostic
+**PASS — 2026-09-19.**
 
-**Hardened verified build ready; physical result pending.**
+App: K G1 Catalog Shape Probe v0.4.4
 
-Do **not** use v0.4.3. A pre-physical privacy recheck superseded it because its report contained a SHA-256 fingerprint of the complete private catalog response.
+Physical result:
+- exact P2P association repeated successfully,
+- passive glasses IP resolved,
+- exactly one GET to `/files/media.config`,
+- HTTP 200,
+- `Content-Type: text/plain`,
+- 67 bytes,
+- valid UTF-8,
+- no BOM,
+- diagnostic line count 4,
+- zero media-file GETs,
+- transfer exit succeeded,
+- no raw catalog body, filename/path values or response fingerprints were logged.
 
-App: K G1 Catalog Shape Probe v0.4.4  
-APK: `releases/v0.4.4/K_G1_Catalog_Shape_Probe_v0_4_4.apk`  
-APK SHA-256: `8d61807f8edf3a49a0d172a73695cc1a1422852a1b284b033e00cc58711d06c0`  
-Build run: `35433077797` — PASS
+Corrected exact Cyan bytecode proves the physical `configFileType=1` branch uses Kotlin `readLines()` and treats each line as a catalog entry. JSON/Moshi applies only to `configFileType==2`.
 
-Allowed:
-- same P2P enter once,
-- exact BLE-reported peer only,
-- passive `0x73 / 0x08` IP only,
-- same `/files/media.config` GET once,
-- no redirects or retry,
-- bounded body in memory only,
-- safe structural characterization:
-  - response byte count,
-  - sanitized Content-Type / Content-Encoding,
-  - UTF-8 validity and BOM,
-  - line count,
-  - first/last non-whitespace token class,
-  - raw/BOM-normalized JSON type,
-  - root-key count,
-  - `file_list` presence/type/count,
-  - known compact key presence,
-  - unknown-key count,
-  - extension counts.
+Evidence:
+- `docs/testing/results/2026-09-19_G4B2_RESPONSE_SHAPE_PASS.md`
+- `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
 
-Still prohibited:
-- raw response text logging,
-- response hash/fingerprint logging,
-- actual filename/path values,
-- media-file GET/download,
-- file-system write/delete,
-- `02 03` query,
-- AP fallback,
-- arbitrary URL input,
-- reset/restart/OTA.
+## G4B3 — next approved design gate
 
-Run exactly once and return the complete sanitized report. **Stop before G5.**
+No physical G4B3 build is approved yet.
 
-Static evidence:
-`docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
+The candidate must retain the exact one-GET boundary and may expose only sanitized line-list counts/type counts/path-safety flags. It must not log any actual catalog line, filename or path and must not request any media file.
 
+**G5 remains blocked.**

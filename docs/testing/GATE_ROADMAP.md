@@ -249,60 +249,59 @@ Verified candidate: K G1 P2P IP Notify Probe v0.4.1. APK SHA-256 `3c9104c34fbf06
 
 ## G4B — read-only local media listing
 
-Status: **PHYSICAL LOCAL HTTP/BODY READ REACHED; JSON PARSER UNRESOLVED**.
+Status: **READ PATH CONFIRMED; INITIAL DIAGNOSTIC PARSER WAS WRONG**.
 
-Physical v0.4.2 result:
-- proven P2P lifecycle and phone-group-owner topology repeated successfully,
-- passive glasses IP resolved again,
-- exactly one GET attempted to `/files/media.config`,
-- request progressed past the HTTP-status check,
-- bounded response body was read,
-- diagnostic Android `JSONObject` parse threw `JSONException`,
-- media-file GET requests: 0,
-- transfer exit: success.
-
-Because v0.4.2 reports the exception only after the status and bounded-read stages, the local network/read path is physically established. The exact physical response representation is not yet sufficiently characterized.
+v0.4.2 successfully reached the exact local endpoint and read the bounded body, but our diagnostic incorrectly assumed JSON and threw `JSONException`.
 
 Evidence:
 `docs/testing/results/2026-09-19_G4B_CATALOG_PARSE_FAIL.md`
 
-Exact Cyan bytecode correction:
-- current `configFileType=1` path still selects `/files/media.config`,
-- `AlbumDepository.readPhotoFile` reads the whole downloaded file using Kotlin `readText`,
-- that string is passed to Moshi's `PtPFileModel` adapter,
-- therefore v0.4.2's `JSONObject` incompatibility does not justify changing the endpoint.
+## G4B2 — response-shape characterization
 
-## G4B2 — safe response-shape characterization
+Status: **PASS — 2026-09-19**.
 
-Status: **HARDENED VERIFIED BUILD READY — physical test pending**.
+Physical v0.4.4 established:
+- one GET to `/files/media.config`,
+- HTTP 200,
+- `text/plain`,
+- 67 bytes,
+- strict UTF-8 valid,
+- no BOM,
+- diagnostic line count 4,
+- no JSON structure,
+- zero media-file GETs,
+- successful transfer exit.
 
-v0.4.3 was superseded before physical use after a privacy recheck found that it would report a SHA-256 fingerprint of the entire private catalog response. That fingerprint was unnecessary for parser diagnosis.
-
-Approved candidate: **K G1 Catalog Shape Probe v0.4.4**.
-- APK SHA-256: `8d61807f8edf3a49a0d172a73695cc1a1422852a1b284b033e00cc58711d06c0`
-- canonical build commit: `38483c269fbfdd987f0c9a3a9f5671a48e094d68`
-- build run: `35433077797` — PASS
-- archive commit: `892c82e9101cd8812468b770955b4fcd3d944062`
-- source-commit Repository Hygiene: PASS
-- hardened safety audit / compile / lint / APK signature: PASS
-
-Physical boundary:
-- identical proven P2P enter/association/passive-IP/exit lifecycle,
-- same one GET to `/files/media.config`,
-- no redirect and no retry,
-- 65,536-byte cap,
-- no media-file GET,
-- no raw-body logging,
-- no filename/path value logging,
-- no full-response hash/fingerprint logging,
-- no file write/delete/mutation,
-- structural output only: response byte count, sanitized Content-Type/Encoding, strict UTF-8 status, BOM, line count, token classes, raw/normalized JSON type, root-key count, `file_list` type/count, known protocol-key presence, unknown-key count and extension counts.
-
-Exit criterion:
-- physically characterize the response enough to explain the v0.4.2 parse failure and determine the exact safe parser rule. Do not advance to G5 until the report is reviewed.
+A deeper exact Cyan bytecode trace corrected the branch semantics:
+- `configFileType == 2` → `vf_list.txt`, Kotlin `readText()`, Moshi `PtPFileModel` JSON;
+- `configFileType != 2` → `media.config`, Kotlin `readLines()`;
+- physical `configFileType=1`, therefore the line-oriented branch applies;
+- each line is used to construct `http://<glassDeviceWifiIP>/files/<line>` and is paired with that URL in `PictureDownloadBean`.
 
 Evidence:
-`docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
+- `docs/testing/results/2026-09-19_G4B2_RESPONSE_SHAPE_PASS.md`
+- `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
+
+## G4B3 — exact line-list parser parity
+
+Status: **SOFTWARE BUILD/VERIFICATION NEXT**.
+
+The next candidate may:
+- repeat the exact proven P2P enter/association/passive-IP/exit lifecycle;
+- make exactly one GET to `/files/media.config`;
+- parse the bounded UTF-8 response with line semantics equivalent to Kotlin `readLines()`;
+- report only:
+  - total line-list entries,
+  - non-empty entries,
+  - blank/whitespace entries,
+  - extension/type counts,
+  - absolute/scheme/leading-slash/traversal/control-character safety counts;
+- log no actual line, filename or path;
+- make zero media-file GET requests.
+
+No alternate endpoint, `vf_list.txt`, JSON fallback, redirect, retry, `02 03`, AP fallback, file write/delete, media download or reset/OTA is permitted.
+
+Exit criterion: exact sanitized line-list parity is physically confirmed. Only then may G5 be considered.
 
 ## G5 — one disposable media download
 

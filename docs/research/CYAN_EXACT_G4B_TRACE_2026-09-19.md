@@ -1,4 +1,4 @@
-# Exact Cyan G4B media-catalog trace — 2026-09-19
+# Exact Cyan G4B media-catalog trace — corrected 2026-09-19
 
 ## Evidence input
 
@@ -10,142 +10,119 @@ Analysed package:
 
 The third-party APK is not committed to this public repository.
 
-## Exact catalog-selection branch
+## Exact catalog URL branch
 
-`PictureFragment` initializes:
-- `configFileName = "media.config"`
-- `configFileNameT2 = "vf_list.txt"`
-- `logFileName = "log.list"`
-
-Exact `PictureFragment$downloadMediaConfig$2.invoke(...)` behavior:
+Bytecode for `PictureFragment$downloadMediaConfig$2.invoke(...)`:
 
 1. If glasses-log mode is enabled:
    `http://<ip>/files/log/log.list`
-2. Else if `configFileType == 2`:
+2. Else read `UserConfig.getConfigFileType()`.
+3. Compare against integer `2`.
+4. If **configFileType == 2**:
    `http://<ip>:80/storage/sd0/C/DCIM/1/vf_list.txt`
-3. Else:
+5. Otherwise:
    `http://<ip>/files/media.config`
 
 Physical G3 established:
-- `configFileType = 1`
-- `onlySupportApImport = false`
+- `configFileType = 1`;
+- `onlySupportApImport = false`.
 
-Therefore the exact Cyan catalog URL for the physically observed AIMB-G1 state is:
+Therefore the exact physical catalog URL is:
 
 ```text
 http://<glassDeviceWifiIP>/files/media.config
 ```
 
-With the G4A2 physical address this resolves to the local endpoint:
+The G4A2/G4B physical glasses address was `192.168.49.176`, derived at runtime from passive `0x73 / 0x08`.
 
-```text
-http://192.168.49.176/files/media.config
-```
+## Corrected exact parser branch
 
-The address is runtime-derived in the diagnostic; it is not hard-coded into the app.
+A deeper bytecode recheck of `AlbumDepository.readPhotoFile` corrects the earlier parser interpretation.
 
-## Exact read/parse path
+The method:
+1. reads `UserConfig.getConfigFileType()`;
+2. loads integer constant `2`;
+3. branches on `configFileType != 2`.
 
-Decompilation-level bytecode inspection of `AlbumDepository.readPhotoFile` confirms two parsing branches keyed by `configFileType`.
+### configFileType == 2
 
-For the current physical branch, Cyan:
-- constructs a `java.io.File`,
-- calls Kotlin `FilesKt.readText$default(...)`,
-- passes the entire resulting text string into `AlbumDepository$readPhotoFile$1`,
-- obtains Moshi from `MoshiUtils`,
-- obtains a `JsonAdapter` for `PtPFileModel`,
-- calls `JsonAdapter.fromJson(jsonString)`,
-- then calls `PtPFileModel.getFile_list()`.
+Cyan:
+- constructs a local `File`;
+- calls Kotlin `FilesKt.readText$default(...)`;
+- passes the resulting String into `AlbumDepository$readPhotoFile$1`;
+- obtains a Moshi adapter for `PtPFileModel`;
+- calls `JsonAdapter.fromJson(...)`;
+- consumes `PtPFileModel.getFile_list()`;
+- for every `FileBean`, uses `FileBean.getF()` for later media-file URL construction.
 
-The alternate branch uses `FilesKt.readLines$default(...)` and is associated with the other configuration path.
+This is the JSON branch.
 
-## Exact response model expected by Cyan
+### configFileType != 2
 
-The generated Moshi model is:
+Cyan:
+- constructs a local `File`;
+- calls Kotlin `FilesKt.readLines$default(...)`;
+- iterates the returned `List<String>`;
+- for each line, constructs:
+  `http://<glassDeviceWifiIP>/files/<line>`;
+- if glasses-log mode is active, uses `/files/log/<line>` instead;
+- creates `PictureDownloadBean(String url, String line)`;
+- queues each bean in the media-download deque;
+- sets the total-file count from the line-list size.
 
-```text
-PtPFileModel(file_list = List<FileBean>)
-```
+This is the line-oriented catalog branch.
 
-`FileBean` exposes compact properties:
-- `c` — String
-- `e` — String
-- `f` — String
-- `h` — int
-- `s` — String
-- `t` — String
-- `w` — int
+Because the physical value is `configFileType=1`, **this AIMB-G1 uses the line-oriented `media.config` branch**.
 
-For each parsed item, Cyan uses `FileBean.getF()` to construct the later media URL:
+## Physical confirmation
 
-```text
-http://<glassDeviceWifiIP>:80/<f>
-```
+G4B2 v0.4.4 physically returned:
+- HTTP 200;
+- `Content-Type: text/plain`;
+- 67 response bytes;
+- valid UTF-8;
+- no BOM;
+- diagnostic line count: 4;
+- not JSON before or after BOM/whitespace normalization.
 
-That later media-file GET is outside G4B.
-
-## Physical v0.4.2 correction
-
-The first physical G4B probe performed the exact endpoint GET once and then failed with:
-
-```text
-Catalog GET/parse failed: JSONException
-```
-
-Because the verified v0.4.2 control flow checks HTTP status and response-size limits before invoking Android `JSONObject`, this failure proves:
-- the request reached the expected HTTP path,
-- the response body was read within the 65,536-byte cap,
-- the failure occurred at the diagnostic's JSON-parser compatibility layer.
-
-It does **not** invalidate the endpoint.
-
-It does invalidate the stronger earlier assumption that the physical response bytes can be passed directly to Android `JSONObject` with no normalization or parser compatibility handling.
-
-Potential causes such as BOM/encoding or a different top-level representation remain hypotheses until physically characterized.
+This is consistent with the exact `readLines()` branch.
 
 Evidence:
-`docs/testing/results/2026-09-19_G4B_CATALOG_PARSE_FAIL.md`
+`docs/testing/results/2026-09-19_G4B2_RESPONSE_SHAPE_PASS.md`
 
-## P2P routing / process binding
+## P2P routing
 
-Exact P2P album flow:
-- `WifiP2pManagerSingleton` forms the P2P group,
-- `PictureFragment.onConnected(...)` records connection state,
-- `PictureFragment.downloadMediaConfig()` proceeds to the catalog request.
+The exact P2P album path:
+- forms the group through Cyan's Wi-Fi Direct helper;
+- records P2P connection state;
+- calls the catalog download path.
 
-No explicit `ConnectivityManager.bindProcessToNetwork(...)` call is present in this P2P album path.
+No explicit `ConnectivityManager.bindProcessToNetwork(...)` call appears in this P2P album path. Explicit process-network binding belongs to separate regular-Wi-Fi/AP helpers.
 
-Explicit process-network binding found in the APK belongs to separate regular-Wi-Fi/AP helper paths such as:
-- `WifiConnector`
-- `TempWifiHelper`
-- `DisconnectCallbackHolder`
+## G4B3 exact parity rule
 
-Therefore the G4B diagnostic continues to mirror the exact P2P path and does not add process binding.
+The final catalog-listing verification may:
+- repeat the proven P2P enter / exact-peer association / passive-IP / exit lifecycle;
+- make exactly one GET to `/files/media.config`;
+- split the bounded UTF-8 response using line semantics equivalent to Kotlin `readLines()`;
+- reject/flag blank entries;
+- report only:
+  - exact non-empty entry count,
+  - blank-entry count,
+  - extension/type counts from each line,
+  - whether entries are relative rather than absolute URLs,
+  - whether unsafe path traversal tokens are present;
+- never log any actual line, filename or path;
+- make zero media-file GET requests.
 
-## G4B2 implementation rule
+It must not:
+- switch to `vf_list.txt`;
+- use the `configFileType=2` JSON parser;
+- request a media file;
+- follow redirects;
+- retry;
+- write/delete files;
+- log credentials, raw body, filename/path values or response fingerprints;
+- use `02 03`, AP fallback, reset/restart/OTA.
 
-The next physical diagnostic keeps the exact same one-request boundary:
-- proven P2P enter/association/passive-IP/exit lifecycle,
-- phone-group-owner topology,
-- only a `192.168.49.0/24` runtime IP from `0x73 / 0x08`,
-- exactly one GET to `/files/media.config`,
-- no redirects,
-- no retry,
-- bounded in-memory body only.
-
-It may report only safe structural facts:
-- response byte count and SHA-256,
-- sanitized Content-Type / Content-Encoding,
-- strict UTF-8 validity,
-- BOM type,
-- line count,
-- top-level token class,
-- raw vs BOM-normalized JSON type,
-- root-key count,
-- `file_list` presence/type,
-- catalog item count,
-- presence of known compact keys `c,e,f,h,s,t,w`,
-- unknown-key count,
-- extension counts derived from `f`.
-
-It must not log the raw body or any filename/path value and must not request any media file.
+G5 remains blocked until G4B3 is physically reviewed.
