@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
 
-    <!-- Deliberately absent: BLUETOOTH_SCAN, location, INTERNET, Wi-Fi, storage, camera, microphone. -->
+    <!-- Deliberately absent: scan/location, Internet, Wi-Fi, storage, camera, and microphone permissions. -->
 
     <application
         android:allowBackup="false"
