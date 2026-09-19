@@ -290,3 +290,32 @@ Safety boundary:
 - contains no Wi-Fi/network/reset/OTA behavior.
 
 Next physical action: install v0.2, force-stop Cyan Glasses, leave AIMB-G1 paired, run the 30-second notification-only probe, and return the complete report before any control write is considered.
+
+
+## G2 physical result — notification path PASS
+
+Physical test date: 2026-09-19
+
+K G1 Response Probe v0.2 successfully:
+- connected to exactly one bonded AIMB-G1-family device over LE,
+- found the physically confirmed Cyan service and notify characteristic,
+- enabled local notifications,
+- wrote only the standard CCCD enable-notification value,
+- observed three spontaneous notifications in 30 seconds,
+- sent no proprietary characteristic write.
+
+Observed frames:
+- `BC 73 03 00 52 31 05 47 00`
+- `BC 73 08 00 01 07 01 01 00 00 00 01 00 01`
+- `BC 73 03 00 53 A1 05 46 00`
+
+All three frames validate against the known Cyan length + CRC-16/MODBUS envelope.
+
+Sanitized evidence:
+`docs/testing/results/2026-09-19_G2_NOTIFICATION_ONLY_PASS.md`
+
+G2 response-channel confirmation: **PASS**.
+
+Important: the semantic meaning of command `0x73` and its payloads is still pending. This result confirms passive response-channel traffic; it does not authorize a proprietary control write or media-mode command.
+
+Next action: decode `0x73` / initialization semantics before G3.

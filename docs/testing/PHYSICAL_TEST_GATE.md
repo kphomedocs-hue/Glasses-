@@ -70,3 +70,23 @@ Download one disposable photo and save it as `0001.jpg`.
 ## Gate 5
 
 Enable automatic new-media sync for JPG/MP4/OPUS with numbering, dedup, retry and integrity checks.
+
+
+## Gate 2 physical result — notification-only stage
+
+**PASS — 2026-09-19.**
+
+The standard CCCD subscription on the confirmed Cyan response characteristic succeeded. Three spontaneous framed notifications were received without any proprietary characteristic write.
+
+Sanitized evidence:
+`docs/testing/results/2026-09-19_G2_NOTIFICATION_ONLY_PASS.md`
+
+Observed response command: `0x73`.
+
+All three received packets validate using the documented little-endian length and CRC-16/MODBUS payload checksum.
+
+Before any proprietary control write:
+- decode the `0x73` payload semantics from Cyan/static evidence, or
+- perform a separately reviewed passive event-correlation test if static semantics remain unavailable.
+
+Gate 3 remains blocked until that review is complete.

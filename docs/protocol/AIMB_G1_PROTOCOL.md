@@ -152,3 +152,39 @@ A read-only LE GATT connection physically confirmed the expected Cyan-family pro
 Hardware revision `AM01SPG1_V1.4` was read from the standard Device Information Service. Firmware revision returned Android GATT status 133 during the sequential standard-field read.
 
 The next protocol question is the response-channel behavior. G2 begins with notification subscription only and sends no proprietary control payload.
+
+
+## Physical G2 response-channel confirmation — 2026-09-19
+
+The first notification-only G2 probe subscribed successfully to the physically confirmed Cyan notify characteristic
+`de5bf729-d711-4e47-af26-65e3012a5dc7` by writing only the standard CCCD enable-notification value.
+
+No proprietary characteristic write was performed.
+
+During a 30-second passive observation window, the AIMB-G1 emitted:
+
+```text
+BC 73 03 00 52 31 05 47 00
+BC 73 08 00 01 07 01 01 00 00 00 01 00 01
+BC 73 03 00 53 A1 05 46 00
+```
+
+These packets physically confirm that the existing envelope applies on the response channel as well:
+
+```text
+BC | command | len_le16 | crc_le16(payload) | payload
+```
+
+Validated payloads:
+- command `0x73`, payload `05 47 00`, CRC `0x3152`,
+- command `0x73`, payload `01 01 00 00 00 01 00 01`, CRC `0x0701`,
+- command `0x73`, payload `05 46 00`, CRC `0xA153`.
+
+Evidence level:
+- response characteristic subscription: physically confirmed,
+- spontaneous framed traffic: physically confirmed,
+- response command `0x73`: physically observed,
+- `0x73` payload semantics: pending,
+- required initialization/time handshake before media-mode control: pending.
+
+Do not infer payload meaning from byte patterns alone. Decode against Cyan evidence or passive correlation before authorizing the first proprietary control write.

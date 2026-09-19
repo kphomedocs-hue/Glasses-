@@ -112,3 +112,20 @@ v0.1.2 does not replace the frozen v0.1 baseline. It is the next diagnostic G1 c
 | Cyan control-write UUID `de5bf72a-...` | absent from v0.2 source | PASS |
 
 Issue #2 tracks the physical G2 test. No control-characteristic write is authorized until its notification-only result is reviewed.
+
+
+## G2 physical notification result
+
+| Item | Result |
+|---|---|
+| G2 notification-only physical result | PASS |
+| Sanitized report | `docs/testing/results/2026-09-19_G2_NOTIFICATION_ONLY_PASS.md` |
+| Cyan notify subscription | SUCCESS |
+| Standard CCCD write | SUCCESS |
+| Proprietary characteristic write | NONE |
+| Spontaneous notifications | 3 frames / 32 bytes |
+| Physically observed response command | `0x73` |
+| Envelope validation | length + CRC-16/MODBUS PASS for all 3 frames |
+| Payload semantics | pending |
+| Initialization/time requirement | not yet established |
+| G3 media-mode command | BLOCKED pending semantic review |

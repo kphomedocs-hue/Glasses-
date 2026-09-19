@@ -49,16 +49,17 @@ Evidence:
 
 Only after G1.
 
-Status: **READY FOR PHYSICAL NOTIFICATION-ONLY PROBE**.
+Status: **RESPONSE CHANNEL PASS; SEMANTIC REVIEW PENDING**.
 
 Verified candidate: K G1 Response Probe v0.2, GitHub Actions run `35413378362`.
+Physical result: notification subscription succeeded and three valid spontaneous `0x73` frames were observed with no proprietary write.
 
 Action:
 - enable only the physically confirmed `de5bf729-d711-4e47-af26-65e3012a5dc7` notification path,
 - observe spontaneous response traffic for a bounded interval,
 - determine whether any initialization/time handshake appears necessary.
 
-First G2 probe must not write the proprietary `de5bf72a-...` control characteristic. No media-mode command yet.
+First G2 probe must not write the proprietary `de5bf72a-...` control characteristic. No media-mode command yet. G3 remains blocked until the observed `0x73` response semantics and initialization requirement are reviewed.
 
 ## G3 — one allow-listed media-mode command
 
