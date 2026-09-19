@@ -131,7 +131,7 @@ Forbidden:
 
 G0 through G4A are physically complete.
 
-**Current next gate: G4A2 physical test — verified software build ready.**
+**G4A2 physical test: PASS. Current next gate: G4B read-only local media listing.**
 
 G4A physically confirmed:
 - exact BLE-reported P2P peer discovery,
@@ -140,18 +140,17 @@ G4A physically confirmed:
 - phone acting as group owner at `192.168.49.1`,
 - zero HTTP/socket/media operations.
 
-G4A2 software is now verified as **K G1 P2P IP Notify Probe v0.4.1**. It repeats the same bounded G4A association lifecycle and only adds sanitized `0x73` event-ID visibility plus IPv4 parsing for event `0x08` from raw frame bytes `[7..10]`.
+G4A2 physically passed using **K G1 P2P IP Notify Probe v0.4.1**. During the already proven P2P association lifecycle, the glasses emitted `0x73 / 0x08` and the IPv4 bytes at raw frame indices `[7..10]` resolved to `192.168.49.176`. The phone remained group owner at `192.168.49.1`.
 
-No new proprietary query is present. `0x41 / 02 03`, Internet permission, HTTP, sockets and media/file access remain absent.
+No new proprietary query was needed. `0x41 / 02 03`, Internet permission, HTTP, sockets and media/file access remained absent. Exactly the approved P2P-enter and transfer-exit writes were used.
 
-Immediate next action:
-1. install the verified v0.4.1 APK;
-2. run the G4A2 probe once;
-3. return the complete sanitized report;
-4. if event `0x08` does not resolve the glasses IP, stop and review before any separate `02 03` gate.
+G4A2 conclusion: **PASS**.
+
+Immediate next action: define the smallest G4B read-only local-media-listing probe. Before any physical HTTP request, confirm the exact Cyan/legacy read-only catalog URL and response shape. G4B must remain GET-only, local-network only, and must not download or mutate media.
 
 Evidence:
-`docs/testing/results/2026-09-19_G4A_P2P_ASSOCIATION_PASS.md`
+- `docs/testing/results/2026-09-19_G4A_P2P_ASSOCIATION_PASS.md`
+- `docs/testing/results/2026-09-19_G4A2_P2P_IP_NOTIFY_PASS.md`
 
 This file remains authoritative for resuming the project.
 

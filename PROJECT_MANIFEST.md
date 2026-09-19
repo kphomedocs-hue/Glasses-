@@ -77,10 +77,10 @@ G2C one-command initialization parity: PASS.
 G3 media-count query: PASS.  
 G3B bounded P2P transfer lifecycle: PASS.  
 G4A phone-side Wi-Fi Direct association: PASS.  
-G4A2 passive glasses P2P-IP notification capture: **VERIFIED BUILD READY — PHYSICAL TEST PENDING**.  
-G4B read-only media listing: **BLOCKED pending glasses-IP resolution**.
+G4A2 passive glasses P2P-IP notification capture: **PASS**.  
+G4B read-only media listing: **UNBLOCKED — design/verification next; not yet physically run**.
 
-The next authorized action is one physical run of the verified G4A2 v0.4.1 probe. No `0x41 / 02 03` query, HTTP/socket request, media listing/download, AP-mode command, reset or OTA action is authorized in G4A2.
+G4A2 resolved the glasses-side client IP passively from `0x73 / 0x08`; the separate `0x41 / 02 03` query was not needed. The next authorized work is to define and verify a narrow G4B GET-only local listing probe before any physical HTTP request.
 
 ## Discovery v0.1.2 diagnostic candidate
 
@@ -311,6 +311,11 @@ Issue #6 tracks the physical G3B lifecycle test. G4 local-network/media listing 
 | Internet / HTTP / sockets / media access | — | ABSENT |
 | Proprietary writes | — | enter once + exit once only |
 | `0x73` report scope | — | event IDs only; IPv4 only for event `0x08` |
-| Physical G4A2 result | — | PENDING |
+| Physical G4A2 result | `docs/testing/results/2026-09-19_G4A2_P2P_IP_NOTIFY_PASS.md` | PASS |
+| Observed async events | — | `0x0B`, `0x08`, `0x01` |
+| Phone group-owner IP | — | `192.168.49.1` |
+| Glasses client IP from `0x73 / 0x08` | — | `192.168.49.176` |
+| HTTP/socket/media operations | — | 0 |
+| `0x41 / 02 03` query | — | NOT USED |
 
-Issue #8 remains open for the physical G4A2 report. G4B remains blocked.
+Issue #8 is complete. G4B is unblocked for separate read-only design and verification.

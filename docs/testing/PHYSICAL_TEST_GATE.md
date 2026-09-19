@@ -235,25 +235,38 @@ The glasses-side client IP remains unresolved.
 
 ## G4A2 — next approved physical diagnostic
 
-**Verified build ready; physical result pending.**
+**PASS — 2026-09-19.**
 
 App: K G1 P2P IP Notify Probe v0.4.1  
 APK: `releases/v0.4.1/K_G1_P2P_IP_Notify_Probe_v0_4_1.apk`  
 APK SHA-256: `3c9104c34fbf06fb06631a09c67cac9eab3e2a626078abcc14401cf09a2cddf3`  
 Build run: `35429585616` — PASS
 
-Passive P2P-IP notification capture only.
+Passive P2P-IP notification capture passed using the same bounded G4A lifecycle.
 
-Use the same G4A lifecycle and expose only sanitized `0x73` event identifiers. If event `0x08` appears, parse its IPv4 bytes in memory.
+Observed:
+- event IDs `0x0B`, `0x08`, `0x01`,
+- `0x73 / 0x08` resolved the glasses client IP as `192.168.49.176`,
+- phone group owner remained `192.168.49.1`,
+- `0x41 / 02 03` was not used,
+- HTTP/socket/media operations remained 0,
+- transfer exit succeeded,
+- `removeGroup` reason 2 remained a non-blocking cleanup anomaly.
 
-No new proprietary command is allowed in G4A2.
+Evidence:
+`docs/testing/results/2026-09-19_G4A2_P2P_IP_NOTIFY_PASS.md`
 
-Still prohibited:
-- `0x41 / 02 03` IP query,
-- HTTP/socket requests,
-- `media.config`,
-- file listing/download,
-- file mutation,
-- AP mode,
-- reset/restart/OTA,
-- arbitrary command input.
+## G4B — next approved design gate
+
+G4B is now unblocked because the glasses-side local IP is physically known. No G4B HTTP request has been run yet.
+
+Before a physical G4B test, verify a candidate that:
+- uses only the proven P2P enter/association/exit lifecycle,
+- targets only the resolved local glasses endpoint,
+- uses GET-only local HTTP,
+- reads only the exact confirmed catalog/listing resource,
+- displays metadata/filenames only,
+- does not download media,
+- does not mutate/delete files,
+- exposes no arbitrary URL or command input,
+- retains sanitized reporting and credential redaction.

@@ -368,3 +368,37 @@ P2P exit:
 The exit command was accepted and produced a valid `0x41` response. Normal `0x73 / 0x01` media-inventory reporting resumed afterward.
 
 G3B: **PASS**.
+
+
+## Physical G4A2 P2P-IP confirmation — 2026-09-19
+
+The verified v0.4.1 probe repeated the physically proven G4A Wi-Fi Direct association lifecycle and added no new proprietary query.
+
+During the formed P2P group, a valid asynchronous `0x73` event with event ID `0x08` was observed. Using the verified G4A2 parser rule—event ID at raw frame index 6 and IPv4 octets at raw frame indices `[7..10]`—the glasses-side client address resolved to:
+
+```text
+192.168.49.176
+```
+
+The phone remained group owner at `192.168.49.1`.
+
+Observed event IDs during the run:
+- `0x0B`,
+- `0x08`,
+- `0x01`.
+
+Safety result:
+- proprietary writes: P2P enter once + transfer exit once only,
+- `0x41 / 02 03` P2P-IP query: not used,
+- HTTP/socket requests: 0,
+- media operations: 0,
+- credentials persisted/logged: no,
+- exact peer match: yes,
+- transfer exit: success.
+
+G4A2 conclusion: **PASS**.
+
+Evidence:
+`docs/testing/results/2026-09-19_G4A2_P2P_IP_NOTIFY_PASS.md`
+
+This physically satisfies the addressing prerequisite for G4B. It does not itself authorize media download or mutation; G4B remains a separate read-only local HTTP listing gate.

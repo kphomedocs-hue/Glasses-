@@ -214,7 +214,7 @@ Exit criterion:
 
 ## G4A2 — passive P2P-IP notification capture
 
-Status: **VERIFIED BUILD READY — physical test pending**.
+Status: **PASS — 2026-09-19**.
 
 Purpose:
 - resolve the glasses-side P2P client IP without adding any new proprietary command.
@@ -232,20 +232,34 @@ Allowed proprietary writes:
 
 No additional query is allowed in G4A2.
 
-If event `0x08` is not observed, stop and review before considering the exact read-style `0x41 / 02 03` P2P-IP query in a separate gate.
+Physical result:
+- valid `0x73 / 0x08` observed during the proven P2P association lifecycle,
+- phone group owner: `192.168.49.1`,
+- glasses client IP: `192.168.49.176`,
+- observed event IDs: `0x0B`, `0x08`, `0x01`,
+- HTTP/socket/media operations: 0,
+- `0x41 / 02 03` query: not used,
+- transfer exit: successful,
+- cleanup anomaly `removeGroup` reason 2 remained non-blocking.
+
+Evidence:
+`docs/testing/results/2026-09-19_G4A2_P2P_IP_NOTIFY_PASS.md`
 
 Verified candidate: K G1 P2P IP Notify Probe v0.4.1. APK SHA-256 `3c9104c34fbf06fb06631a09c67cac9eab3e2a626078abcc14401cf09a2cddf3`; build run `35429585616` PASS.
 
 ## G4B — read-only local media listing
 
-Status: **BLOCKED pending glasses-IP resolution**.
+Status: **UNBLOCKED — design/verification next; no physical HTTP request yet**.
 
-Only after the glasses-side local IP is physically resolved:
+Prerequisite now satisfied: the glasses-side local IP is physically resolved.
+
+Next design must:
+- reuse the confirmed P2P association path,
 - bind to the confirmed P2P network as required,
-- issue narrowly scoped local HTTP GET requests,
-- first retrieve `media.config` or the exact equivalent catalog,
+- use only narrowly scoped local HTTP GET requests,
+- first confirm the exact Cyan/legacy read-only catalog URL and response shape before physical execution,
 - display filenames/metadata only,
-- no media file download and no mutation.
+- perform no media file download and no mutation.
 
 ## G5 — one disposable media download
 

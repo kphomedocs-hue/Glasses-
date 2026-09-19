@@ -14,10 +14,10 @@ Evidence-gated status as of 2026-09-19:
 - **G3 — media-count query:** PASS
 - **G3B — P2P transfer lifecycle:** PASS
 - **G4A — phone-side Wi-Fi Direct association:** PASS
-- **G4A2 — passive glasses P2P-IP notification capture:** VERIFIED BUILD READY; physical test pending
-- **G4B — read-only media listing:** BLOCKED pending glasses-IP resolution
+- **G4A2 — passive glasses P2P-IP notification capture:** PASS
+- **G4B — read-only media listing:** UNBLOCKED; design/verification next
 
-G4A physically confirmed exact-peer Wi-Fi Direct association with the phone acting as group owner at `192.168.49.1`. No HTTP or media operation was performed. The next gate stays network-only and adds no new proprietary command.
+G4A2 physically confirmed the glasses-side Wi-Fi Direct client address as `192.168.49.176` from passive `0x73 / 0x08`, while the phone remained group owner at `192.168.49.1`. No `02 03` query, HTTP, socket or media operation was performed. G4B is now unblocked for a separately verified read-only local listing probe.
 
 Authoritative checkpoint:
 - `LATEST_CHECKPOINT.md`
@@ -267,7 +267,7 @@ Because the phone is group owner, the glasses client IP is still needed. The nex
 
 ## G4A2 verified candidate
 
-K G1 P2P IP Notify Probe v0.4.1 is verified and ready for one physical G4A2 run.
+K G1 P2P IP Notify Probe v0.4.1 was verified and physically passed G4A2.
 
 - APK: `releases/v0.4.1/K_G1_P2P_IP_Notify_Probe_v0_4_1.apk`
 - APK SHA-256: `3c9104c34fbf06fb06631a09c67cac9eab3e2a626078abcc14401cf09a2cddf3`
@@ -277,4 +277,8 @@ K G1 P2P IP Notify Probe v0.4.1 is verified and ready for one physical G4A2 run.
 
 The build keeps the exact G4A enter/association/exit flow and adds only sanitized `0x73` event IDs plus event-`0x08` IPv4 parsing. It does not contain the `02 03` query, Internet permission, HTTP, sockets or media access.
 
-Next action: run it once on the glasses and return the full sanitized report. If `0x08` is not observed, stop before any new query or HTTP work.
+Physical G4A2 result: `0x73 / 0x08` was observed and resolved the glasses client IP as `192.168.49.176`. The blocked `02 03` query was not needed, and zero HTTP/socket/media operations occurred.
+
+Evidence: `docs/testing/results/2026-09-19_G4A2_P2P_IP_NOTIFY_PASS.md`.
+
+Next gate: G4B read-only local media listing. No G4B implementation or physical HTTP request has been performed yet.
