@@ -78,9 +78,10 @@ G3 media-count query: PASS.
 G3B bounded P2P transfer lifecycle: PASS.  
 G4A phone-side Wi-Fi Direct association: PASS.  
 G4A2 passive glasses P2P-IP notification capture: **PASS**.  
-G4B read-only media listing: **VERIFIED BUILD READY — PHYSICAL TEST PENDING**.
+G4B read-only media listing: **PHYSICAL HTTP/BODY READ REACHED — JSON PARSER UNRESOLVED**.  
+G4B2 response-shape characterization: **VERIFIED BUILD READY — PHYSICAL TEST PENDING**.
 
-G4A2 resolved the glasses-side client IP passively from `0x73 / 0x08`; the separate `0x41 / 02 03` query was not needed. Exact Cyan tracing now fixes the G4B catalog endpoint for physical `configFileType=1` as `GET /files/media.config`. The verified v0.4.2 probe is ready for one bounded physical catalog read; no media-file GET is yet authorized.
+v0.4.2 reached the exact `/files/media.config` read path with one GET and read the bounded body, then Android `JSONObject` parsing failed with `JSONException`. Exact Cyan bytecode confirms its current branch uses whole-file `readText` followed by Moshi `PtPFileModel.fromJson`. v0.4.3 keeps the same endpoint and request count and adds only safe structural response characterization. G5 remains blocked.
 
 ## Discovery v0.1.2 diagnostic candidate
 
@@ -342,8 +343,29 @@ Issue #8 is complete. G4B is unblocked for separate read-only design and verific
 | P2P-IP query `02 03` | — | ABSENT |
 | Media-file GET/download/mutation | — | ABSENT |
 | Filename/path value logging | — | ABSENT |
-| Physical G4B result | — | PENDING |
+| Physical G4B result | `docs/testing/results/2026-09-19_G4B_CATALOG_PARSE_FAIL.md` | HTTP/body read reached; `JSONException` at diagnostic parser |
+| Media-file GET requests | — | 0 |
+| Transfer exit | — | SUCCESS |
 
 Exact static evidence: `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`.
 
-Issue #9 tracks the one-run physical G4B catalog test. G5 remains blocked until that sanitized report is reviewed.
+## G4B2 verified candidate — v0.4.3
+
+| Item | Repository path | SHA-256 / status |
+|---|---|---|
+| G4B2 source | `releases/v0.4.3/K_G1_Catalog_Shape_Probe_v0_4_3_source_v1.zip` | `0adfe9045ce72cd947fea3947214269a9f376de4568242a8493e865b23a1b681` |
+| G4B2 APK | `releases/v0.4.3/K_G1_Catalog_Shape_Probe_v0_4_3.apk` | `033e08f6e2880f1a929602610ee37edaf7cdbce3be0bae75af9724333f868ee7` |
+| G4B2 package | `releases/v0.4.3/K_G1_Catalog_Shape_Probe_v0_4_3_package.zip` | `a7eab8ede3dc6f61610d4071b0de9675cda594d5cfd806526ad5989c2e0e8d41` |
+| Canonical build commit | — | `a4aa1a91f4cdda4e01f04c99b3c5019586f4d7ae` |
+| Archive commit | — | `3ec480e5f857d23fc5eeafd12109688aa6c7e76e` |
+| GitHub Actions build/verification | run `35432388833` | PASS |
+| G4B2 source-commit hygiene | run `35432388807` | PASS |
+| G4B2 safety audit / compile / lint / signature | — | PASS |
+| Package ID | — | `com.parkarsite.g1catalogshapeprobe` |
+| HTTP scope | — | same one GET to `/files/media.config` |
+| Raw body / filename/path value logging | — | ABSENT |
+| Media-file GET/download/mutation | — | ABSENT |
+| Response output | — | encoding/BOM/JSON type/protocol key presence/counts only |
+| Physical G4B2 result | — | PENDING |
+
+Issue #9 remains open for the G4B2 physical report. G5 remains blocked.

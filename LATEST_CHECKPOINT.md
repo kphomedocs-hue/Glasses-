@@ -131,7 +131,7 @@ Forbidden:
 
 G0 through G4A are physically complete.
 
-**G4A2 physical test: PASS. Current next gate: G4B physical read-only catalog test — verified software build ready.**
+**G4B v0.4.2 physical read reached the catalog but JSON parsing failed. Current next gate: G4B2 response-shape physical test — verified build ready.**
 
 G4A physically confirmed:
 - exact BLE-reported P2P peer discovery,
@@ -146,32 +146,36 @@ No new proprietary query was needed. `0x41 / 02 03`, Internet permission, HTTP, 
 
 G4A2 conclusion: **PASS**.
 
-Exact Cyan static trace now confirms that the physical `configFileType=1` branch uses:
+Physical G4B v0.4.2 confirmed the local read path further:
+- exact P2P association succeeded,
+- passive glasses IP resolved again as `192.168.49.176`,
+- exactly one GET was attempted to `/files/media.config`,
+- the request passed the app's HTTP-status and bounded-body-read checks,
+- Android `JSONObject` parsing then failed with `JSONException`,
+- zero media-file GET requests occurred,
+- transfer exit succeeded.
 
-```text
-GET http://<glassDeviceWifiIP>/files/media.config
-```
+Exact Cyan bytecode review after the failure confirms that its current `configFileType=1` branch reads the entire downloaded file with Kotlin `readText` and passes that string directly to Moshi's `PtPFileModel` adapter. Therefore the endpoint remains correct; the unresolved item is the physical body's encoding/top-level representation or parser compatibility.
 
-The response is JSON with root key `file_list`; Cyan's compact item model exposes keys `c,e,f,h,s,t,w`, with `f` used as the later remote media path. The exact P2P album path does not add explicit process-network binding.
+Evidence:
+- `docs/testing/results/2026-09-19_G4B_CATALOG_PARSE_FAIL.md`
+- `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
 
-Verified G4B candidate: **K G1 Media Catalog Probe v0.4.2**.
-- APK: `releases/v0.4.2/K_G1_Media_Catalog_Probe_v0_4_2.apk`
-- APK SHA-256: `ffd7233a7006909d7090e39291afb214e0dc72cc771d9f54896d0612c1c5d6f2`
-- Source ZIP SHA-256: `b81f9c9c22c74460e06799ca817d7a4bf2453c9534207f308d256ad86196130f`
-- Package ZIP SHA-256: `8dc6f962ff4deabc9a1dc675b006fa82ee59c3c02b9e322067659c65bbe9c0c5`
-- Canonical source/build commit: `d9cd2e28fdd1a5f62b25e21fd7d6eb81c5840508`
-- Verified build run: `35431413193`
-- Archive commit: `2fbe008aaec3192cb846d91d7839c6fee51366c6`
-- G4B safety audit / compile / lint / APK signature: PASS
-- package ID: `com.parkarsite.g1mediacatalogprobe`
-- exactly one GET site: `/files/media.config`
-- redirects disabled; response capped at 65,536 bytes
-- no media-file GET/download/mutation
-- no actual filename/path value logging
-- `0x41 / 02 03`: absent
+Verified next candidate: **K G1 Catalog Shape Probe v0.4.3**.
+- APK: `releases/v0.4.3/K_G1_Catalog_Shape_Probe_v0_4_3.apk`
+- APK SHA-256: `033e08f6e2880f1a929602610ee37edaf7cdbce3be0bae75af9724333f868ee7`
+- Source ZIP SHA-256: `0adfe9045ce72cd947fea3947214269a9f376de4568242a8493e865b23a1b681`
+- Package ZIP SHA-256: `a7eab8ede3dc6f61610d4071b0de9675cda594d5cfd806526ad5989c2e0e8d41`
+- Canonical build commit: `a4aa1a91f4cdda4e01f04c99b3c5019586f4d7ae`
+- Build run: `35432388833` — PASS
+- Archive commit: `3ec480e5f857d23fc5eeafd12109688aa6c7e76e`
+- G4B2 safety audit / compile / lint / APK signature: PASS
+- package ID: `com.parkarsite.g1catalogshapeprobe`
+- exactly one GET to the same `/files/media.config` path
+- no redirect, retry, media-file GET, body logging, filename/path value logging, or mutation
+- structural output only: encoding/BOM, JSON type, protocol-key presence/counts and extension counts
 
-Immediate next action: run the verified v0.4.2 APK once and return the complete sanitized report. Do not proceed to a media-file download even if the catalog succeeds.
-
+Immediate next action: run v0.4.3 exactly once and return the complete sanitized report. G5 remains blocked.
 Evidence:
 - `docs/testing/results/2026-09-19_G4A_P2P_ASSOCIATION_PASS.md`
 - `docs/testing/results/2026-09-19_G4A2_P2P_IP_NOTIFY_PASS.md`

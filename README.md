@@ -15,14 +15,15 @@ Evidence-gated status as of 2026-09-19:
 - **G3B — P2P transfer lifecycle:** PASS
 - **G4A — phone-side Wi-Fi Direct association:** PASS
 - **G4A2 — passive glasses P2P-IP notification capture:** PASS
-- **G4B — read-only media listing:** VERIFIED BUILD READY; physical test pending
+- **G4B — read-only media listing:** HTTP/body read reached; JSON parser unresolved
+- **G4B2 — catalog response-shape characterization:** VERIFIED BUILD READY; physical test pending
 
-G4A2 physically confirmed the glasses-side Wi-Fi Direct client address as `192.168.49.176` from passive `0x73 / 0x08`, while the phone remained group owner at `192.168.49.1`. G4B static tracing then confirmed the exact `configFileType=1` Cyan catalog endpoint as `/files/media.config`, and the verified v0.4.2 candidate is ready for one physical read-only catalog test.
+G4A2 physically confirmed the glasses-side Wi-Fi Direct client address as `192.168.49.176`. G4B v0.4.2 then reached the exact `/files/media.config` local read path with one GET, but Android `JSONObject` parsing failed with `JSONException`. Exact Cyan bytecode confirms it reads the whole file as text and hands that string to Moshi, so G4B2 now characterizes the physical response safely without widening network scope.
 
 Authoritative checkpoint:
 - `LATEST_CHECKPOINT.md`
 - `docs/testing/GATE_ROADMAP.md`
-- tracked work: GitHub Issue #8
+- tracked work: GitHub Issue #9
 
 ## Confirmed physical AIMB-G1 profile
 
@@ -281,23 +282,32 @@ Physical G4A2 result: `0x73 / 0x08` was observed and resolved the glasses client
 
 Evidence: `docs/testing/results/2026-09-19_G4A2_P2P_IP_NOTIFY_PASS.md`.
 
-Next gate: G4B read-only local media listing.
+Next gate: G4B2 catalog response-shape characterization.
 
-Exact Cyan evidence:
-- `configFileType=1` → `GET http://<glassDeviceWifiIP>/files/media.config`
-- JSON root key: `file_list`
-- item keys: `c,e,f,h,s,t,w`
-- `f` is used by Cyan as the later remote media path
-- P2P album path shows no explicit process-network binding
+Physical v0.4.2 result:
+- exact local GET path: `/files/media.config`,
+- P2P association and passive IP resolution: successful,
+- one GET only,
+- bounded body read completed,
+- Android `JSONObject` parsing failed with `JSONException`,
+- zero media-file GETs,
+- clean transfer exit.
 
-Verified candidate: **K G1 Media Catalog Probe v0.4.2**
-- APK: `releases/v0.4.2/K_G1_Media_Catalog_Probe_v0_4_2.apk`
-- APK SHA-256: `ffd7233a7006909d7090e39291afb214e0dc72cc771d9f54896d0612c1c5d6f2`
-- source/build commit: `d9cd2e28fdd1a5f62b25e21fd7d6eb81c5840508`
-- build run: `35431413193` — PASS
-- archive commit: `2fbe008aaec3192cb846d91d7839c6fee51366c6`
-- package ID: `com.parkarsite.g1mediacatalogprobe`
-- exactly one local GET site; redirects disabled; 65,536-byte response cap
-- no media-file GET/download/mutation or filename/path value logging
+Evidence: `docs/testing/results/2026-09-19_G4B_CATALOG_PARSE_FAIL.md`.
 
-No physical G4B HTTP request has been performed yet.
+Exact Cyan bytecode confirms the current branch uses Kotlin `readText` followed by Moshi `PtPFileModel.fromJson`; the endpoint is unchanged.
+
+Verified candidate: **K G1 Catalog Shape Probe v0.4.3**
+- APK: `releases/v0.4.3/K_G1_Catalog_Shape_Probe_v0_4_3.apk`
+- APK SHA-256: `033e08f6e2880f1a929602610ee37edaf7cdbce3be0bae75af9724333f868ee7`
+- source ZIP SHA-256: `0adfe9045ce72cd947fea3947214269a9f376de4568242a8493e865b23a1b681`
+- package ZIP SHA-256: `a7eab8ede3dc6f61610d4071b0de9675cda594d5cfd806526ad5989c2e0e8d41`
+- canonical build commit: `a4aa1a91f4cdda4e01f04c99b3c5019586f4d7ae`
+- build run: `35432388833` — PASS
+- archive commit: `3ec480e5f857d23fc5eeafd12109688aa6c7e76e`
+- package ID: `com.parkarsite.g1catalogshapeprobe`
+- same one GET to `/files/media.config`
+- no redirect/retry/raw-body logging/filename-path logging/media-file GET/mutation
+- response classification only: encoding/BOM, JSON type, known protocol keys and counts
+
+G5 remains blocked until the G4B2 physical report is reviewed.

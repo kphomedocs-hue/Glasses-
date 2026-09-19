@@ -249,50 +249,53 @@ Verified candidate: K G1 P2P IP Notify Probe v0.4.1. APK SHA-256 `3c9104c34fbf06
 
 ## G4B — read-only local media listing
 
+Status: **PHYSICAL LOCAL HTTP/BODY READ REACHED; JSON PARSER UNRESOLVED**.
+
+Physical v0.4.2 result:
+- proven P2P lifecycle and phone-group-owner topology repeated successfully,
+- passive glasses IP resolved again,
+- exactly one GET attempted to `/files/media.config`,
+- request progressed past the HTTP-status check,
+- bounded response body was read,
+- diagnostic Android `JSONObject` parse threw `JSONException`,
+- media-file GET requests: 0,
+- transfer exit: success.
+
+Because v0.4.2 reports the exception only after the status and bounded-read stages, the local network/read path is physically established. The exact physical response representation is not yet sufficiently characterized.
+
+Evidence:
+`docs/testing/results/2026-09-19_G4B_CATALOG_PARSE_FAIL.md`
+
+Exact Cyan bytecode correction:
+- current `configFileType=1` path still selects `/files/media.config`,
+- `AlbumDepository.readPhotoFile` reads the whole downloaded file using Kotlin `readText`,
+- that string is passed to Moshi's `PtPFileModel` adapter,
+- therefore v0.4.2's `JSONObject` incompatibility does not justify changing the endpoint.
+
+## G4B2 — safe response-shape characterization
+
 Status: **VERIFIED BUILD READY — physical test pending**.
 
-Prerequisites satisfied:
-- P2P association path physically proven,
-- phone group-owner topology physically proven,
-- passive glasses IP physically resolved from `0x73 / 0x08`,
-- exact Cyan `configFileType=1` catalog branch statically traced.
-
-Exact Cyan endpoint for this physical state:
-
-```text
-GET http://<glassDeviceWifiIP>/files/media.config
-```
-
-Expected response:
-- JSON object,
-- root key `file_list`,
-- compact item keys `c,e,f,h,s,t,w`,
-- `f` is used by Cyan only for later media-file retrieval, which remains outside G4B.
-
-Verified candidate: **K G1 Media Catalog Probe v0.4.2**.
-- APK SHA-256: `ffd7233a7006909d7090e39291afb214e0dc72cc771d9f54896d0612c1c5d6f2`
-- source/build commit: `d9cd2e28fdd1a5f62b25e21fd7d6eb81c5840508`
-- build run: `35431413193` — PASS
-- archive commit: `2fbe008aaec3192cb846d91d7839c6fee51366c6`
-- safety audit / compile / lint / signature: PASS
-- source-commit repository hygiene: PASS
+Candidate: **K G1 Catalog Shape Probe v0.4.3**.
+- APK SHA-256: `033e08f6e2880f1a929602610ee37edaf7cdbce3be0bae75af9724333f868ee7`
+- canonical build commit: `a4aa1a91f4cdda4e01f04c99b3c5019586f4d7ae`
+- build run: `35432388833` — PASS
+- archive commit: `3ec480e5f857d23fc5eeafd12109688aa6c7e76e`
+- safety audit / compile / lint / APK signature: PASS
 
 Physical boundary:
-- same proven P2P enter/association/passive-IP/exit lifecycle,
-- require phone as group owner,
-- runtime-derived glasses IP must remain in confirmed `192.168.49.0/24`,
-- exactly one GET site to `/files/media.config`,
-- redirects disabled,
-- 4-second connect/read timeouts,
-- catalog capped at 65,536 bytes and 256 items,
-- parse in memory only,
-- report structural counts/keys/extensions only,
-- do not log filename/path values,
-- no retry,
-- no media-file GET/download/mutation.
+- identical proven P2P enter/association/passive-IP/exit lifecycle,
+- same one GET to `/files/media.config`,
+- no redirect and no retry,
+- 65,536-byte cap,
+- no media-file GET,
+- no raw-body logging,
+- no filename/path value logging,
+- no file write/delete/mutation,
+- structural output only: body size/hash, Content-Type/Encoding, strict UTF-8 status, BOM, line count, token classes, raw/normalized JSON type, root-key count, `file_list` type/count, known protocol-key presence, unknown-key count and extension counts.
 
 Exit criterion:
-- one physical run either validates a bounded `file_list` catalog or fails in a documented way, then exits transfer mode. Do not advance to G5 until the report is reviewed.
+- physically characterize the response enough to explain the v0.4.2 parse failure and determine the exact safe parser rule. Do not advance to G5 until the report is reviewed.
 
 Evidence:
 `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`

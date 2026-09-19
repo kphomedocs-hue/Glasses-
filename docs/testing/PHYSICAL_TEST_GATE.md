@@ -256,48 +256,65 @@ Observed:
 Evidence:
 `docs/testing/results/2026-09-19_G4A2_P2P_IP_NOTIFY_PASS.md`
 
-## G4B — next approved physical diagnostic
+## G4B — physical result
+
+**NOT PASSED — parser compatibility unresolved.**
+
+v0.4.2 physically:
+- repeated the proven P2P association,
+- resolved the glasses IP passively,
+- made exactly one GET to `/files/media.config`,
+- read the bounded response body,
+- failed at Android `JSONObject` parsing with `JSONException`,
+- made zero media-file GET requests,
+- exited transfer mode successfully.
+
+Evidence:
+`docs/testing/results/2026-09-19_G4B_CATALOG_PARSE_FAIL.md`
+
+The endpoint remains fixed by exact Cyan evidence. Do not change to another URL and do not proceed to G5.
+
+## G4B2 — next approved physical diagnostic
 
 **Verified build ready; physical result pending.**
 
-App: K G1 Media Catalog Probe v0.4.2  
-APK: `releases/v0.4.2/K_G1_Media_Catalog_Probe_v0_4_2.apk`  
-APK SHA-256: `ffd7233a7006909d7090e39291afb214e0dc72cc771d9f54896d0612c1c5d6f2`  
-Build run: `35431413193` — PASS
+App: K G1 Catalog Shape Probe v0.4.3  
+APK: `releases/v0.4.3/K_G1_Catalog_Shape_Probe_v0_4_3.apk`  
+APK SHA-256: `033e08f6e2880f1a929602610ee37edaf7cdbce3be0bae75af9724333f868ee7`  
+Build run: `35432388833` — PASS
 
-Exact Cyan trace confirms the physical `configFileType=1` branch reads:
+Allowed:
+- same P2P enter once,
+- exact BLE-reported peer only,
+- passive `0x73 / 0x08` IP only,
+- same `/files/media.config` GET once,
+- no redirects or retry,
+- bounded body in memory only,
+- safe structural characterization:
+  - body byte count and SHA-256,
+  - sanitized Content-Type / Content-Encoding,
+  - UTF-8 validity and BOM,
+  - line count,
+  - first/last non-whitespace token class,
+  - raw/BOM-normalized JSON type,
+  - root-key count,
+  - `file_list` presence/type/count,
+  - known compact key presence,
+  - unknown-key count,
+  - extension counts.
 
-```text
-GET http://<glassDeviceWifiIP>/files/media.config
-```
+Still prohibited:
+- raw response text logging,
+- actual filename/path values,
+- media-file GET/download,
+- file-system write/delete,
+- `02 03` query,
+- AP fallback,
+- arbitrary URL input,
+- reset/restart/OTA.
 
-The physical G4B run may:
-- enter P2P transfer mode once,
-- associate only with the exact BLE-reported peer,
-- resolve the glasses IP only from passive `0x73 / 0x08`,
-- require the already observed phone-group-owner topology,
-- make exactly one GET to `/files/media.config`,
-- parse the bounded JSON catalog in memory,
-- report only item count, safe key names and extension counts,
-- exit transfer mode once,
-- clean up.
-
-Safety limits:
-- exact local endpoint only; no arbitrary URL input,
-- confirmed `192.168.49.0/24` P2P subnet guard,
-- redirects disabled,
-- 4-second connect/read timeouts,
-- 65,536-byte response cap,
-- maximum 256 catalog items,
-- no retry,
-- no actual filename/path values in the report,
-- no media-file GET,
-- no file-system write/delete,
-- no `0x41 / 02 03` query,
-- no AP-mode fallback,
-- no reset/restart/OTA.
-
-Run exactly once and return the complete sanitized report. **Do not proceed to G5 even if G4B succeeds.**
+Run exactly once and return the complete sanitized report. **Stop before G5.**
 
 Static evidence:
 `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
+
