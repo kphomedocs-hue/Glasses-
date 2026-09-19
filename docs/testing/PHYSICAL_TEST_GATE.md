@@ -99,7 +99,7 @@ Evidence:
 
 The single `0x40` write completed successfully and a valid `0x40` response frame was received.
 
-## G3 — current approved next diagnostic
+## G3 — completed diagnostic
 
 Verified candidate: **K G1 Media Count Probe v0.3**.
 
@@ -131,3 +131,41 @@ Do not send `02 01 04 01` or `02 01 04 02` until G3 media-count query behavior i
 - G7: hardening.
 
 No destructive maintenance command is part of the roadmap.
+
+
+## G3 result
+
+**PASS — 2026-09-19.**
+
+Evidence:
+`docs/testing/results/2026-09-19_G3_MEDIA_COUNT_PASS.md`
+
+The media-count response identifies:
+- 1 image,
+- 0 videos,
+- 1 recording,
+- configFileType 1,
+- onlySupportApImport false.
+
+Exact Cyan logic selects P2P.
+
+## G3B — current approved next diagnostic
+
+A verified G3B build may perform exactly two proprietary writes:
+
+1. enter transfer mode:
+   `0x41 / 02 01 04 01`
+2. exit transfer mode:
+   `0x41 / 02 01 09`
+
+The exit payload is directly recovered from the exact Cyan `fileDownloadComplete()` path.
+
+G3B must not:
+- invoke Android Wi-Fi/P2P/AP APIs,
+- open sockets or HTTP,
+- list/download/delete/modify media,
+- send AP-mode payload `02 01 04 02`,
+- use reset/restart/OTA,
+- expose arbitrary command input.
+
+If the enter command fails, the diagnostic must not attempt any unrelated fallback command.

@@ -215,3 +215,22 @@ Issue #4 tracks the physical G2C test. G3 media-mode control remains blocked unt
 | Reset/OTA/arbitrary command input | absent | PASS |
 
 Issue #5 tracks the physical G3 media-count query. G3B media mode remains blocked until its raw response is reviewed.
+
+
+## G3 physical result
+
+| Item | Result |
+|---|---|
+| Physical G3 result | PASS |
+| Sanitized report | `docs/testing/results/2026-09-19_G3_MEDIA_COUNT_PASS.md` |
+| Query | `0x41 / 02 04` |
+| Query response | valid `0x41` dataType-4 frame |
+| imageCount | 1 |
+| videoCount | 0 |
+| recordCount | 1 |
+| configFileType | 1 |
+| onlySupportApImport | false |
+| Exact Cyan selected transport | P2P |
+| Exact P2P enter payload | `02 01 04 01` |
+| Exact exit-transfer payload | `02 01 09` |
+| Next gate | G3B P2P enter/exit lifecycle only |

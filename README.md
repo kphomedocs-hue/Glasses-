@@ -190,3 +190,26 @@ BC 41 02 00 01 13 02 04
 It captures raw response frames only. It contains no P2P/AP media-mode payload, Wi-Fi/network code, transfer code, retry loop, file mutation, reset/OTA behavior or arbitrary command input.
 
 G3B media mode remains blocked until the physical G3 response is reviewed.
+
+
+## G3 physical result
+
+G3 passed on 2026-09-19.
+
+The exact Cyan media-count query returned:
+- 1 image,
+- 0 videos,
+- 1 recording,
+- configFileType 1,
+- onlySupportApImport false.
+
+Evidence:
+`docs/testing/results/2026-09-19_G3_MEDIA_COUNT_PASS.md`
+
+Cyan's own routing logic therefore selects P2P for this device state.
+
+The exact app also confirms a bounded rollback command:
+- enter P2P transfer mode: `02 01 04 01`
+- exit transfer mode: `02 01 09`
+
+The next G3B diagnostic will test only that BLE lifecycle. It will not use phone-side Wi-Fi Direct or perform media transfer.

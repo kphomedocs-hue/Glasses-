@@ -292,3 +292,46 @@ purpose: media inventory/count query
 ```
 
 Use that as G3 before any `02 01 04 01` P2P or `02 01 04 02` AP media-mode command.
+
+
+## Physical G3 media-count confirmation — 2026-09-19
+
+Query:
+
+```text
+BC 41 02 00 01 13 02 04
+```
+
+Physical response:
+
+```text
+BC 41 0B 00 2D 19 02 04 01 00 00 00 01 00 01 00 00
+```
+
+Exact current Cyan `GlassModelControlResponse.acceptData()` parses this as:
+- dataType = 4,
+- imageCount = 1,
+- videoCount = 0,
+- recordCount = 1,
+- configFileType = 1,
+- onlySupportApImport = false.
+
+The final raw response byte is not consumed by the exact dataType-4 parser and remains semantically unspecified.
+
+### Exact transport selection
+
+Cyan `PictureFragment.requestPermissionLaunch$lambda$4` selects AP if:
+- configFileType == 2, or
+- HarmonyOS NEXT, or
+- onlySupportApImport is true.
+
+Otherwise it selects P2P.
+
+The physical device state therefore selects P2P.
+
+Exact fill-array payloads extracted from the current Cyan APK:
+- `importAlbum()`: `02 01 04 01`,
+- `importAlbumAp()`: `02 01 04 02`,
+- `fileDownloadComplete()`: `02 01 09`.
+
+The last command provides an exact-app rollback path for a bounded G3B transfer-mode lifecycle probe.

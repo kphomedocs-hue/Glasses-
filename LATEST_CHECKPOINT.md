@@ -468,3 +468,32 @@ Physical-test boundary:
 The APK records raw framed responses and does not guess media-count field offsets.
 
 Next action: run v0.3 once and return the complete G3 report. Do not proceed to media mode afterward.
+
+
+## G3 physical result — PASS
+
+Physical test date: 2026-09-19
+
+K G1 Media Count Probe v0.3 sent exactly one `0x41 / 02 04` media inventory query and received a valid dataType-4 response.
+
+Decoded from the exact Cyan parser:
+- images: 1
+- videos: 0
+- recordings: 1
+- configFileType: 1
+- onlySupportApImport: false
+- one final response byte is not consumed by Cyan's dataType-4 parser branch.
+
+Sanitized evidence:
+`docs/testing/results/2026-09-19_G3_MEDIA_COUNT_PASS.md`
+
+Exact Cyan routing logic therefore selects **P2P**, not AP, on this Android device.
+
+Exact Cyan payloads independently verified:
+- enter P2P transfer mode: `02 01 04 01`
+- enter AP transfer mode: `02 01 04 02`
+- exit transfer mode after download completion: `02 01 09`
+
+G3 conclusion: **PASS**.
+
+Next gate: **G3B transfer-mode lifecycle only** — enter P2P once, observe, exit once, observe, disconnect. No phone-side Wi-Fi/P2P or HTTP code yet.

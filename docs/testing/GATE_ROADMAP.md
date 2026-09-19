@@ -126,7 +126,7 @@ Exit criterion:
 
 ## G3 — one allow-listed media-inventory query
 
-Status: **VERIFIED BUILD READY FOR PHYSICAL TEST**.
+Status: **PASS — 2026-09-19**.
 
 Candidate: K G1 Media Count Probe v0.3. GitHub Actions run `35420261264`: PASS.
 
@@ -160,9 +160,30 @@ Prohibited:
 Exit criterion:
 - the single media-count query response is physically captured and parsed.
 
-## G3B — one allow-listed media-mode command
+## G3B — bounded P2P transfer-mode lifecycle
 
-Status: **BLOCKED pending G3**.
+Status: **NEXT**.
+
+Exact Cyan physical prerequisites now support the P2P route:
+- configFileType = 1,
+- onlySupportApImport = false.
+
+Approved lifecycle:
+1. connect + subscribe,
+2. send `0x41` payload `02 01 04 01` exactly once,
+3. observe BLE responses,
+4. send `0x41` payload `02 01 09` exactly once as the exact Cyan exit-transfer command,
+5. observe BLE responses,
+6. disconnect.
+
+G3B deliberately does **not** use Android Wi-Fi/P2P APIs or HTTP.
+
+Exit criterion:
+- enter-transfer and exit-transfer behavior are both physically captured and frame-validated.
+
+## G4 — local P2P network + read-only media listing
+
+Status: **BLOCKED pending G3B**.
 
 Only after G2B review:
 - send exactly one reviewed, named, precomputed command,
