@@ -1,0 +1,13 @@
+# K G1 Disposable Photo Probe v0.5.7 — Verified Repository Build
+- Canonical build commit: 594dbd906c34778c0276d5d4385431f0a94d2d6b
+- Canonical build run: 35462487457
+- Diagnostic-hardening safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Package ID: com.parkarsite.g1singlephotoprobe57
+- Protocol/network boundary unchanged from v0.5.6
+- Stage timing markers enabled
+- Temporary media file deleted after validation
+- Phase-B single-run lock enabled
+- Foreground integrity guard enabled
