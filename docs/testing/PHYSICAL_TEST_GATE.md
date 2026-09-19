@@ -101,7 +101,12 @@ The single `0x40` write completed successfully and a valid `0x40` response frame
 
 ## G3 — current approved next diagnostic
 
-The next proprietary write should be the narrower exact-Cyan media inventory/count query:
+Verified candidate: **K G1 Media Count Probe v0.3**.
+
+- APK SHA-256: `31191dc90dac56e9aced7db5a6f6b4c65b969f10ec6d673199ee94c6a2f204e9`
+- build/verification run: `35420261264` — PASS
+
+The next proprietary write is the narrower exact-Cyan media inventory/count query:
 
 ```text
 command 0x41

@@ -171,3 +171,22 @@ Before entering media mode, use the exact Cyan media-count query:
 ```
 
 This validates the glasses-control path while avoiding an intentional Wi-Fi/P2P/AP transition. P2P/AP media-mode commands remain blocked until that query is reviewed.
+
+
+## G3 verified build
+
+K G1 Media Count Probe v0.3 is ready for the physical one-query test.
+
+- APK: `releases/v0.3/K_G1_Media_Count_Probe_v0_3.apk`
+- APK SHA-256: `31191dc90dac56e9aced7db5a6f6b4c65b969f10ec6d673199ee94c6a2f204e9`
+- build/verification run: `35420261264` — PASS
+
+The build sends exactly one validated frame:
+
+```text
+BC 41 02 00 01 13 02 04
+```
+
+It captures raw response frames only. It contains no P2P/AP media-mode payload, Wi-Fi/network code, transfer code, retry loop, file mutation, reset/OTA behavior or arbitrary command input.
+
+G3B media mode remains blocked until the physical G3 response is reviewed.

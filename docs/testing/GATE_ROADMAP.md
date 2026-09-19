@@ -126,7 +126,9 @@ Exit criterion:
 
 ## G3 — one allow-listed media-inventory query
 
-Status: **NEXT**.
+Status: **VERIFIED BUILD READY FOR PHYSICAL TEST**.
+
+Candidate: K G1 Media Count Probe v0.3. GitHub Actions run `35420261264`: PASS.
 
 Use the exact Cyan `glassesControl` media-count request:
 

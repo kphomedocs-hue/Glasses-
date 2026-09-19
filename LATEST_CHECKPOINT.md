@@ -432,3 +432,39 @@ Next gate has been narrowed for safety:
 This query is present in the exact Cyan app and does not intentionally activate Wi-Fi/P2P/AP or perform media transfer.
 
 P2P/AP media-mode payloads remain blocked until G3 is reviewed.
+
+
+## G3 verified build ready — K G1 Media Count Probe v0.3
+
+Verified repository artifacts:
+- APK: `releases/v0.3/K_G1_Media_Count_Probe_v0_3.apk`
+- APK SHA-256: `31191dc90dac56e9aced7db5a6f6b4c65b969f10ec6d673199ee94c6a2f204e9`
+- Source ZIP: `releases/v0.3/K_G1_Media_Count_Probe_v0_3_source_v1.zip`
+- Source SHA-256: `bb5f5e523bcd456a2c88462741c64dd88f0498c956f749bafb35e4832b7dab03`
+- Package ZIP: `releases/v0.3/K_G1_Media_Count_Probe_v0_3_package.zip`
+- Package SHA-256: `0c016518b7fa7efd3cc4b071c1632c8ac48a6e4f0cbe01f5e082297bfb60fb03`
+- Canonical build commit: `d51d92c68b3d94585dc49f03675813d30c5e8dfc`
+- Archive commit: `648ba6944931c212d7ad176573753210314a90fc`
+- Build/verification run: `35420261264`
+- G3 single-query scope verification: PASS
+- G3 safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+
+Physical-test boundary:
+- confirmed notification subscription,
+- exactly one proprietary characteristic-write attempt,
+- the only implemented payload is command `0x41` with payload `02 04`,
+- full query frame: `BC 41 02 00 01 13 02 04`,
+- no retry,
+- no P2P/AP media-mode payload,
+- no Wi-Fi/P2P/AP,
+- no HTTP/media transfer,
+- no file mutation,
+- no reset/restart/OTA/firmware behavior,
+- no arbitrary command input.
+
+The APK records raw framed responses and does not guess media-count field offsets.
+
+Next action: run v0.3 once and return the complete G3 report. Do not proceed to media mode afterward.

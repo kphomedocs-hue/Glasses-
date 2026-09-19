@@ -199,3 +199,19 @@ Issue #4 tracks the physical G2C test. G3 media-mode control remains blocked unt
 | Additional proprietary writes | 0 |
 | Media-mode command | NONE |
 | Next gate | G3 `0x41` payload `02 04` media-count query |
+
+
+## G3 verified candidate — v0.3
+
+| Item | Repository path | SHA-256 / status |
+|---|---|---|
+| G3 source | `releases/v0.3/K_G1_Media_Count_Probe_v0_3_source_v1.zip` | `bb5f5e523bcd456a2c88462741c64dd88f0498c956f749bafb35e4832b7dab03` |
+| G3 APK | `releases/v0.3/K_G1_Media_Count_Probe_v0_3.apk` | `31191dc90dac56e9aced7db5a6f6b4c65b969f10ec6d673199ee94c6a2f204e9` |
+| G3 package | `releases/v0.3/K_G1_Media_Count_Probe_v0_3_package.zip` | `0c016518b7fa7efd3cc4b071c1632c8ac48a6e4f0cbe01f5e082297bfb60fb03` |
+| Build/verification | GitHub Actions run `35420261264` | PASS |
+| Proprietary write scope | exactly one `0x41 / 02 04` query, no retry | PASS |
+| P2P/AP media-mode payload | absent | PASS |
+| Wi-Fi/network/transfer | absent | PASS |
+| Reset/OTA/arbitrary command input | absent | PASS |
+
+Issue #5 tracks the physical G3 media-count query. G3B media mode remains blocked until its raw response is reviewed.
