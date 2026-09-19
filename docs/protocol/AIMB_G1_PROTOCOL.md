@@ -188,3 +188,20 @@ Evidence level:
 - required initialization/time handshake before media-mode control: pending.
 
 Do not infer payload meaning from byte patterns alone. Decode against Cyan evidence or passive correlation before authorizing the first proprietary control write.
+
+
+## G2B interpretation policy
+
+The three observed `0x73` packets are valid physical protocol evidence, but their semantics must not be inferred from isolated byte values.
+
+The next interpretation process is:
+
+1. trace Cyan's receive path from BLE notification callback through frame validation/dispatch to the code that consumes command `0x73`;
+2. record any explicit enum, state, subcommand or UI mapping supported by Cyan evidence;
+3. independently correlate passive AIMB-G1 physical events with timestamped notifications;
+4. require repeated correlations for a physical-event interpretation;
+5. resolve disagreements in favor of the stronger/direct evidence and record uncertainty explicitly.
+
+A future passive Event Correlator may write the standard CCCD only. It must not contain the proprietary Cyan write UUID or any characteristic-write API.
+
+See `docs/testing/G2B_PASSIVE_CORRELATION_PLAN.md`.

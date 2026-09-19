@@ -69,8 +69,13 @@ Only interoperability findings and provenance are stored in this public reposito
 
 ## Current gate
 
-G1 physical GATT confirmation is PASS. The next authorized diagnostic is G2 response-channel confirmation: notification subscription on the physically confirmed Cyan notify characteristic only. No proprietary control-characteristic write or media-mode command is authorized yet.
+G0: PASS.  
+G1 physical GATT confirmation: PASS.  
+G2 notification/response-channel confirmation: PASS.  
+G2B passive response-semantic correlation: **NEXT**.  
+G3 first control command: **BLOCKED**.
 
+The current authorized work is static Cyan parser tracing and, if needed, a passive event-correlation probe. No proprietary control-characteristic write or media-mode command is authorized.
 
 ## Discovery v0.1.2 diagnostic candidate
 
@@ -129,3 +134,19 @@ Issue #2 tracks the physical G2 test. No control-characteristic write is authori
 | Payload semantics | pending |
 | Initialization/time requirement | not yet established |
 | G3 media-mode command | BLOCKED pending semantic review |
+
+
+## G2B passive-correlation plan
+
+| Item | Status |
+|---|---|
+| Strategy | static Cyan parser trace + passive physical event correlation |
+| Plan | `docs/testing/G2B_PASSIVE_CORRELATION_PLAN.md` |
+| Tracking | GitHub Issue #3 |
+| Notify path | physically confirmed `de5bf729-...` |
+| Proprietary characteristic writes | PROHIBITED |
+| Media-mode command | PROHIBITED |
+| Wi-Fi / HTTP transfer | PROHIBITED |
+| G3 | BLOCKED pending G2B review |
+
+No G2B executable has been started at this checkpoint; this entry records the approved method before implementation begins.

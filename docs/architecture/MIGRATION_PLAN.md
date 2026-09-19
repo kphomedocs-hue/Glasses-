@@ -10,10 +10,22 @@ Complete:
 - artifact hashes/provenance recorded.
 
 ## Phase B — protocol confirmation
-- run read-only physical discovery,
-- confirm service/characteristic profile,
-- define response parser,
-- decide whether initialization/time sync is required.
+
+Current status:
+- read-only physical discovery: **PASS**,
+- physical Cyan service/characteristic profile: **PASS**,
+- notification response channel: **PASS**,
+- response semantics / initialization requirement: **IN PROGRESS — G2B**.
+
+Current method:
+- trace the Cyan receive/parser/dispatcher path,
+- correlate passive physical events with timestamped `0x73` notifications,
+- do not add production control writes until the semantic gate is satisfied.
+
+Only after G2B:
+- define the response parser with evidence-backed semantics,
+- decide whether initialization/time synchronization is required,
+- approve one explicit G3 control command.
 
 ## Phase C — extract pure modules from v0.4
 

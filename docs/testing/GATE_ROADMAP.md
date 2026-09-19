@@ -4,7 +4,9 @@ Progress is evidence-gated, not version-number driven.
 
 ## G0 — software/recovery readiness
 
-Required:
+Status: **PASS**.
+
+Required evidence:
 - frozen Discovery source hash verified,
 - read-only safety audit passes,
 - clean Android compile/lint,
@@ -12,91 +14,113 @@ Required:
 - legacy v0.4 pure-Java regression tests pass,
 - project rebuilds from a clean repository checkout.
 
-Status: **PASS**.
-
 Evidence:
 - Cold Recovery Gate run `35387241734`: PASS.
-- Hardened Cold Recovery run `35387536088` with expanded-source mirror verification: PASS.
+- Hardened Cold Recovery run `35387536088`: PASS.
 - Core Module Regression run `35387408775`: PASS.
-- Expanded Core Module Regression run `35387812463` (diagnostics + sync-ledger included): PASS.
-- Frozen reference branch: `frozen/discovery-v0.1-readonly`.
+- Expanded Core Module Regression run `35387812463`: PASS.
+- frozen reference branch: `frozen/discovery-v0.1-readonly`.
 
 ## G1 — physical GATT confirmation
 
-Action:
-- scan,
-- connect,
-- enumerate services/characteristics/properties,
-- read selected standard Device Information fields,
-- disconnect.
+Status: **PASS — 2026-09-19**.
 
-Prohibited:
-- proprietary writes,
-- notification descriptor writes,
-- Wi-Fi/media commands.
-
-Exit criterion:
-- actual physical profile reviewed.
-
-Status: **PASS** (2026-09-19).
+Confirmed:
+- physical AIMB-G1 LE GATT connection,
+- complete service/characteristic/property enumeration,
+- Cyan service `de5bf728-...`,
+- Cyan notify `de5bf729-...`,
+- Cyan write `de5bf72a-...`,
+- standard Device Information hardware revision `AM01SPG1_V1.4`.
 
 Evidence:
-- sanitized physical report: `docs/testing/results/2026-09-19_G1_PHYSICAL_DISCOVERY_PASS.md`,
-- expected Cyan service/notify/write UUID family physically present,
-- read-only LE GATT connection and service enumeration completed.
+`docs/testing/results/2026-09-19_G1_PHYSICAL_DISCOVERY_PASS.md`
 
 ## G2 — response-channel confirmation
 
-Only after G1.
+Status: **PASS — 2026-09-19**.
 
-Status: **RESPONSE CHANNEL PASS; SEMANTIC REVIEW PENDING**.
+Confirmed:
+- standard CCCD notification subscription succeeds on `de5bf729-...`,
+- no proprietary write is required merely to receive spontaneous traffic,
+- three valid spontaneous `0x73` frames were received,
+- frames validate against the known little-endian length + CRC-16/MODBUS envelope.
 
-Verified candidate: K G1 Response Probe v0.2, GitHub Actions run `35413378362`.
-Physical result: notification subscription succeeded and three valid spontaneous `0x73` frames were observed with no proprietary write.
+Evidence:
+`docs/testing/results/2026-09-19_G2_NOTIFICATION_ONLY_PASS.md`
 
-Action:
-- enable only the physically confirmed `de5bf729-d711-4e47-af26-65e3012a5dc7` notification path,
-- observe spontaneous response traffic for a bounded interval,
-- determine whether any initialization/time handshake appears necessary.
+## G2B — response-semantic correlation
 
-First G2 probe must not write the proprietary `de5bf72a-...` control characteristic. No media-mode command yet. G3 remains blocked until the observed `0x73` response semantics and initialization requirement are reviewed.
+Status: **NEXT / PASSIVE ONLY**.
 
-## G3 — one allow-listed media-mode command
+Purpose:
+- decode the meaning of observed `0x73` traffic,
+- decide whether initialization/time behavior is required before control,
+- avoid guessing and avoid active protocol writes.
 
-Only after G2.
+Method:
+1. targeted Cyan parser tracing;
+2. passive event correlation using timestamped physical actions and notification frames;
+3. repeated observations before assigning a semantic label.
 
-Action:
-- send exactly one reviewed, named media-mode command,
+Allowed:
+- connect to exactly one bonded AIMB-G1-family device,
+- discover the confirmed service,
+- subscribe to the confirmed notify characteristic,
+- standard CCCD enable-notification write,
+- timestamp incoming frames,
+- user-generated event markers,
+- CRC/length validation,
+- sanitized reporting.
+
+Prohibited:
+- proprietary characteristic write,
+- `de5bf72a-...` control write,
+- initialization/time command,
+- media-mode command,
+- Wi-Fi/P2P/AP,
+- HTTP/media transfer,
+- pairing/unpairing/reset,
+- OTA/firmware operation,
+- generic raw BLE command console.
+
+Plan:
+`docs/testing/G2B_PASSIVE_CORRELATION_PLAN.md`
+
+Exit criterion:
+- `0x73` semantics and initialization requirements are sufficiently supported by static and/or repeated passive physical evidence to design one named G3 command, or the unresolved uncertainty is explicitly documented and G3 remains blocked.
+
+## G3 — one allow-listed control command
+
+Status: **BLOCKED pending G2B**.
+
+Only after G2B review:
+- send exactly one reviewed, named, precomputed command,
 - capture raw/parsed response,
 - stop.
 
-No automatic download.
+No generic command console and no automatic download.
 
 ## G4 — local network + read-only media listing
 
-Action:
-- establish only the glasses local P2P/AP network,
-- discover the actual local endpoint,
-- read `media.config` / equivalent catalog,
-- display filenames/metadata only.
+Only after G3.
 
-No delete/modify operations.
+- establish only the glasses' local P2P/AP path,
+- discover the actual local endpoint,
+- read `media.config` or equivalent catalog,
+- display filenames/metadata only,
+- no delete/modify operation.
 
 ## G5 — one disposable media download
 
-Action:
-- download one newly captured disposable photo,
+- download one newly captured disposable test file,
 - stream to disk,
-- verify length/integrity,
-- preserve timestamp,
-- save as the first daily numbered file.
-
-Exit criterion:
-- byte-complete file opens correctly and dedup/retry behavior is understood.
+- verify declared length/integrity,
+- preserve capture timestamp,
+- save using the numbering policy.
 
 ## G6 — automatic sync
 
-Action:
 - sync new JPG/MP4/OPUS,
 - one daily chronological counter,
 - persistent ledger,
@@ -112,7 +136,7 @@ Action:
 - day rollover,
 - storage-full handling,
 - duplicate catalog entries,
-- repeated captures with same timestamp,
+- repeated captures with the same timestamp,
 - permission revocation/regrant,
 - battery/background behavior.
 

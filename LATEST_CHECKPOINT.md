@@ -129,15 +129,22 @@ Forbidden:
 
 ## Next action
 
-G1 is complete. The next gate is **G2 — response-channel confirmation**.
+G1 and the notification-only stage of G2 are complete.
 
-First G2 step:
-1. Connect to the uniquely identified bonded AIMB-G1-family device over LE GATT.
-2. Confirm the physically verified Cyan service/notify characteristic.
-3. Enable notifications only on `de5bf729-d711-4e47-af26-65e3012a5dc7`.
-4. Observe for spontaneous response traffic for a bounded interval.
-5. Disconnect.
-6. Do not write to the proprietary control characteristic and do not send media-mode commands.
+**Current gate: G2B — passive response-semantic correlation.**
+
+Before any proprietary control write:
+1. trace Cyan's notification callback → frame parser → command dispatcher → state/UI consumer, concentrating on command `0x73`;
+2. if static semantics are incomplete, build a passive Event Correlator that subscribes to the already confirmed notify characteristic and sends no proprietary command;
+3. timestamp user-marked physical glasses actions and received frames;
+4. repeat safe actions to measure reproducible associations rather than guessing from one packet;
+5. review static and physical evidence together;
+6. only then define a single explicit G3 allow-listed command.
+
+Plan: `docs/testing/G2B_PASSIVE_CORRELATION_PLAN.md`  
+Tracking issue: #3.
+
+G3 remains blocked.
 
 This file remains authoritative for resuming the project.
 
@@ -319,3 +326,26 @@ G2 response-channel confirmation: **PASS**.
 Important: the semantic meaning of command `0x73` and its payloads is still pending. This result confirms passive response-channel traffic; it does not authorize a proprietary control write or media-mode command.
 
 Next action: decode `0x73` / initialization semantics before G3.
+
+
+## G2B strategy checkpoint — passive first
+
+Decision recorded 2026-09-19:
+
+The next step is **not** a control-write experiment.
+
+The preferred evidence path is:
+- targeted Cyan parser tracing,
+- plus a passive event-correlation diagnostic if needed.
+
+Planned correlator:
+- uses the already confirmed bonded-device LE connection path,
+- subscribes only to `de5bf729-d711-4e47-af26-65e3012a5dc7`,
+- writes only the standard CCCD required for notification subscription,
+- timestamps valid incoming frames,
+- provides explicit user event markers,
+- computes length/CRC validation and groups repeated payloads,
+- produces a sanitized report,
+- contains no proprietary characteristic-write API and no Cyan control-write UUID.
+
+Do not advance to G3 until G2B evidence is reviewed.

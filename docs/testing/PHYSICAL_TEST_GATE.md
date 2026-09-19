@@ -1,92 +1,80 @@
 # Physical AIMB-G1 Test Gate
 
-## Gate 1 — completed
+This document defines what may be done to the physical glasses at each current gate.
 
-Use **K G1 Discovery v0.1** only.
+## G1 — physical GATT confirmation
 
-Allowed:
-- Android Bluetooth/Nearby Devices permission
-- scan for AIMB-G1
-- BLE connect
-- GATT service discovery
-- enumerate characteristics and properties
-- read selected standard Device Information fields when explicitly readable
-- save/share a diagnostic report
-- disconnect
+Status: **PASS — 2026-09-19**.
 
-Not allowed in Gate 1:
-- proprietary characteristic writes
-- descriptor writes for notifications
-- media-mode command
-- Wi-Fi/P2P/AP activation
-- HTTP requests
-- reset/restart/OTA/firmware actions
+Evidence:
+`docs/testing/results/2026-09-19_G1_PHYSICAL_DISCOVERY_PASS.md`
 
-## Expected physical evidence
+Physically confirmed:
+- service `de5bf728-d711-4e47-af26-65e3012a5dc7`,
+- notify characteristic `de5bf729-d711-4e47-af26-65e3012a5dc7`,
+- write characteristic `de5bf72a-d711-4e47-af26-65e3012a5dc7`,
+- hardware revision `AM01SPG1_V1.4`.
 
-Confirm whether AIMB-G1 exposes:
+## G2 — notification response-channel confirmation
 
-```text
-de5bf728-d711-4e47-af26-65e3012a5dc7  service
-de5bf729-d711-4e47-af26-65e3012a5dc7  expected notify
-de5bf72a-d711-4e47-af26-65e3012a5dc7  expected write
-```
+Status: **PASS — 2026-09-19**.
 
-The report must also retain all discovered services/characteristics/properties so an unexpected profile can be analysed safely.
-
-## Gate 1 result
-
-**PASS — 2026-09-19.**
-
-The physical AIMB-G1 exposed the expected Cyan service, notify and write characteristic UUIDs. Sanitized evidence is stored at `docs/testing/results/2026-09-19_G1_PHYSICAL_DISCOVERY_PASS.md`.
-
-## Gate 2 — current approved diagnostic
-
-First G2 probe:
-- connect to the uniquely identified bonded AIMB-G1-family device,
-- subscribe only to the physically confirmed `de5bf729-d711-4e47-af26-65e3012a5dc7` notification path,
-- observe for spontaneous notifications for a bounded interval,
-- record raw response bytes locally for review,
-- disconnect.
-
-Not allowed in the first G2 probe:
-- characteristic writes to `de5bf72a-...` or any other proprietary characteristic,
-- initialization/time command unless separately reviewed after the notification-only result,
-- media-mode command,
-- Wi-Fi/P2P/AP,
-- HTTP/media transfer,
-- reset/restart/OTA/firmware operations.
-
-No automatic media download at Gate 2.
-
-## Gate 3
-
-Read-only media listing over the glasses' local network.
-
-## Gate 4
-
-Download one disposable photo and save it as `0001.jpg`.
-
-## Gate 5
-
-Enable automatic new-media sync for JPG/MP4/OPUS with numbering, dedup, retry and integrity checks.
-
-
-## Gate 2 physical result — notification-only stage
-
-**PASS — 2026-09-19.**
-
-The standard CCCD subscription on the confirmed Cyan response characteristic succeeded. Three spontaneous framed notifications were received without any proprietary characteristic write.
-
-Sanitized evidence:
+Evidence:
 `docs/testing/results/2026-09-19_G2_NOTIFICATION_ONLY_PASS.md`
 
-Observed response command: `0x73`.
+The probe:
+- connected to exactly one bonded AIMB-G1-family device,
+- enabled notifications on the confirmed notify characteristic,
+- wrote only the standard CCCD enable-notification value,
+- sent no proprietary characteristic command,
+- observed three valid spontaneous `0x73` frames.
 
-All three received packets validate using the documented little-endian length and CRC-16/MODBUS payload checksum.
+## G2B — current approved physical diagnostic
 
-Before any proprietary control write:
-- decode the `0x73` payload semantics from Cyan/static evidence, or
-- perform a separately reviewed passive event-correlation test if static semantics remain unavailable.
+Current method: **passive event correlation only**.
 
-Gate 3 remains blocked until that review is complete.
+A future G2B Event Correlator may:
+- connect to exactly one bonded AIMB-G1-family device,
+- subscribe only to `de5bf729-d711-4e47-af26-65e3012a5dc7`,
+- perform the standard CCCD enable-notification write,
+- timestamp every valid notification,
+- validate envelope length and CRC,
+- allow the user to insert timestamped event markers,
+- group repeated frames/payloads,
+- export a sanitized report.
+
+It must not:
+- call a BLE characteristic-write API,
+- include or use `de5bf72a-d711-4e47-af26-65e3012a5dc7`,
+- send a Cyan control frame,
+- send initialization/time data,
+- enter media mode,
+- activate Wi-Fi/P2P/AP,
+- use HTTP/media transfer,
+- pair/unpair/reset the device,
+- perform OTA/firmware operations,
+- provide a generic raw BLE console.
+
+### Event-correlation discipline
+
+Use safe, observable physical actions only. Mark the event in the app at the time it happens and repeat the same action several times.
+
+Do not assign semantic meaning from one coincidental packet. A proposed mapping must show repeatability and should be checked against Cyan static evidence.
+
+See:
+`docs/testing/G2B_PASSIVE_CORRELATION_PLAN.md`
+
+## G3 — first control write
+
+Status: **BLOCKED**.
+
+No proprietary characteristic write is authorized until G2B evidence has been reviewed and one explicit allow-listed command has been documented.
+
+## Later gates
+
+- G4: local network + read-only media listing.
+- G5: one disposable media download.
+- G6: automatic media sync.
+- G7: hardening.
+
+No destructive maintenance command is part of the roadmap.

@@ -2,148 +2,139 @@
 
 Authoritative repository for the AIMB-G1 glasses media-capture integration project.
 
-## Current physical-test baseline
+## Current project state
 
-**Frozen reference:** K G1 Discovery v0.1  
-**Current G1 retry candidate:** K G1 Discovery v0.1.1
+Evidence-gated status as of 2026-09-19:
 
-Purpose: read-only BLE/GATT confirmation on the user's physical AIMB-G1 before any proprietary control command is sent.
+- **G0 — software/recovery readiness:** PASS
+- **G1 — physical GATT confirmation:** PASS
+- **G2 — response-channel confirmation:** PASS
+- **G2B — response-semantic correlation:** NEXT / NO CONTROL WRITE
+- **G3 — first allow-listed control command:** BLOCKED pending G2B evidence
 
-Safety boundary:
-- BLE scan/connect/GATT discovery only
-- enumerates all services/characteristics/properties
-- reads only selected standard readable device-information fields
-- no proprietary BLE writes
-- no notification subscription
-- no Wi-Fi/media-transfer command
-- no Internet permission
-- no reset/restart/OTA/firmware operations
+The current strategy is deliberately passive: correlate physical glasses events with spontaneous notifications while separately tracing the Cyan parser. Do not guess payload meanings and do not send a proprietary BLE control write until G2B is reviewed.
 
-## Verified build
+Authoritative checkpoint:
+- `LATEST_CHECKPOINT.md`
+- `docs/testing/G2B_PASSIVE_CORRELATION_PLAN.md`
+- tracked work: GitHub Issue #3
 
-Frozen v0.1 repository APK:
+## Confirmed physical AIMB-G1 profile
 
-`releases/v0.1/K_G1_Discovery_v0_1.apk`
+G1 physically confirmed the Cyan-family BLE profile:
 
-Current v0.1.1 G1 retry APK:
+```text
+Service  de5bf728-d711-4e47-af26-65e3012a5dc7
+Notify   de5bf729-d711-4e47-af26-65e3012a5dc7
+Write    de5bf72a-d711-4e47-af26-65e3012a5dc7
+```
 
-`releases/v0.1.1/K_G1_Discovery_v0_1_1.apk`
+Sanitized evidence:
+`docs/testing/results/2026-09-19_G1_PHYSICAL_DISCOVERY_PASS.md`
 
-SHA-256:
+The physical hardware revision read successfully as `AM01SPG1_V1.4`.
 
-`c32758f898b91041bc7e13a272096d2629836e4465542ee00c1fbd9764e7479a`
+## Confirmed response channel
 
-Frozen source SHA-256:
+K G1 Response Probe v0.2 enabled only the standard CCCD notification subscription on the confirmed Cyan notify characteristic. No proprietary characteristic write was implemented or sent.
 
-`84fb1b957290abdf2464a97b35b81f2d1e8e976ce9c067ecaf571c8c19f22c68`
+During the 30-second passive observation, the glasses emitted three valid framed notifications:
 
-The CI gate passes source verification, read-only safety audit, Android compilation, Android Lint and APK signature verification.
+```text
+BC 73 03 00 52 31 05 47 00
+BC 73 08 00 01 07 01 01 00 00 00 01 00 01
+BC 73 03 00 53 A1 05 46 00
+```
+
+All three validate against the recovered Cyan envelope:
+`BC | command | len_le16 | crc16_modbus(payload) | payload`.
+
+Sanitized evidence:
+`docs/testing/results/2026-09-19_G2_NOTIFICATION_ONLY_PASS.md`
+
+The semantic meaning of command `0x73` and its payloads is **not yet established**.
+
+## Current verified diagnostic builds
+
+### Frozen reference — K G1 Discovery v0.1
+
+- APK: `releases/v0.1/K_G1_Discovery_v0_1.apk`
+- APK SHA-256: `c32758f898b91041bc7e13a272096d2629836e4465542ee00c1fbd9764e7479a`
+- frozen source SHA-256: `84fb1b957290abdf2464a97b35b81f2d1e8e976ce9c067ecaf571c8c19f22c68`
+- frozen branch: `frozen/discovery-v0.1-readonly`
+
+### G1 diagnostic — K G1 Discovery v0.1.2
+
+- APK: `releases/v0.1.2/K_G1_Discovery_v0_1_2.apk`
+- APK SHA-256: `dc08b915581468f2d0d33fb317ca06b05e301b233cb0ced234edf7f0bc282297`
+- build/verification run: `35395830630`
+
+### G2 response probe — K G1 Response Probe v0.2
+
+- APK: `releases/v0.2/K_G1_Response_Probe_v0_2.apk`
+- APK SHA-256: `86b9738ac909577b173264be233242c17c9715be5bae183fffa6c9d497174ff2`
+- source SHA-256: `86fa0f9f72171cb90c4edbc04d1a2db2b2c40c19c976978ea08a63c399700d39`
+- package SHA-256: `b4d2fe59d87866dd993454ff58b53d18bf605891c74d2c9ddce1e9f40af18924`
+- build/verification run: `35413378362`
+
+## Next method — G2B passive correlation
+
+Before G3, use two evidence streams in parallel:
+
+1. **Targeted Cyan parser tracing**
+   - follow notification callback → frame parser → command dispatch → state/UI consumer,
+   - specifically resolve command `0x73`,
+   - identify initialization/time semantics from Cyan evidence if present,
+   - do not infer semantics from byte values alone.
+
+2. **Passive physical event correlation**
+   - subscribe to the already confirmed notify path,
+   - send no proprietary characteristic command,
+   - timestamp received frames,
+   - timestamp user-marked physical actions,
+   - repeat each safe action several times,
+   - compare repeated event/frame associations,
+   - retain only sanitized evidence.
+
+The planned correlator must not include:
+- proprietary characteristic writes,
+- media-mode control commands,
+- Wi-Fi/P2P/AP,
+- HTTP/media transfer,
+- pairing/unpairing/reset,
+- OTA/firmware functions,
+- generic BLE write console.
+
+See `docs/testing/G2B_PASSIVE_CORRELATION_PLAN.md`.
 
 ## Architecture
 
 See:
-
 - `docs/architecture/ARCHITECTURE.md`
 - `docs/architecture/MIGRATION_PLAN.md`
 - `PROJECT_MANIFEST.md`
 
 Repository roles:
-
 - `apps/` — product/app lineages
 - `modules/` — target modular production boundaries
 - `source/v0.1/` — frozen Discovery source
-- `releases/v0.1/` — installable Discovery release and QA
+- `source/v0.1.2/` — successful G1 diagnostic source
+- `source/v0.2/` — successful G2 notification-only source
+- `releases/` — verified installable diagnostics and provenance
 - `archive/site-capture/v0.4/` — preserved legacy media-sync engine/reference
 - `docs/protocol/` — protocol evidence independent of execution code
-- `docs/testing/` — physical gate rules
+- `docs/testing/` — physical gate rules and sanitized results
 - `docs/research/` — provenance of third-party research inputs
 
 ## Legacy K Site Capture work
 
-The full useful v0.4 source tree is preserved under:
-
+The useful v0.4 source tree is preserved under:
 `archive/site-capture/v0.4/`
 
-It retains:
-- fake/real transport abstraction
-- remote media model
-- chronological import coordinator
-- daily numbering
-- streaming file writes
-- declared-size verification
-- crash recovery
-- persistent dedup ledger
-- OPUS support
-- core self-tests
-- historical preflight/tools
+It retains the transport abstraction, remote-media model, chronological import coordinator, daily numbering, streaming file writes, size verification, crash recovery, dedup ledger, OPUS support, core self-tests and historical tools.
 
-Earlier v0.1–v0.3 lineage hashes are retained in `PROJECT_MANIFEST.md` and `archive/site-capture/README.md`.
-
-## Protocol evidence
-
-See `docs/protocol/AIMB_G1_PROTOCOL.md`.
-
-Expected physical BLE family:
-
-```text
-de5bf728-d711-4e47-af26-65e3012a5dc7
-de5bf729-d711-4e47-af26-65e3012a5dc7
-de5bf72a-d711-4e47-af26-65e3012a5dc7
-```
-
-## Next physical gate
-
-1. Force-stop Cyan Glasses.
-2. Turn on AIMB-G1.
-3. Install K G1 Discovery v0.1.
-4. Grant Nearby Devices/Bluetooth permission.
-5. Scan and inspect AIMB-G1.
-6. Share the generated report.
-7. Review the actual GATT profile before enabling any control write.
-
-See `docs/testing/PHYSICAL_TEST_GATE.md`.
+Do not merge the legacy transport into the active diagnostic line. Reuse only proven responsibilities after the protocol gates are satisfied.
 
 ## Public-repository rule
 
-The third-party Cyan APK, credentials, personal data and future device-specific reports containing sensitive identifiers are not committed here. Their safe provenance/findings are documented instead.
-
-
-## G1 retry note — v0.1.1
-
-Two read-only v0.1 scans completed without finding the glasses. Android identifies the paired device using the `AIMB-G1_<suffix>` naming form rather than the exact `AIMB-G1` string expected by v0.1.
-
-v0.1.1 changes only target-name recognition:
-- accepts exact `AIMB-G1`,
-- accepts `AIMB-G1_*`,
-- preserves the same read-only BLE/GATT safety boundary.
-
-Verified v0.1.1 artifacts:
-- APK SHA-256: `bdb73a04c2650fefbcd433a13674a32c18dd94a07a2c8ef16a90a8980d3f0358`
-- source ZIP SHA-256: `0e2949500cfdc6d04f161164b2324cf811ec852f540a15b59684a3da9ec10d05`
-- package ZIP SHA-256: `d7ae14fa0b42c063e7d857ecb119cff25b60a8192249b2835f9e2e5f140031b0`
-- latest verification run: `35393800836`
-
-Do not unpair or reset AIMB-G1 for this retry.
-
-
-## G1 diagnostic candidate — v0.1.2
-
-After the v0.1 exact-name scan misses, v0.1.2 adds diagnostic resilience while preserving the read-only boundary.
-
-It adds:
-- a 30-second explicit low-latency BLE observation window,
-- AIMB-G1 / AIMB-G1_* family matching,
-- known Cyan service UUID observation,
-- aggregate BLE observation counts without logging unrelated nearby-device names,
-- read-only inspection of bonded-device metadata,
-- a read-only LE GATT fallback only when exactly one bonded AIMB-G1-family device is available,
-- a bounded GATT timeout.
-
-It still contains no proprietary BLE writes, descriptor writes, notification subscriptions, pairing/unpairing operations, Wi-Fi/P2P/AP, HTTP/media transfer, reset/restart/OTA or firmware commands.
-
-Verified release:
-- APK: `releases/v0.1.2/K_G1_Discovery_v0_1_2.apk`
-- APK SHA-256: `dc08b915581468f2d0d33fb317ca06b05e301b233cb0ced234edf7f0bc282297`
-- source ZIP SHA-256: `de89fd0dd15d48c51e1f080158b426f455699187a0f42f28686cf957850f3271`
-- package ZIP SHA-256: `d7ddedc782ced77fda0f8b0a18237101a4124c3762a359888b20de017329a667`
-- build/verification run: `35395830630`
+The third-party Cyan APK, Bluetooth addresses, device-specific name suffixes, credentials, personal data, client/site media and unsanitized diagnostic captures are not committed. Store only reviewed interoperability findings and sanitized physical evidence.
