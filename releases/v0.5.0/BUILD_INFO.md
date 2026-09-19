@@ -1,0 +1,24 @@
+# K G1 Disposable Photo Probe v0.5.0 — Verified Repository Build
+- Canonical build commit: bb4b6b8a426445b948fd8015faa05ef74d849f6b
+- Canonical build run: 35434903708
+- G5 safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Package ID: com.parkarsite.g1singlephotoprobe
+- Selection: two-phase baseline + exactly one new safe JPG delta
+- Proprietary writes: P2P enter once + transfer exit once per phase
+- Catalog GETs: one per phase
+- Media GETs: one maximum
+- Total HTTP GETs on success: three maximum
+- Catalog path: /files/media.config
+- Media prefix: /files/
+- Media cap: 33554432 bytes
+- Redirects: disabled
+- Retry/resume/Range: absent
+- Alternate endpoints / JSON / AP fallback / 02 03: absent
+- Remote filename/path/raw catalog logging: absent
+- Catalog/media fingerprint logging: absent
+- Glasses file mutation/deletion: absent
+- Local destination: app-private cache only
+- JPEG SOI/EOI validation: present
