@@ -284,40 +284,62 @@ Evidence:
 
 ## G4B3 — exact line-list parser parity
 
-Status: **VERIFIED BUILD READY — physical test pending**.
+Status: **PASS — 2026-09-19**.
 
-Verified candidate: **K G1 Catalog Line Probe v0.4.5**.
-- APK SHA-256: `2f62c8798ac42ff0d619962490b9066b5cae2a1b2eb7498bf96e053ddc03ca72`
-- canonical build commit: `2c7885a0970cdec5fe96d49178af83447a018d87`
-- build run: `35433799612` — PASS
-- archive commit: `5f2a517628e2a9d7845aef1f77d4f384af221ac2`
-- source-commit Repository Hygiene: `35433799644` — PASS
-- safety audit / compile / lint / APK signature: PASS
+Physical v0.4.5:
+- one GET to `/files/media.config`;
+- 67-byte UTF-8 `text/plain`;
+- exact line-list entries: 3;
+- 3 non-empty, 3 relative-safe;
+- 0 blank, scheme/absolute-URL, leading-slash, traversal or control-character entries;
+- extensions: `.jpg=2, .opus=1`;
+- zero media-file GETs;
+- transfer exit success.
 
-The physical candidate may:
-- repeat the exact proven P2P enter/association/passive-IP/exit lifecycle;
-- make exactly one GET to `/files/media.config`;
-- parse the bounded UTF-8 response with line semantics equivalent to Kotlin `readLines()`;
-- report only:
-  - total line-list entries,
-  - non-empty entries,
-  - blank/whitespace entries,
-  - extension/type counts,
-  - absolute/scheme/leading-slash/traversal/control-character safety counts;
-- log no actual line, filename or path;
-- make zero media-file GET requests.
+Evidence:
+`docs/testing/results/2026-09-19_G4B3_CATALOG_LINE_PASS.md`
 
-No alternate endpoint, `vf_list.txt`, JSON fallback, redirect, retry, `02 03`, AP fallback, file write/delete, media download or reset/OTA is permitted.
-
-Exit criterion: exact sanitized line-list parity is physically confirmed. Only then may G5 be considered.
+Note: G4B2's reported line count 4 included the terminal newline; G4B3's `readLine()` parity establishes the real entry count as 3.
 
 ## G5 — one disposable media download
 
-- download one newly captured disposable test file,
-- stream to disk,
-- verify declared length/integrity,
-- preserve capture timestamp,
-- save using the numbering policy.
+Status: **EXACT CYAN DOWNLOADER TRACED — SOFTWARE BUILD NEXT**.
+
+Exact static evidence:
+`docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`
+
+Cyan's physical branch:
+- each line becomes `http://<glassDeviceWifiIP>/files/<line>`;
+- `downloadGlassFile()` passes that URL into `AndroidNetworking.download(url, albumDir, filename)`;
+- medium priority + progress listener + download listener;
+- queue completion reaches the known transfer-exit flow.
+
+Safety decision: catalog order is not proven chronological, so G5 must not select first/last/current JPG by position.
+
+Approved G5 diagnostic design:
+1. Phase A baseline:
+   - P2P enter / exact peer / passive IP;
+   - one GET of `/files/media.config`;
+   - hold validated line values in memory only;
+   - exit transfer and clean P2P group.
+2. User physically captures exactly one disposable JPG test photo.
+3. Phase B:
+   - re-enter P2P / exact peer / passive IP;
+   - one second GET of `/files/media.config`;
+   - compute set difference;
+   - require exactly one new safe relative `.jpg`;
+   - construct only `http://<passive-IP>/files/<new-entry>`;
+   - perform exactly one media GET;
+   - no redirect, no retry, no Range/resume;
+   - stream to one app-private temporary file with a hard size cap;
+   - validate HTTP 200, non-empty, Content-Length when supplied, and JPEG signature;
+   - never log the remote catalog line or filename/path;
+   - exit transfer and stop.
+
+Abort before media GET if delta count is not exactly one, the entry is unsafe, or extension is not JPG.
+
+G5 does not implement multi-file sync, OPUS/video import, production naming, ledger, deletion, or glasses mutation.
+
 
 ## G6 — automatic sync
 

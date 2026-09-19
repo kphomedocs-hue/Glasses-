@@ -131,7 +131,7 @@ Forbidden:
 
 G0 through G4A are physically complete.
 
-**G4B2 response-shape physical test: PASS. Current next gate: G4B3 exact line-list parser parity — verified build ready; physical test pending.**
+**G4B3 exact line-list parser parity: PASS. Current next gate: G5 one disposable JPG download — exact Cyan downloader traced; software build next.**
 
 G4A2 and G4B network prerequisites remain physically proven:
 - exact BLE-reported P2P peer association,
@@ -170,21 +170,46 @@ Evidence:
 - `docs/testing/results/2026-09-19_G4B2_RESPONSE_SHAPE_PASS.md`
 - `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
 
-Verified G4B3 candidate: **K G1 Catalog Line Probe v0.4.5**.
-- APK: `releases/v0.4.5/K_G1_Catalog_Line_Probe_v0_4_5.apk`
-- APK SHA-256: `2f62c8798ac42ff0d619962490b9066b5cae2a1b2eb7498bf96e053ddc03ca72`
-- Source ZIP SHA-256: `dd5b3c70f0e2e48cb2d657679adf1f9982cb04ce8f6a8a6624e4f943657945e7`
-- Package ZIP SHA-256: `0df71cf55921cb067dc779cbdd1c5587ee614df764e4fa7396f042162fc934c0`
-- Canonical build commit: `2c7885a0970cdec5fe96d49178af83447a018d87`
-- Build run: `35433799612` — PASS
-- Archive commit: `5f2a517628e2a9d7845aef1f77d4f384af221ac2`
-- Source-commit Repository Hygiene: `35433799644` — PASS
-- Package ID: `com.parkarsite.g1cataloglineprobe`
-- exact `configFileType=1` line-list parser; JSON/vf_list branch absent
-- exactly one GET to `/files/media.config`
-- no redirects, retry, media-file GET/download, raw-body logging, filename/path logging, response fingerprinting, file mutation, `02 03`, or AP fallback
+Physical G4B3 v0.4.5 conclusion: **PASS**.
+- catalog HTTP status: 200
+- response bytes: 67
+- exact Cyan line-list entries: 3
+- non-empty entries: 3
+- safe relative entries: 3
+- blank / absolute URL / leading slash / traversal / control-character entries: 0
+- extension summary: `.jpg=2, .opus=1`
+- media-file GET requests: 0
+- raw body / filename-path values / catalog fingerprint logging: absent
+- transfer exit: successful
 
-Immediate next action: run v0.4.5 exactly once and return the complete sanitized G4B3 report. Stop before G5.
+G4B2's earlier diagnostic "line count 4" is corrected: it counted the trailing newline as an extra line. Cyan-equivalent `readLine()` semantics physically produce 3 catalog entries.
+
+Evidence:
+- `docs/testing/results/2026-09-19_G4B3_CATALOG_LINE_PASS.md`
+- `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
+
+Exact Cyan G5 trace now confirms:
+- catalog line → `PictureDownloadBean(path=http://<glasses-IP>/files/<line>, fileName=line)`
+- Cyan uses `AndroidNetworking.download(url, albumDir, filename)`
+- tag `download_file`, priority MEDIUM, progress listener, then `startDownload`
+- no alternate media endpoint in this caller
+- no custom request header / Range / HEAD / explicit resume configuration visible before start
+- Cyan may retry at app level after errors, but the first G5 diagnostic will **not** retry
+
+Safe G5 selection rule:
+1. baseline current catalog in memory and exit transfer mode;
+2. user physically captures exactly one disposable JPG test photo;
+3. reconnect and fetch catalog again;
+4. require exactly one new safe relative `.jpg` entry by set difference;
+5. download only that new entry once;
+6. verify HTTP 200, non-empty bounded stream, Content-Length when present, and JPEG signature;
+7. never log the remote line/filename/path;
+8. exit and stop for review.
+
+Evidence:
+- `docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`
+
+Immediate next action: build and verify the bounded two-phase G5 diagnostic. No physical G5 APK is approved yet.
 
 This file remains authoritative for resuming the project.
 

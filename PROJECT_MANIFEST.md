@@ -80,7 +80,8 @@ G4A phone-side Wi-Fi Direct association: PASS.
 G4A2 passive glasses P2P-IP notification capture: **PASS**.  
 G4B read-only media listing: **PHYSICAL HTTP/BODY READ REACHED — JSON PARSER UNRESOLVED**.  
 G4B2 response-shape characterization: **PASS**.  
-G4B3 exact line-list parser parity: **VERIFIED BUILD READY — PHYSICAL TEST PENDING**.
+G4B3 exact line-list parser parity: **PASS**.  
+G5 one disposable JPG download: **EXACT DOWNLOADER TRACED — SOFTWARE BUILD NEXT**.
 
 v0.4.2 reached `/files/media.config` but failed because our diagnostic applied the wrong parser. Physical v0.4.4 then established a 67-byte UTF-8 `text/plain` line-oriented response. Deeper exact Cyan bytecode proves `configFileType==2` is the JSON/vf_list branch, while `configFileType!=2` uses `/files/media.config` plus Kotlin `readLines()`. The physical value is 1, so every line is a catalog entry. G5 remains blocked pending one final sanitized line-list parity check.
 
@@ -368,24 +369,32 @@ Exact static evidence: `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`.
 
 Corrected exact static evidence: `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`.
 
-## G4B3 verified candidate — v0.4.5
+## G4B3 physical result — PASS
 
-| Item | Repository path | SHA-256 / status |
-|---|---|---|
-| G4B3 source | `releases/v0.4.5/K_G1_Catalog_Line_Probe_v0_4_5_source_v1.zip` | `dd5b3c70f0e2e48cb2d657679adf1f9982cb04ce8f6a8a6624e4f943657945e7` |
-| G4B3 APK | `releases/v0.4.5/K_G1_Catalog_Line_Probe_v0_4_5.apk` | `2f62c8798ac42ff0d619962490b9066b5cae2a1b2eb7498bf96e053ddc03ca72` |
-| G4B3 package | `releases/v0.4.5/K_G1_Catalog_Line_Probe_v0_4_5_package.zip` | `0df71cf55921cb067dc779cbdd1c5587ee614df764e4fa7396f042162fc934c0` |
-| Canonical build commit | — | `2c7885a0970cdec5fe96d49178af83447a018d87` |
-| Archive commit | — | `5f2a517628e2a9d7845aef1f77d4f384af221ac2` |
-| GitHub Actions build/verification | run `35433799612` | PASS |
-| Source-commit Repository Hygiene | run `35433799644` | PASS |
-| G4B3 safety audit / compile / lint / signature | — | PASS |
-| Package ID | — | `com.parkarsite.g1cataloglineprobe` |
-| Parser | — | `configFileType=1` line-list parity |
-| JSON / vf_list alternate branch | — | ABSENT |
-| HTTP scope | — | exactly one GET to `/files/media.config` |
-| Raw body / filename/path / response fingerprint logging | — | ABSENT |
-| Media-file GET/download/mutation | — | ABSENT |
-| Physical G4B3 result | — | PENDING |
+| Item | Result |
+|---|---|
+| Physical report | `docs/testing/results/2026-09-19_G4B3_CATALOG_LINE_PASS.md` |
+| Catalog entries | 3 |
+| Non-empty / safe relative | 3 / 3 |
+| Extensions | `.jpg=2, .opus=1` |
+| Unsafe path flags | 0 |
+| Media-file GETs | 0 |
+| Private catalog values logged | NO |
+| Transfer exit | SUCCESS |
 
-Issue #9 remains open for the one-run physical G4B3 report. G5 remains blocked.
+G4B2's diagnostic line-count 4 is superseded by the Cyan-equivalent G4B3 parser: three actual entries plus a terminal newline.
+
+## G5 static trace / design
+
+Exact Cyan media download evidence:
+- `docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`
+- URL form: `http://<glassDeviceWifiIP>/files/<catalog-line>`
+- download caller: `AndroidNetworking.download(url, albumDir, filename)`
+- tag: `download_file`
+- priority: MEDIUM
+- progress listener + download listener
+- queue completion eventually reaches the already confirmed transfer-exit lifecycle
+
+First G5 selection is delta-based, not queue-position based. It requires a baseline catalog, one disposable user-captured JPG while transfer mode is off, then exactly one new safe JPG on the second catalog read. Only that new entry may be requested.
+
+No G5 physical candidate is approved yet.

@@ -291,33 +291,50 @@ Evidence:
 - `docs/testing/results/2026-09-19_G4B2_RESPONSE_SHAPE_PASS.md`
 - `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
 
-## G4B3 — next approved physical diagnostic
+## G4B3 — physical result
 
-**Verified build ready; physical result pending.**
+**PASS — 2026-09-19.**
 
-App: K G1 Catalog Line Probe v0.4.5  
-APK: `releases/v0.4.5/K_G1_Catalog_Line_Probe_v0_4_5.apk`  
-APK SHA-256: `2f62c8798ac42ff0d619962490b9066b5cae2a1b2eb7498bf96e053ddc03ca72`  
-Build run: `35433799612` — PASS
+App: K G1 Catalog Line Probe v0.4.5
 
-Allowed:
-- same P2P enter once and transfer exit once;
-- exact BLE-reported peer only;
-- passive `0x73 / 0x08` glasses IP only;
-- exactly one GET to `/files/media.config`;
-- parse in memory with line semantics equivalent to Cyan/Kotlin `readLines()`;
-- report only total/non-empty/blank counts, extension counts and path-safety counts.
+Confirmed:
+- exact one-GET catalog path;
+- line-list entries: 3;
+- safe relative entries: 3;
+- extensions: `.jpg=2, .opus=1`;
+- all path-safety flags: 0;
+- media-file GET requests: 0;
+- no remote names/paths/raw catalog values logged;
+- transfer exit succeeded.
 
-Still prohibited:
-- actual catalog lines, filenames or paths;
-- raw response logging or response fingerprints;
-- media-file GET/download;
-- `vf_list.txt` or JSON fallback;
-- redirects or retry;
-- file writes/deletes;
-- `02 03` query;
-- AP fallback;
-- arbitrary URL input;
-- reset/restart/OTA.
+Evidence:
+`docs/testing/results/2026-09-19_G4B3_CATALOG_LINE_PASS.md`
 
-Run exactly once and return the complete sanitized report. **Stop before G5.**
+## G5 — next design gate
+
+**No physical G5 build is approved yet.**
+
+Exact Cyan single-file download behavior is traced in:
+`docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`.
+
+The first G5 candidate must use a two-phase disposable-file selection:
+- baseline catalog in memory, then exit;
+- user captures exactly one disposable JPG while transfer mode is off;
+- reconnect and identify exactly one new safe JPG by in-memory set difference;
+- download only that one new JPG.
+
+Maximum physical scope when a verified build exists:
+- two P2P enter writes total, one per phase;
+- two transfer-exit writes total, one per phase;
+- two catalog GETs total, one per phase;
+- one media-file GET total;
+- no redirect, retry, Range/resume or alternate endpoint;
+- no OPUS/video download;
+- no arbitrary URL;
+- no raw catalog / remote filename/path / media fingerprint logging;
+- no file deletion/mutation on glasses;
+- no AP fallback, `02 03`, reset/restart/OTA.
+
+The media request must abort unless exactly one new safe relative `.jpg` exists.
+
+**G5 remains blocked until its build passes safety audit, compile/lint, signature verification and Repository Hygiene.**
