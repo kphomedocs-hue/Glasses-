@@ -72,11 +72,15 @@ Only interoperability findings and provenance are stored in this public reposito
 G0: PASS.  
 G1 physical GATT confirmation: PASS.  
 G2 notification/response-channel confirmation: PASS.  
-G2B exact response-semantic trace: **PASS**.  
-G2C one-command initialization parity: **NEXT**.  
-G3 media-mode control: **BLOCKED pending G2C**.
+G2B exact response-semantic trace: PASS.  
+G2C one-command initialization parity: PASS.  
+G3 media-count query: PASS.  
+G3B bounded P2P transfer lifecycle: PASS.  
+G4A phone-side Wi-Fi Direct association: PASS.  
+G4A2 passive glasses P2P-IP notification capture: **VERIFIED BUILD READY — PHYSICAL TEST PENDING**.  
+G4B read-only media listing: **BLOCKED pending glasses-IP resolution**.
 
-The next authorized implementation is a single-command Cyan-equivalent `0x40` time-sync probe. No `0x41` control/media command, Wi-Fi transition, HTTP transfer, reset or OTA action is authorized in G2C.
+The next authorized action is one physical run of the verified G4A2 v0.4.1 probe. No `0x41 / 02 03` query, HTTP/socket request, media listing/download, AP-mode command, reset or OTA action is authorized in G4A2.
 
 ## Discovery v0.1.2 diagnostic candidate
 
@@ -288,3 +292,25 @@ Issue #6 tracks the physical G3B lifecycle test. G4 local-network/media listing 
 | Transfer exit | SUCCESS |
 | Cleanup anomaly | `removeGroup` reason 2 / BUSY |
 | Next gate | G4A2 passive glasses-IP notification capture |
+
+
+## G4A2 verified candidate — v0.4.1
+
+| Item | Repository path | SHA-256 / status |
+|---|---|---|
+| G4A2 source | `releases/v0.4.1/K_G1_P2P_IP_Notify_Probe_v0_4_1_source_v1.zip` | `1888a096f0312c1e7f513f24fce5b5667f5e6dfaccdb532c4f1a1c11070a2a1c` |
+| G4A2 APK | `releases/v0.4.1/K_G1_P2P_IP_Notify_Probe_v0_4_1.apk` | `3c9104c34fbf06fb06631a09c67cac9eab3e2a626078abcc14401cf09a2cddf3` |
+| G4A2 package | `releases/v0.4.1/K_G1_P2P_IP_Notify_Probe_v0_4_1_package.zip` | `45aedb093424797a1d9764016e63b83f3a312e79a4921d31d400f75e93b77360` |
+| Canonical build commit | — | `a1eafae6da7202b0af32ff8ee3fc017422608a4b` |
+| Archive commit | — | `1291b782451b12c0bb35436c30f0b660c09b2667` |
+| GitHub Actions build/verification | run `35429585616` | PASS |
+| G4A2 safety audit | — | PASS |
+| Android compile + lint | — | PASS |
+| APK signature verification | — | PASS |
+| P2P-IP query `02 03` | — | ABSENT |
+| Internet / HTTP / sockets / media access | — | ABSENT |
+| Proprietary writes | — | enter once + exit once only |
+| `0x73` report scope | — | event IDs only; IPv4 only for event `0x08` |
+| Physical G4A2 result | — | PENDING |
+
+Issue #8 remains open for the physical G4A2 report. G4B remains blocked.

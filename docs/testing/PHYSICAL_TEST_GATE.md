@@ -235,6 +235,13 @@ The glasses-side client IP remains unresolved.
 
 ## G4A2 — next approved physical diagnostic
 
+**Verified build ready; physical result pending.**
+
+App: K G1 P2P IP Notify Probe v0.4.1  
+APK: `releases/v0.4.1/K_G1_P2P_IP_Notify_Probe_v0_4_1.apk`  
+APK SHA-256: `3c9104c34fbf06fb06631a09c67cac9eab3e2a626078abcc14401cf09a2cddf3`  
+Build run: `35429585616` — PASS
+
 Passive P2P-IP notification capture only.
 
 Use the same G4A lifecycle and expose only sanitized `0x73` event identifiers. If event `0x08` appears, parse its IPv4 bytes in memory.

@@ -214,7 +214,7 @@ Exit criterion:
 
 ## G4A2 — passive P2P-IP notification capture
 
-Status: **NEXT**.
+Status: **VERIFIED BUILD READY — physical test pending**.
 
 Purpose:
 - resolve the glasses-side P2P client IP without adding any new proprietary command.
@@ -233,6 +233,8 @@ Allowed proprietary writes:
 No additional query is allowed in G4A2.
 
 If event `0x08` is not observed, stop and review before considering the exact read-style `0x41 / 02 03` P2P-IP query in a separate gate.
+
+Verified candidate: K G1 P2P IP Notify Probe v0.4.1. APK SHA-256 `3c9104c34fbf06fb06631a09c67cac9eab3e2a626078abcc14401cf09a2cddf3`; build run `35429585616` PASS.
 
 ## G4B — read-only local media listing
 

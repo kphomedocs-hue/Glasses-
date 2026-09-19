@@ -14,7 +14,7 @@ Evidence-gated status as of 2026-09-19:
 - **G3 — media-count query:** PASS
 - **G3B — P2P transfer lifecycle:** PASS
 - **G4A — phone-side Wi-Fi Direct association:** PASS
-- **G4A2 — passive glasses P2P-IP notification capture:** NEXT
+- **G4A2 — passive glasses P2P-IP notification capture:** VERIFIED BUILD READY; physical test pending
 - **G4B — read-only media listing:** BLOCKED pending glasses-IP resolution
 
 G4A physically confirmed exact-peer Wi-Fi Direct association with the phone acting as group owner at `192.168.49.1`. No HTTP or media operation was performed. The next gate stays network-only and adds no new proprietary command.
@@ -263,3 +263,18 @@ Evidence:
 `docs/testing/results/2026-09-19_G4A_P2P_ASSOCIATION_PASS.md`
 
 Because the phone is group owner, the glasses client IP is still needed. The next gate is G4A2 passive `0x73 / 0x08` IP-notify capture only; no additional proprietary query is yet authorized.
+
+
+## G4A2 verified candidate
+
+K G1 P2P IP Notify Probe v0.4.1 is verified and ready for one physical G4A2 run.
+
+- APK: `releases/v0.4.1/K_G1_P2P_IP_Notify_Probe_v0_4_1.apk`
+- APK SHA-256: `3c9104c34fbf06fb06631a09c67cac9eab3e2a626078abcc14401cf09a2cddf3`
+- canonical build commit: `a1eafae6da7202b0af32ff8ee3fc017422608a4b`
+- build/verification run: `35429585616` — PASS
+- archived release commit: `1291b782451b12c0bb35436c30f0b660c09b2667`
+
+The build keeps the exact G4A enter/association/exit flow and adds only sanitized `0x73` event IDs plus event-`0x08` IPv4 parsing. It does not contain the `02 03` query, Internet permission, HTTP, sockets or media access.
+
+Next action: run it once on the glasses and return the full sanitized report. If `0x08` is not observed, stop before any new query or HTTP work.

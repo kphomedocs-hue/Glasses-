@@ -131,7 +131,7 @@ Forbidden:
 
 G0 through G4A are physically complete.
 
-**Current next gate: G4A2 — passive P2P-IP notification capture only.**
+**Current next gate: G4A2 physical test — verified software build ready.**
 
 G4A physically confirmed:
 - exact BLE-reported P2P peer discovery,
@@ -140,9 +140,15 @@ G4A physically confirmed:
 - phone acting as group owner at `192.168.49.1`,
 - zero HTTP/socket/media operations.
 
-Because the phone is group owner, the glasses client IP still needs to be resolved before any HTTP gate.
+G4A2 software is now verified as **K G1 P2P IP Notify Probe v0.4.1**. It repeats the same bounded G4A association lifecycle and only adds sanitized `0x73` event-ID visibility plus IPv4 parsing for event `0x08` from raw frame bytes `[7..10]`.
 
-G4A2 must repeat the same bounded association lifecycle and only expose sanitized `0x73` event identifiers. If event `0x08` appears, parse its IPv4 bytes in memory. Do not add the `02 03` query yet.
+No new proprietary query is present. `0x41 / 02 03`, Internet permission, HTTP, sockets and media/file access remain absent.
+
+Immediate next action:
+1. install the verified v0.4.1 APK;
+2. run the G4A2 probe once;
+3. return the complete sanitized report;
+4. if event `0x08` does not resolve the glasses IP, stop and review before any separate `02 03` gate.
 
 Evidence:
 `docs/testing/results/2026-09-19_G4A_P2P_ASSOCIATION_PASS.md`
@@ -574,3 +580,28 @@ Evidence:
 G4A conclusion: **PASS**.
 
 Next: **G4A2 passive `0x73 / 0x08` P2P-IP notification capture only**.
+
+
+## G4A2 verified build ready — v0.4.1
+
+- App: K G1 P2P IP Notify Probe v0.4.1
+- APK: `releases/v0.4.1/K_G1_P2P_IP_Notify_Probe_v0_4_1.apk`
+- APK SHA-256: `3c9104c34fbf06fb06631a09c67cac9eab3e2a626078abcc14401cf09a2cddf3`
+- Source ZIP SHA-256: `1888a096f0312c1e7f513f24fce5b5667f5e6dfaccdb532c4f1a1c11070a2a1c`
+- Package ZIP SHA-256: `45aedb093424797a1d9764016e63b83f3a312e79a4921d31d400f75e93b77360`
+- Canonical source/build commit: `a1eafae6da7202b0af32ff8ee3fc017422608a4b`
+- Verified build run: `35429585616`
+- Archive commit: `1291b782451b12c0bb35436c30f0b660c09b2667`
+- G4A2 safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Repository Hygiene on source commit: PASS
+- Internet permission: ABSENT
+- HTTP/socket/media access: ABSENT
+- `0x41 / 02 03` P2P-IP query: ABSENT
+- Proprietary writes: P2P enter once + transfer exit once only
+- Peer selection: exact BLE-reported P2P name only
+- `0x73` reporting: event IDs only; IPv4 only for event `0x08`
+
+Physical G4A2 result is still pending. Do not start G4B until the glasses-side IP is physically resolved.
