@@ -106,7 +106,7 @@ public final class MainActivity extends Activity {
     private void requestRequiredPermissions(){
         ArrayList<String> ps=new ArrayList<>();
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.S) ps.add(Manifest.permission.BLUETOOTH_CONNECT);
-        if(Build.VERSION.SDK_INT>=33) ps.add(Manifest.permission.NEARBY_WIFI_DEVICES); else ps.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        if(Build.VERSION.SDK_INT>=33) ps.add(Manifest.permission.NEARBY_WIFI_DEVICES); else { ps.add(Manifest.permission.ACCESS_COARSE_LOCATION); ps.add(Manifest.permission.ACCESS_FINE_LOCATION); }
         requestPermissions(ps.toArray(new String[0]),REQ_PERMISSION);
     }
 
