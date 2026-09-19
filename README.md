@@ -145,3 +145,29 @@ K G1 Init Probe v0.2.1 is ready for the one-command physical initialization-pari
 It sends exactly one dynamically generated Cyan-equivalent `0x40` time-sync frame after notification subscription, has no retry, and contains no `0x41` media/control command or network-transfer implementation.
 
 G3 remains blocked until the G2C physical report is reviewed.
+
+
+## G2C physical result
+
+G2C passed on 2026-09-19.
+
+The AIMB-G1 accepted exactly one Cyan-equivalent `0x40` time-sync write and returned:
+
+```text
+BC 40 01 00 BF 40 00
+```
+
+The response frame validates completely. No retry or additional proprietary write was sent.
+
+Evidence:
+`docs/testing/results/2026-09-19_G2C_TIME_SYNC_PASS.md`
+
+### Next gate
+
+Before entering media mode, use the exact Cyan media-count query:
+
+```text
+0x41 payload 02 04
+```
+
+This validates the glasses-control path while avoiding an intentional Wi-Fi/P2P/AP transition. P2P/AP media-mode commands remain blocked until that query is reviewed.

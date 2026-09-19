@@ -406,3 +406,29 @@ Physical-test boundary:
 - no arbitrary command input.
 
 Next action: run the verified v0.2.1 APK once and return the complete G2C report. Do not proceed to media mode afterward.
+
+
+## G2C physical result — PASS
+
+Physical test date: 2026-09-19
+
+K G1 Init Probe v0.2.1:
+- subscribed successfully to the confirmed Cyan response path,
+- sent exactly one dynamically generated Cyan-equivalent `0x40` time-sync command,
+- Android characteristic-write start: SUCCESS,
+- Android characteristic-write callback: SUCCESS,
+- received a valid `0x40` response frame `BC 40 01 00 BF 40 00`,
+- sent no retry and no second proprietary write,
+- sent no `0x41` command.
+
+Sanitized evidence:
+`docs/testing/results/2026-09-19_G2C_TIME_SYNC_PASS.md`
+
+G2C conclusion: **PASS**.
+
+Next gate has been narrowed for safety:
+**G3 — one media-inventory/count query using command `0x41`, payload `02 04`.**
+
+This query is present in the exact Cyan app and does not intentionally activate Wi-Fi/P2P/AP or perform media transfer.
+
+P2P/AP media-mode payloads remain blocked until G3 is reviewed.

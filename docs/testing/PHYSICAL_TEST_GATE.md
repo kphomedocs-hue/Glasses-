@@ -66,7 +66,7 @@ Do not assign semantic meaning from one coincidental packet. A proposed mapping 
 See:
 `docs/testing/G2B_PASSIVE_CORRELATION_PLAN.md`
 
-## G2C — current approved physical diagnostic
+## G2C — completed physical diagnostic
 
 Verified candidate: **K G1 Init Probe v0.2.1**.
 
@@ -90,11 +90,33 @@ Not allowed:
 - reset/restart/OTA/firmware operation,
 - arbitrary user-entered payloads.
 
-## G3 — first media-mode control write
+## G2C result
 
-Status: **BLOCKED pending G2C**.
+**PASS — 2026-09-19.**
 
-No media-mode characteristic write is authorized until the single-command G2C result has been reviewed.
+Evidence:
+`docs/testing/results/2026-09-19_G2C_TIME_SYNC_PASS.md`
+
+The single `0x40` write completed successfully and a valid `0x40` response frame was received.
+
+## G3 — current approved next diagnostic
+
+The next proprietary write should be the narrower exact-Cyan media inventory/count query:
+
+```text
+command 0x41
+payload 02 04
+```
+
+It may be sent exactly once after notification subscription.
+
+This gate must not activate P2P/AP or perform media transfer.
+
+## G3B — first media-mode control write
+
+Status: **BLOCKED pending G3**.
+
+Do not send `02 01 04 01` or `02 01 04 02` until G3 media-count query behavior is reviewed.
 
 ## Later gates
 

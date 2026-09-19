@@ -102,7 +102,7 @@ Passive event correlation remains available as a fallback for future unknown eve
 
 ## G2C — one-command initialization parity
 
-Status: **VERIFIED BUILD READY FOR PHYSICAL TEST**.
+Status: **PASS — 2026-09-19**.
 
 Candidate: K G1 Init Probe v0.2.1. GitHub Actions run `35416416013`: PASS.
 
@@ -124,9 +124,43 @@ Prohibited:
 Exit criterion:
 - one benign Cyan-parity proprietary write succeeds or fails in a documented way and response behavior is understood.
 
-## G3 — one allow-listed media-mode control command
+## G3 — one allow-listed media-inventory query
 
-Status: **BLOCKED pending G2C**.
+Status: **NEXT**.
+
+Use the exact Cyan `glassesControl` media-count request:
+
+```text
+outer command: 0x41
+payload: 02 04
+```
+
+Purpose:
+- validate the `0x41` request/response path,
+- read media inventory/count information,
+- avoid intentionally entering P2P/AP media mode.
+
+Allowed:
+- existing confirmed LE connection and notify subscription,
+- exactly one `0x41` write with payload `02 04`,
+- capture and decode the matching response,
+- passive `0x73` observation,
+- disconnect.
+
+Prohibited:
+- `02 01 04 01` P2P media-mode command,
+- `02 01 04 02` AP media-mode command,
+- Wi-Fi/P2P/AP activation,
+- HTTP/media transfer,
+- delete/modify/reset/restart/OTA,
+- arbitrary command input or retry loop.
+
+Exit criterion:
+- the single media-count query response is physically captured and parsed.
+
+## G3B — one allow-listed media-mode command
+
+Status: **BLOCKED pending G3**.
 
 Only after G2B review:
 - send exactly one reviewed, named, precomputed command,

@@ -183,3 +183,19 @@ No G2B executable has been started at this checkpoint; this entry records the ap
 | Wi-Fi/network/reset/OTA | absent | PASS |
 
 Issue #4 tracks the physical G2C test. G3 media-mode control remains blocked until that report is reviewed.
+
+
+## G2C physical result
+
+| Item | Result |
+|---|---|
+| Physical G2C result | PASS |
+| Sanitized report | `docs/testing/results/2026-09-19_G2C_TIME_SYNC_PASS.md` |
+| Proprietary command | `0x40` time sync |
+| Proprietary write attempts | exactly 1 |
+| Android write callback | SUCCESS |
+| `0x40` response | `BC 40 01 00 BF 40 00` |
+| Response frame validation | PASS |
+| Additional proprietary writes | 0 |
+| Media-mode command | NONE |
+| Next gate | G3 `0x41` payload `02 04` media-count query |

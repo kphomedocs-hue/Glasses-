@@ -258,3 +258,37 @@ Its callback is empty and later initialization is queued immediately; static evi
 ### G2C rule
 
 Before any `0x41` media/control payload, physically validate one Cyan-equivalent `0x40` time-sync command only.
+
+
+## Physical G2C time-sync confirmation — 2026-09-19
+
+A single Cyan-equivalent command-`0x40` time-sync write was physically tested.
+
+Observed response:
+
+```text
+BC 40 01 00 BF 40 00
+```
+
+The response:
+- uses command `0x40`,
+- declares one payload byte,
+- carries payload `00`,
+- has CRC `0x40BF`,
+- validates exactly using CRC-16/MODBUS over the payload.
+
+Android also reported the characteristic-write callback as SUCCESS.
+
+This physically confirms the controlled proprietary write/response path. The semantic meaning of the single response byte is not overstated.
+
+### Next control-path probe
+
+The exact Cyan app exposes a narrower read-style control request before any media-mode transition:
+
+```text
+glassesControl payload: 02 04
+outer command: 0x41
+purpose: media inventory/count query
+```
+
+Use that as G3 before any `02 01 04 01` P2P or `02 01 04 02` AP media-mode command.
