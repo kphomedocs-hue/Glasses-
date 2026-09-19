@@ -555,3 +555,25 @@ Evidence:
 `docs/testing/results/2026-09-20_G5_7_SINGLE_JPG_DOWNLOAD_PASS.md`
 
 G6 is now unblocked.
+
+
+### G6A — persistent single-item import
+
+Design freeze:
+`docs/design/G6_AUTOMATIC_SYNC_ARCHITECTURE.md`
+
+Purpose: validate the production ledger/archive path with exactly one newly discovered safe JPG per run.
+
+Required:
+- G5.7 proven transport only;
+- persistent opaque dedup ledger;
+- deterministic daily shared counter;
+- part-file then validated final commit;
+- restart-safe duplicate prevention;
+- one item maximum;
+- no background service;
+- no repeated polling;
+- no MP4/OPUS yet;
+- no glasses mutation.
+
+G6B and later remain blocked until G6A physical PASS.

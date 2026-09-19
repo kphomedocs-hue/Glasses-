@@ -511,3 +511,11 @@ v0.5.1 is superseded before physical use.
 | Physical result | PENDING |
 
 v0.5.3 is superseded before physical use due to observation-window timing ambiguity.
+
+
+## G6 architecture freeze
+
+Automatic-sync architecture is frozen in:
+`docs/design/G6_AUTOMATIC_SYNC_ARCHITECTURE.md`
+
+The first implementation gate is G6A: one persistent, restart-safe JPG import using the proven G5.7 transport. No background sync or multi-file loop is authorized yet.
