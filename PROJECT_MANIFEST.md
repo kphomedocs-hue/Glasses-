@@ -234,3 +234,20 @@ Issue #5 tracks the physical G3 media-count query. G3B media mode remains blocke
 | Exact P2P enter payload | `02 01 04 01` |
 | Exact exit-transfer payload | `02 01 09` |
 | Next gate | G3B P2P enter/exit lifecycle only |
+
+
+## G3B verified candidate — v0.3.1
+
+| Item | Repository path | SHA-256 / status |
+|---|---|---|
+| G3B source | `releases/v0.3.1/K_G1_P2P_Lifecycle_Probe_v0_3_1_source_v1.zip` | `3e0d3f3b3f37eb50df2298dfb8111d0fedfd9de92f29c635bf52e1d0666a8c35` |
+| G3B APK | `releases/v0.3.1/K_G1_P2P_Lifecycle_Probe_v0_3_1.apk` | `1578b6540596625825c16a95da64f72f46ee29aaad47c866bb9025a3389dce7c` |
+| G3B package | `releases/v0.3.1/K_G1_P2P_Lifecycle_Probe_v0_3_1_package.zip` | `2af95704d4b50cec143765d07f6a880f992c1f3d5daef00e9607f654f2c1cd96` |
+| Build/verification | GitHub Actions run `35421429624` | PASS |
+| Enter payload | `0x41 / 02 01 04 01`, once | PASS |
+| Exit payload | `0x41 / 02 01 09`, once | PASS |
+| Android Wi-Fi/P2P/network APIs | absent | PASS |
+| AP-mode payload | absent | PASS |
+| HTTP/media transfer | absent | PASS |
+
+Issue #6 tracks the physical G3B lifecycle test. G4 local-network/media listing remains blocked until this result is reviewed.

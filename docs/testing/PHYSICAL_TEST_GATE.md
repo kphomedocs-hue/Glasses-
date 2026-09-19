@@ -169,3 +169,17 @@ G3B must not:
 - expose arbitrary command input.
 
 If the enter command fails, the diagnostic must not attempt any unrelated fallback command.
+
+
+## G3B verified candidate
+
+K G1 P2P Lifecycle Probe v0.3.1 is verified for physical testing.
+
+- APK SHA-256: `1578b6540596625825c16a95da64f72f46ee29aaad47c866bb9025a3389dce7c`
+- build/verification run: `35421429624` — PASS
+
+Only two proprietary writes are implemented:
+1. `0x41 / 02 01 04 01` — enter P2P transfer mode
+2. `0x41 / 02 01 09` — exit transfer mode
+
+No Android Wi-Fi/P2P/network APIs are present. No HTTP or media transfer occurs.

@@ -497,3 +497,38 @@ Exact Cyan payloads independently verified:
 G3 conclusion: **PASS**.
 
 Next gate: **G3B transfer-mode lifecycle only** — enter P2P once, observe, exit once, observe, disconnect. No phone-side Wi-Fi/P2P or HTTP code yet.
+
+
+## G3B verified build ready — K G1 P2P Lifecycle Probe v0.3.1
+
+Verified repository artifacts:
+- APK: `releases/v0.3.1/K_G1_P2P_Lifecycle_Probe_v0_3_1.apk`
+- APK SHA-256: `1578b6540596625825c16a95da64f72f46ee29aaad47c866bb9025a3389dce7c`
+- Source ZIP: `releases/v0.3.1/K_G1_P2P_Lifecycle_Probe_v0_3_1_source_v1.zip`
+- Source SHA-256: `3e0d3f3b3f37eb50df2298dfb8111d0fedfd9de92f29c635bf52e1d0666a8c35`
+- Package ZIP: `releases/v0.3.1/K_G1_P2P_Lifecycle_Probe_v0_3_1_package.zip`
+- Package SHA-256: `2af95704d4b50cec143765d07f6a880f992c1f3d5daef00e9607f654f2c1cd96`
+- Canonical build commit: `c8201c87c9582a2b80814748c114aa33db0318b8`
+- Archive commit: `9db1287981ece7e48d4903d53cf8f52af259d52e`
+- Build/verification run: `35421429624`
+- G3B bounded lifecycle scope verification: PASS
+- G3B safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+
+Physical-test boundary:
+- exact Cyan P2P enter payload `02 01 04 01` once,
+- BLE-only observation,
+- exact Cyan exit-transfer payload `02 01 09` once,
+- BLE-only observation,
+- maximum two proprietary writes,
+- no retry loop,
+- no AP-mode payload,
+- no Android Wi-Fi/P2P/network APIs,
+- no HTTP/media transfer,
+- no file mutation,
+- no reset/restart/OTA/firmware behavior,
+- no arbitrary command input.
+
+Next action: run v0.3.1 once and return the complete G3B report.

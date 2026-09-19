@@ -162,7 +162,9 @@ Exit criterion:
 
 ## G3B — bounded P2P transfer-mode lifecycle
 
-Status: **NEXT**.
+Status: **VERIFIED BUILD READY FOR PHYSICAL TEST**.
+
+Candidate: K G1 P2P Lifecycle Probe v0.3.1. GitHub Actions run `35421429624`: PASS.
 
 Exact Cyan physical prerequisites now support the P2P route:
 - configFileType = 1,

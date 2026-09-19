@@ -213,3 +213,21 @@ The exact app also confirms a bounded rollback command:
 - exit transfer mode: `02 01 09`
 
 The next G3B diagnostic will test only that BLE lifecycle. It will not use phone-side Wi-Fi Direct or perform media transfer.
+
+
+## G3B verified build
+
+K G1 P2P Lifecycle Probe v0.3.1 is ready for physical testing.
+
+- APK: `releases/v0.3.1/K_G1_P2P_Lifecycle_Probe_v0_3_1.apk`
+- APK SHA-256: `1578b6540596625825c16a95da64f72f46ee29aaad47c866bb9025a3389dce7c`
+- build/verification run: `35421429624` — PASS
+
+The app performs only the bounded BLE lifecycle:
+- enter P2P transfer mode once with `02 01 04 01`,
+- observe,
+- exit transfer mode once with `02 01 09`,
+- observe,
+- disconnect.
+
+It contains no Android Wi-Fi Direct/network stack or media-transfer implementation.
