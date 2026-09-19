@@ -303,7 +303,7 @@ Note: G4B2's reported line count 4 included the terminal newline; G4B3's `readLi
 
 ## G5 — one disposable media download
 
-Status: **v0.5.0 SAFE NO-DELTA STOP; G5.1 v0.5.1 VERIFIED BUILD READY — physical test pending**.
+Status: **v0.5.0 SAFE NO-DELTA STOP; G5.2 v0.5.2 VERIFIED BUILD READY — physical test pending; v0.5.1 superseded**.
 
 Exact static evidence:
 `docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`
@@ -394,3 +394,12 @@ Only two behavioral deltas from v0.5.0 are authorized:
 2. exact 1000 ms wait after P2P + passive-IP readiness before each `/files/media.config` GET.
 
 The media-download boundary is unchanged. G6 remains blocked until the G5.1 physical report is reviewed.
+
+
+### G5.2 pre-physical hardening
+
+v0.5.2 adds no new protocol/network behavior. It only:
+- requires the `02 04` BLE write callback and valid response before P2P enter;
+- resets failed two-phase runs back to BASELINE for a clean retry.
+
+Verified APK SHA-256: `14fa9447ee938d20c35c935f5665bbcd72f0edb61b33f1e266d96aacb18bfe7a`.

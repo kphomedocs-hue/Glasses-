@@ -131,7 +131,7 @@ Forbidden:
 
 G0 through G4A are physically complete.
 
-**G4B3: PASS. G5 v0.5.0: SAFE NO-DELTA STOP. G5.1 v0.5.1: VERIFIED BUILD READY — physical test pending.**
+**G4B3: PASS. G5 v0.5.0: SAFE NO-DELTA STOP. G5.2 v0.5.2: VERIFIED BUILD READY — physical test pending. v0.5.1 superseded before physical use.**
 
 G4A2 and G4B network prerequisites remain physically proven:
 - exact BLE-reported P2P peer association,
@@ -724,3 +724,30 @@ Next: **G4A2 passive `0x73 / 0x08` P2P-IP notification capture only**.
 - `0x73` reporting: event IDs only; IPv4 only for event `0x08`
 
 Physical G4A2 result is still pending. Do not start G4B until the glasses-side IP is physically resolved.
+
+
+## G5.2 pre-physical recheck result
+
+Second review found two non-protocol defects in v0.5.1 before physical use:
+- failure cleanup could leave Stage=DOWNLOAD while re-enabling the Run button;
+- media-count response could trigger P2P enter before Android's characteristic-write callback had been observed.
+
+v0.5.2 fixes both without changing the network/protocol boundary.
+
+Verified v0.5.2:
+- APK SHA-256: `14fa9447ee938d20c35c935f5665bbcd72f0edb61b33f1e266d96aacb18bfe7a`
+- source ZIP SHA-256: `d04bc3382eee299d94ecfe2a012a2b9cb50423391f50482e03ac47d5958f9aae`
+- package ZIP SHA-256: `bf338e8358ffaa35a4d613ab13c45ed9ef643fa077764f8e5b2e35fa13f1306e`
+- source/build commit: `17e0a33c9d7490b57fc2f3d6f468f1c6be94d2c0`
+- build run: `35436808167` — PASS
+- archive commit: `7b2c41fe5121d19b585d0ab993329de15bc0414b`
+- package ID: `com.parkarsite.g1singlephotoprobe52`
+
+G5.2 now waits for BOTH:
+1. successful Android BLE write callback for `02 04`;
+2. valid `02 04` response frame;
+before sending P2P enter.
+
+Any completed failure now resets to BASELINE and restores the Start button.
+
+All previous G5.1 safety limits remain unchanged. G6 stays blocked.

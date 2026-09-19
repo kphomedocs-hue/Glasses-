@@ -450,3 +450,22 @@ The earlier first v0.5.0 build is superseded; a pre-physical lifecycle recheck f
 | Physical result | pending |
 
 v0.5.0 remains preserved as the safe no-delta physical record.
+
+
+## G5.2 verified candidate — v0.5.2
+
+| Item | Value |
+|---|---|
+| APK | `releases/v0.5.2/K_G1_Disposable_Photo_Probe_v0_5_2.apk` |
+| APK SHA-256 | `14fa9447ee938d20c35c935f5665bbcd72f0edb61b33f1e266d96aacb18bfe7a` |
+| Source ZIP SHA-256 | `d04bc3382eee299d94ecfe2a012a2b9cb50423391f50482e03ac47d5958f9aae` |
+| Package ZIP SHA-256 | `bf338e8358ffaa35a4d613ab13c45ed9ef643fa077764f8e5b2e35fa13f1306e` |
+| Source/build commit | `17e0a33c9d7490b57fc2f3d6f468f1c6be94d2c0` |
+| Build run | `35436808167` — PASS |
+| Archive commit | `7b2c41fe5121d19b585d0ab993329de15bc0414b` |
+| Package ID | `com.parkarsite.g1singlephotoprobe52` |
+| Count handoff | waits for write callback + valid response |
+| Failure recovery | resets to BASELINE |
+| Physical result | pending |
+
+v0.5.1 is superseded before physical use.

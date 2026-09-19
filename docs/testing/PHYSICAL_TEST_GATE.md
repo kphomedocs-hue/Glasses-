@@ -312,7 +312,7 @@ Evidence:
 
 ## G5 — next approved physical diagnostic
 
-**v0.5.0: SAFE NO-DELTA STOP. G5.1 v0.5.1: VERIFIED BUILD READY; physical result pending.**
+**v0.5.0: SAFE NO-DELTA STOP. G5.2 v0.5.2: VERIFIED BUILD READY; v0.5.1 superseded before physical use.**
 
 App: K G1 Disposable Photo Probe v0.5.0  
 APK: `releases/v0.5.0/K_G1_Disposable_Photo_Probe_v0_5_0.apk`  
@@ -388,3 +388,14 @@ Physical procedure:
 The Phase A baseline may now include the previous v0.5.0 test photo; that is acceptable. Only a photo captured after the new Phase A completes is eligible as the G5.1 delta.
 
 **G6 remains blocked until this physical report is reviewed.**
+
+
+### G5.2 approved physical candidate
+
+Use only:
+- app: K G1 Disposable Photo Probe v0.5.2
+- package: `com.parkarsite.g1singlephotoprobe52`
+- APK SHA-256: `14fa9447ee938d20c35c935f5665bbcd72f0edb61b33f1e266d96aacb18bfe7a`
+- build run: `35436808167` — PASS
+
+The physical procedure is unchanged from G5.1. G6 remains blocked pending report review.

@@ -346,3 +346,16 @@ Verified v0.5.1:
 - package: `com.parkarsite.g1singlephotoprobe51`
 
 G5.1 preserves the same strict delta-selected single-JPG boundary. G6 is still blocked.
+
+
+## G5.2 verified candidate
+
+v0.5.1 is superseded before physical use after a second pre-physical review.
+
+v0.5.2 fixes:
+- failure-state recovery back to BASELINE;
+- BLE media-count handoff barrier requiring both write callback success and valid count response before P2P enter.
+
+Verified APK SHA-256: `14fa9447ee938d20c35c935f5665bbcd72f0edb61b33f1e266d96aacb18bfe7a`  
+Build run: `35436808167` — PASS  
+Package: `com.parkarsite.g1singlephotoprobe52`
