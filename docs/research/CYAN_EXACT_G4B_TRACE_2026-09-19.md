@@ -44,18 +44,30 @@ http://192.168.49.176/files/media.config
 
 The address is runtime-derived in the diagnostic; it is not hard-coded into the app.
 
-## Exact response model
+## Exact read/parse path
 
-Cyan downloads the catalog text and parses it through Moshi into:
+Decompilation-level bytecode inspection of `AlbumDepository.readPhotoFile` confirms two parsing branches keyed by `configFileType`.
+
+For the current physical branch, Cyan:
+- constructs a `java.io.File`,
+- calls Kotlin `FilesKt.readText$default(...)`,
+- passes the entire resulting text string into `AlbumDepository$readPhotoFile$1`,
+- obtains Moshi from `MoshiUtils`,
+- obtains a `JsonAdapter` for `PtPFileModel`,
+- calls `JsonAdapter.fromJson(jsonString)`,
+- then calls `PtPFileModel.getFile_list()`.
+
+The alternate branch uses `FilesKt.readLines$default(...)` and is associated with the other configuration path.
+
+## Exact response model expected by Cyan
+
+The generated Moshi model is:
 
 ```text
 PtPFileModel(file_list = List<FileBean>)
 ```
 
-`PtPFileModel` has the root property:
-- `file_list`
-
-`FileBean` has properties:
+`FileBean` exposes compact properties:
 - `c` — String
 - `e` — String
 - `f` — String
@@ -64,7 +76,7 @@ PtPFileModel(file_list = List<FileBean>)
 - `t` — String
 - `w` — int
 
-For each catalog item, Cyan uses `FileBean.getF()` to construct the later media URL:
+For each parsed item, Cyan uses `FileBean.getF()` to construct the later media URL:
 
 ```text
 http://<glassDeviceWifiIP>:80/<f>
@@ -72,20 +84,27 @@ http://<glassDeviceWifiIP>:80/<f>
 
 That later media-file GET is outside G4B.
 
-## Cyan catalog transfer implementation
+## Physical v0.4.2 correction
 
-Cyan's `AlbumDepository.getPhotoTextFile(...)` delegates to `AndroidNetworking.download(url, dirPath, fileName)`, then reads and parses the downloaded text file.
+The first physical G4B probe performed the exact endpoint GET once and then failed with:
 
-The current G4B diagnostic deliberately narrows this behavior:
-- one in-memory GET only,
-- no file-system write,
-- no media-file request,
-- no retry,
-- no redirect,
-- bounded response size,
-- sanitized structural reporting only.
+```text
+Catalog GET/parse failed: JSONException
+```
 
-This is stricter than Cyan while preserving the read-only interoperability question.
+Because the verified v0.4.2 control flow checks HTTP status and response-size limits before invoking Android `JSONObject`, this failure proves:
+- the request reached the expected HTTP path,
+- the response body was read within the 65,536-byte cap,
+- the failure occurred at the diagnostic's JSON-parser compatibility layer.
+
+It does **not** invalidate the endpoint.
+
+It does invalidate the stronger earlier assumption that the physical response bytes can be passed directly to Android `JSONObject` with no normalization or parser compatibility handling.
+
+Potential causes such as BOM/encoding or a different top-level representation remain hypotheses until physically characterized.
+
+Evidence:
+`docs/testing/results/2026-09-19_G4B_CATALOG_PARSE_FAIL.md`
 
 ## P2P routing / process binding
 
@@ -101,24 +120,32 @@ Explicit process-network binding found in the APK belongs to separate regular-Wi
 - `TempWifiHelper`
 - `DisconnectCallbackHolder`
 
-Therefore G4B mirrors the exact P2P path and does not add process binding.
+Therefore the G4B diagnostic continues to mirror the exact P2P path and does not add process binding.
 
-## G4B implementation rule
+## G4B2 implementation rule
 
-The first physical G4B diagnostic may:
-- use the already verified P2P enter/association/passive-IP/exit lifecycle,
-- require the phone-group-owner topology already observed in G4A/G4A2,
-- accept only a `192.168.49.0/24` glasses address resolved from `0x73 / 0x08`,
-- issue exactly one GET to `/files/media.config`,
-- parse only the JSON structure in memory,
-- report counts, key names, and extension counts without filename/path values.
+The next physical diagnostic keeps the exact same one-request boundary:
+- proven P2P enter/association/passive-IP/exit lifecycle,
+- phone-group-owner topology,
+- only a `192.168.49.0/24` runtime IP from `0x73 / 0x08`,
+- exactly one GET to `/files/media.config`,
+- no redirects,
+- no retry,
+- bounded in-memory body only.
 
-It must not:
-- query `0x41 / 02 03`,
-- request any media file,
-- follow redirects,
-- use arbitrary URLs,
-- write/delete files,
-- use AP mode,
-- mutate the glasses,
-- retry the HTTP request.
+It may report only safe structural facts:
+- response byte count and SHA-256,
+- sanitized Content-Type / Content-Encoding,
+- strict UTF-8 validity,
+- BOM type,
+- line count,
+- top-level token class,
+- raw vs BOM-normalized JSON type,
+- root-key count,
+- `file_list` presence/type,
+- catalog item count,
+- presence of known compact keys `c,e,f,h,s,t,w`,
+- unknown-key count,
+- extension counts derived from `f`.
+
+It must not log the raw body or any filename/path value and must not request any media file.
