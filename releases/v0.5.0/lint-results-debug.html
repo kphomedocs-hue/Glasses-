@@ -179,7 +179,7 @@ document.getElementById(id).style.display = 'none';
     <div class="mdl-layout__header-row">
       <span class="mdl-layout-title">Lint Report: 15 warnings</span>
       <div class="mdl-layout-spacer"></div>
-      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Sat Sep 19 09:31:58 UTC 2026 by AGP (9.4.0)</nav>
+      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Sat Sep 19 09:34:26 UTC 2026 by AGP (9.4.0)</nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
@@ -573,7 +573,7 @@ Dismiss</button>            </div>
 
 <span class="location"><a href="../../src/main/java/com/parkarsite/g1singlephotoprobe/MainActivity.java">../../src/main/java/com/parkarsite/g1singlephotoprobe/MainActivity.java</a>:959</span>: <span class="message">String literal in <code>setText</code> can not be translated. Use Android resources instead.</span><br /><pre class="errorlines">
 <span class="lineno">  956 </span>  stage=Stage.WAIT_FOR_CAPTURE;
-<span class="lineno">  957 </span>  phase=Phase.IDLE;
+<span class="lineno">  957 </span>  phase=Phase.COMPLETE;
 <span class="lineno">  958 </span>  setStatus(<span class="string">"Phase A complete. Now use the glasses to capture EXACTLY ONE disposable photo. Then tap Continue G5."</span>);
 <span class="caretline"><span class="lineno">  959 </span>  runButton.setText(<span class="warning"><span class="string">"I captured ONE test photo — Continue G5"</span></span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 <span class="lineno">  960 </span>  runButton.setEnabled(<span class="keyword">true</span>);
@@ -594,7 +594,7 @@ Dismiss</button>            </div>
 <span class="lineno"> 1006 </span>  <span class="keyword">private</span> <span class="keyword">void</span> schedule(Runnable r,<span class="keyword">long</span> ms){cancelTimeout();timeout=r;handler.postDelayed(r,ms);}
 <span class="lineno"> 1007 </span>  <span class="keyword">private</span> <span class="keyword">void</span> cancelTimeout(){<span class="keyword">if</span>(timeout!=<span class="keyword">null</span>){handler.removeCallbacks(timeout);timeout=<span class="keyword">null</span>;}}
 <span class="lineno"> 1008 </span>
-<span class="caretline"><span class="lineno"> 1009 </span>  <span class="keyword">private</span> <span class="keyword">void</span> fail(String m){<span class="keyword">if</span>(reportFinished)<span class="keyword">return</span>;cancelTimeout();append(<span class="string">"G5 RESULT: FAILED — "</span>+m);cleanupRuntime(<span class="keyword">false</span>);baselineCatalog.clear();baselineReady=<span class="keyword">false</span>;append(<span class="string">"END REPORT"</span>);reportFinished=<span class="keyword">true</span>;phase=Phase.COMPLETE;stage=Stage.BASELINE;setStatus(m);runButton.setText(<span class="warning"><span class="string">"Start G5 baseline"</span></span>);enableActions();}</span>
+<span class="caretline"><span class="lineno"> 1009 </span>  <span class="keyword">private</span> <span class="keyword">void</span> fail(String m){<span class="keyword">if</span>(reportFinished)<span class="keyword">return</span>;cancelTimeout();reportFinished=<span class="keyword">true</span>;phase=Phase.COMPLETE;append(<span class="string">"G5 RESULT: FAILED — "</span>+m);cleanupRuntime(<span class="keyword">false</span>);baselineCatalog.clear();baselineReady=<span class="keyword">false</span>;append(<span class="string">"END REPORT"</span>);stage=Stage.BASELINE;setStatus(m);runButton.setText(<span class="warning"><span class="string">"Start G5 baseline"</span></span>);enableActions();}</span>
 <span class="lineno"> 1010 </span>  <span class="keyword">private</span> <span class="keyword">void</span> closeAndFail(String m){handler.post(()->fail(m));}
 <span class="lineno"> 1011 </span>
 <span class="lineno"> 1012 </span>  <span class="keyword">private</span> <span class="keyword">void</span> cleanupRuntime(<span class="keyword">boolean</span> destroy){

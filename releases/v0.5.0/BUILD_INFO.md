@@ -1,6 +1,6 @@
 # K G1 Disposable Photo Probe v0.5.0 — Verified Repository Build
-- Canonical build commit: bb4b6b8a426445b948fd8015faa05ef74d849f6b
-- Canonical build run: 35434903708
+- Canonical build commit: b9152f13ed7bacbd2d895a161da3dafbb9461406
+- Canonical build run: 35435019643
 - G5 safety audit: PASS
 - Android compile: PASS
 - Android Lint: PASS
