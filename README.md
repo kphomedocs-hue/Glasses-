@@ -231,3 +231,17 @@ The app performs only the bounded BLE lifecycle:
 - disconnect.
 
 It contains no Android Wi-Fi Direct/network stack or media-transfer implementation.
+
+
+## G3B physical result
+
+G3B passed on 2026-09-19.
+
+The AIMB-G1 accepted the exact Cyan P2P enter command and returned a structured transfer response containing a 20-byte SSID and 9-byte password. Credential values are deliberately omitted from the public repository.
+
+The exact Cyan exit-transfer command was then accepted, after which normal media-inventory reporting resumed.
+
+Evidence:
+`docs/testing/results/2026-09-19_G3B_P2P_LIFECYCLE_PASS.md`
+
+The next gate is **G4A phone-side Wi-Fi Direct discovery/association only**. HTTP and media listing remain blocked until that association path is physically confirmed.

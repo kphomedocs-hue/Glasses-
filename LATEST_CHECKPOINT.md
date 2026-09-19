@@ -532,3 +532,25 @@ Physical-test boundary:
 - no arbitrary command input.
 
 Next action: run v0.3.1 once and return the complete G3B report.
+
+
+## G3B physical result — PASS
+
+Physical test date: 2026-09-19.
+
+The verified v0.3.1 lifecycle probe:
+- entered P2P transfer mode with `0x41 / 02 01 04 01`,
+- received a CRC-valid `0x41` response carrying a 20-byte SSID and 9-byte password,
+- did not publish or persist those credential values,
+- observed two valid `0x73 / 0x0B` events during enter mode,
+- exited with `0x41 / 02 01 09`,
+- received a valid exit response,
+- then observed the normal media-inventory `0x73 / 0x01` event,
+- used exactly two proprietary writes and no retry.
+
+Evidence:
+`docs/testing/results/2026-09-19_G3B_P2P_LIFECYCLE_PASS.md`
+
+G3B conclusion: **PASS**.
+
+Next gate: **G4A — phone-side Wi-Fi Direct discovery/association only**. No HTTP or media listing yet.

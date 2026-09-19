@@ -335,3 +335,36 @@ Exact fill-array payloads extracted from the current Cyan APK:
 - `fileDownloadComplete()`: `02 01 09`.
 
 The last command provides an exact-app rollback path for a bounded G3B transfer-mode lifecycle probe.
+
+
+## G3B physical P2P lifecycle — 2026-09-19
+
+P2P enter:
+```text
+0x41 / 02 01 04 01
+```
+
+The physical response confirms the transfer-credential schema:
+
+```text
+02 01 04 01
+ssid_len_le16
+password_len_le16
+ssid_bytes
+password_bytes
+```
+
+On this physical device:
+- SSID length = 20,
+- password length = 9.
+
+Credential values are intentionally omitted from the public repository.
+
+P2P exit:
+```text
+0x41 / 02 01 09
+```
+
+The exit command was accepted and produced a valid `0x41` response. Normal `0x73 / 0x01` media-inventory reporting resumed afterward.
+
+G3B: **PASS**.

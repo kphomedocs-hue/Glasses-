@@ -162,7 +162,7 @@ Exit criterion:
 
 ## G3B — bounded P2P transfer-mode lifecycle
 
-Status: **VERIFIED BUILD READY FOR PHYSICAL TEST**.
+Status: **PASS — 2026-09-19**.
 
 Candidate: K G1 P2P Lifecycle Probe v0.3.1. GitHub Actions run `35421429624`: PASS.
 
@@ -183,26 +183,44 @@ G3B deliberately does **not** use Android Wi-Fi/P2P APIs or HTTP.
 Exit criterion:
 - enter-transfer and exit-transfer behavior are both physically captured and frame-validated.
 
-## G4 — local P2P network + read-only media listing
+## G4A — phone-side P2P discovery/association
 
-Status: **BLOCKED pending G3B**.
+Status: **NEXT**.
 
-Only after G2B review:
-- send exactly one reviewed, named, precomputed command,
-- capture raw/parsed response,
-- stop.
+Purpose:
+- validate Android Wi-Fi Direct discovery/association against the physically confirmed glasses P2P mode,
+- establish the local network path without issuing an HTTP request.
 
-No generic command console and no automatic download.
+Allowed:
+- enter P2P transfer mode with the confirmed `02 01 04 01` payload,
+- parse transfer credentials in memory without logging or persisting them,
+- use Android `WifiP2pManager` to discover/connect to the corresponding peer,
+- inspect connection/group information and local/group-owner addresses,
+- exit transfer mode with `02 01 09`,
+- disconnect/remove temporary phone-side P2P state.
 
-## G4 — local network + read-only media listing
+Prohibited:
+- Internet access,
+- HTTP/socket requests,
+- `media.config` access,
+- file/media listing,
+- downloads,
+- file modification/deletion,
+- AP-mode command,
+- arbitrary BLE/network command input.
 
-Only after G3.
+Exit criterion:
+- glasses P2P network is discovered/associated from the phone and local connection metadata is captured without accessing media.
 
-- establish only the glasses' local P2P/AP path,
-- discover the actual local endpoint,
-- read `media.config` or equivalent catalog,
+## G4B — read-only local media listing
+
+Status: **BLOCKED pending G4A**.
+
+Only after G4A:
+- issue narrowly scoped local HTTP GET requests,
+- first retrieve `media.config` or the exact equivalent catalog,
 - display filenames/metadata only,
-- no delete/modify operation.
+- no media file download and no mutation.
 
 ## G5 — one disposable media download
 

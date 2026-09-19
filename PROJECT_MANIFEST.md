@@ -251,3 +251,21 @@ Issue #5 tracks the physical G3 media-count query. G3B media mode remains blocke
 | HTTP/media transfer | absent | PASS |
 
 Issue #6 tracks the physical G3B lifecycle test. G4 local-network/media listing remains blocked until this result is reviewed.
+
+
+## G3B physical result
+
+| Item | Result |
+|---|---|
+| Physical G3B result | PASS |
+| Sanitized report | `docs/testing/results/2026-09-19_G3B_P2P_LIFECYCLE_PASS.md` |
+| P2P enter command | `0x41 / 02 01 04 01` |
+| Enter response | valid `0x41` frame |
+| Credential structure | 20-byte SSID + 9-byte password |
+| Credential values | deliberately not stored publicly |
+| Exit command | `0x41 / 02 01 09` |
+| Exit response | valid `0x41` frame |
+| Proprietary writes | exactly 2 |
+| Phone-side Wi-Fi/P2P | none |
+| HTTP/media transfer | none |
+| Next gate | G4A Wi-Fi Direct discovery/association only |

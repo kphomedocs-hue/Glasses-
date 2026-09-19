@@ -183,3 +183,34 @@ Only two proprietary writes are implemented:
 2. `0x41 / 02 01 09` — exit transfer mode
 
 No Android Wi-Fi/P2P/network APIs are present. No HTTP or media transfer occurs.
+
+
+## G3B physical result
+
+**PASS — 2026-09-19.**
+
+Evidence:
+`docs/testing/results/2026-09-19_G3B_P2P_LIFECYCLE_PASS.md`
+
+The enter response carried a 20-byte SSID and a 9-byte transfer password. Their actual values are not stored in this public repository.
+
+## G4A — next approved physical diagnostic
+
+Phone-side Wi-Fi Direct association only.
+
+Allowed:
+- one confirmed P2P enter command,
+- in-memory credential parsing with no logging/persistence,
+- Android Wi-Fi Direct discovery/association,
+- connection/group metadata,
+- one confirmed transfer-exit command,
+- cleanup/disconnect.
+
+Not allowed:
+- HTTP or sockets,
+- media.config,
+- file listing/download,
+- file deletion/modification,
+- AP mode,
+- reset/restart/OTA,
+- arbitrary command entry.
