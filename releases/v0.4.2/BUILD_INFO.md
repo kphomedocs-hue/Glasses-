@@ -1,0 +1,19 @@
+# K G1 Media Catalog Probe v0.4.2 — Verified Repository Build
+- Canonical build commit: d9cd2e28fdd1a5f62b25e21fd7d6eb81c5840508
+- Canonical build run: 35431413193
+- G4B safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Package ID: com.parkarsite.g1mediacatalogprobe
+- INTERNET permission: PRESENT for local HTTP only
+- Cleartext HTTP: enabled for exact Cyan local endpoint
+- P2P-IP query 02 03: ABSENT
+- Proprietary writes: P2P enter once + transfer exit once only
+- HTTP requests: exactly one GET site
+- Catalog path: /files/media.config
+- Redirects: disabled
+- Catalog response cap: 65536 bytes
+- Media-file GET/download/mutation: ABSENT
+- Filename/path value logging: ABSENT
+- Peer selection: exact BLE-reported P2P name only
