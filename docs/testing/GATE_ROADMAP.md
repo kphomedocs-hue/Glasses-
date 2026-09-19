@@ -476,3 +476,35 @@ Verified:
 Physical boundary remains BLE-only with at most two `0x41 / 02 04` writes and no network/media path.
 
 Next action: run v0.5.5 once and review the sanitized capture-visibility report before any further G5 download attempt.
+
+
+### G5 capture visibility physical result — PASS
+
+Physical v0.5.5:
+- baseline images: 5;
+- exactly one user capture during the armed 60-second window;
+- passive `0x73 / 0x01` observed images=6;
+- final `0x41 / 02 04` confirmed images=6;
+- final image delta: +1;
+- videos/recordings unchanged;
+- observed event IDs: `0x01`, `0x05`;
+- proprietary writes total: 2;
+- P2P/Wi-Fi/HTTP/media operations: 0.
+
+Evidence:
+`docs/testing/results/2026-09-19_G5_CAPTURE_VISIBILITY_V0_5_5_PASS.md`
+
+Interpretation:
+- the prior no-delta G5.0/G5.2 results were timing/visibility related rather than evidence of a broken capture path;
+- the new image becomes visible asynchronously to BLE inventory.
+
+Next G5 design:
+- baseline catalog first;
+- capture one disposable JPG with transfer mode off;
+- wait for +1 inventory visibility;
+- only then re-enter P2P and fetch one new catalog;
+- require exactly one new safe relative JPG by set difference;
+- allow one media GET maximum;
+- stop after validation.
+
+G6 remains blocked.

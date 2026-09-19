@@ -747,3 +747,29 @@ Protocol/network boundary is unchanged:
 - no file write/delete.
 
 Physical test is now the only next step.
+
+
+## G5 capture visibility physical result — PASS
+
+Physical v0.5.5 resolved the upstream visibility question.
+
+Baseline:
+- images=5, videos=0, recordings=1.
+
+During the armed 60-second BLE-only window after exactly one photo:
+- passive `0x73 / 0x01` reported images=6;
+- observed event IDs were `0x01` and `0x05`.
+
+Final `0x41 / 02 04` recheck:
+- images=6, videos=0, recordings=1;
+- image delta=+1;
+- write callback and response both successful.
+
+No P2P/Wi-Fi/HTTP/media operation occurred.
+
+Evidence:
+`docs/testing/results/2026-09-19_G5_CAPTURE_VISIBILITY_V0_5_5_PASS.md`
+
+Conclusion: **PASS — one physical capture becomes visible asynchronously and is confirmed by both passive and active BLE inventory paths.**
+
+Next: design a visibility-gated one-file G5 transfer. Do not advance to G6.
