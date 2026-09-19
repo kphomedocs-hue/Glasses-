@@ -18,7 +18,7 @@ Evidence-gated status as of 2026-09-19:
 - **G4B — read-only media listing:** HTTP/body read reached; JSON parser unresolved
 - **G4B2 — catalog response-shape characterization:** PASS
 - **G4B3 — exact line-list parser parity:** PASS
-- **G5 — one disposable JPG download:** EXACT DOWNLOADER TRACED; SOFTWARE BUILD NEXT
+- **G5 — one disposable JPG download:** HARDENED VERIFIED BUILD READY; physical test pending
 
 G4A2 physically confirmed the glasses-side Wi-Fi Direct client address as `192.168.49.176`. G4B v0.4.2 then reached the exact `/files/media.config` local read path with one GET, but Android `JSONObject` parsing failed with `JSONException`. Exact Cyan bytecode confirms it reads the whole file as text and hands that string to Moshi, so G4B2 now characterizes the physical response safely without widening network scope.
 
@@ -317,4 +317,16 @@ Next gate: **G5 one disposable JPG download**.
 
 Exact Cyan media download caller is now traced in `docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`. Because Cyan does not prove catalog order is chronological, G5 will not take the first or last JPG. It will baseline catalog values in memory, exit transfer, ask for one physical disposable photo capture, reconnect, identify exactly one new safe JPG by set difference, and download that one file only.
 
-No G5 physical build is approved yet.
+Verified G5 candidate: **K G1 Disposable Photo Probe v0.5.0**.
+- APK: `releases/v0.5.0/K_G1_Disposable_Photo_Probe_v0_5_0.apk`
+- APK SHA-256: `7966cb3f5ecb1be89f876a6686d34b74dbf693c9231603cd8a92dc2b8d361712`
+- build commit: `b9152f13ed7bacbd2d895a161da3dafbb9461406`
+- build run: `35435019643` — PASS
+- archive commit: `3749b2398c300f8b8677496157fd5d45ad51bd9b`
+- package ID: `com.parkarsite.g1singlephotoprobe`
+- Repository Hygiene on hardened source: `35435019654` — PASS
+- exact two-phase delta selection; one new JPG only
+- one app-private cache output; JPEG SOI/EOI + Content-Length checks
+- no retry/resume/Range, no filename/path logging, no media fingerprinting
+
+The first v0.5.0 build was superseded before physical use after an inter-phase BLE callback race was found and fixed. Use only the hash above.

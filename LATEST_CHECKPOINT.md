@@ -131,7 +131,7 @@ Forbidden:
 
 G0 through G4A are physically complete.
 
-**G4B3 exact line-list parser parity: PASS. Current next gate: G5 one disposable JPG download — exact Cyan downloader traced; software build next.**
+**G4B3 exact line-list parser parity: PASS. Current next gate: G5 one disposable JPG download — hardened verified build ready; physical test pending.**
 
 G4A2 and G4B network prerequisites remain physically proven:
 - exact BLE-reported P2P peer association,
@@ -209,7 +209,25 @@ Safe G5 selection rule:
 Evidence:
 - `docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`
 
-Immediate next action: build and verify the bounded two-phase G5 diagnostic. No physical G5 APK is approved yet.
+Verified G5 candidate: **K G1 Disposable Photo Probe v0.5.0**.
+- APK: `releases/v0.5.0/K_G1_Disposable_Photo_Probe_v0_5_0.apk`
+- APK SHA-256: `7966cb3f5ecb1be89f876a6686d34b74dbf693c9231603cd8a92dc2b8d361712`
+- Source ZIP SHA-256: `9b4023279957adb38f79cae4dd323e0ffef314e13e17e31632b19c29d924e7f9`
+- Package ZIP SHA-256: `97badec697dc20abee2b16b30d58d86b599e23b634eb2e97bce7de20e6b6c0a7`
+- Canonical hardened build commit: `b9152f13ed7bacbd2d895a161da3dafbb9461406`
+- Build run: `35435019643` — PASS
+- Archive commit: `3749b2398c300f8b8677496157fd5d45ad51bd9b`
+- Source-commit Repository Hygiene: `35435019654` — PASS
+- Package ID: `com.parkarsite.g1singlephotoprobe`
+- two-phase baseline + exact-one new JPG delta
+- max 2 catalog GETs + 1 media GET
+- media cap 32 MiB
+- JPEG SOI/EOI validation
+- no redirect, retry, Range/resume, alternate endpoint, raw catalog/name/path logging, media fingerprinting, glasses mutation, AP fallback, or `02 03`
+
+A pre-physical lifecycle recheck caught and fixed a delayed BLE-disconnect callback race between Phase A and the user-photo wait state. The approved APK is only the rebuilt hardened artifact above; the earlier first v0.5.0 build is superseded.
+
+Immediate next action: run the hardened v0.5.0 exactly as the two-phase on-screen workflow instructs, then return the complete sanitized G5 report. Stop before G6.
 
 This file remains authoritative for resuming the project.
 

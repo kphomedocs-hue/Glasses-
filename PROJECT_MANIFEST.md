@@ -81,7 +81,7 @@ G4A2 passive glasses P2P-IP notification capture: **PASS**.
 G4B read-only media listing: **PHYSICAL HTTP/BODY READ REACHED — JSON PARSER UNRESOLVED**.  
 G4B2 response-shape characterization: **PASS**.  
 G4B3 exact line-list parser parity: **PASS**.  
-G5 one disposable JPG download: **EXACT DOWNLOADER TRACED — SOFTWARE BUILD NEXT**.
+G5 one disposable JPG download: **HARDENED VERIFIED BUILD READY — PHYSICAL TEST PENDING**.
 
 v0.4.2 reached `/files/media.config` but failed because our diagnostic applied the wrong parser. Physical v0.4.4 then established a 67-byte UTF-8 `text/plain` line-oriented response. Deeper exact Cyan bytecode proves `configFileType==2` is the JSON/vf_list branch, while `configFileType!=2` uses `/files/media.config` plus Kotlin `readLines()`. The physical value is 1, so every line is a catalog entry. G5 remains blocked pending one final sanitized line-list parity check.
 
@@ -397,4 +397,28 @@ Exact Cyan media download evidence:
 
 First G5 selection is delta-based, not queue-position based. It requires a baseline catalog, one disposable user-captured JPG while transfer mode is off, then exactly one new safe JPG on the second catalog read. Only that new entry may be requested.
 
-No G5 physical candidate is approved yet.
+## G5 verified candidate — v0.5.0
+
+| Item | Repository path | SHA-256 / status |
+|---|---|---|
+| G5 source | `releases/v0.5.0/K_G1_Disposable_Photo_Probe_v0_5_0_source_v1.zip` | `9b4023279957adb38f79cae4dd323e0ffef314e13e17e31632b19c29d924e7f9` |
+| G5 APK | `releases/v0.5.0/K_G1_Disposable_Photo_Probe_v0_5_0.apk` | `7966cb3f5ecb1be89f876a6686d34b74dbf693c9231603cd8a92dc2b8d361712` |
+| G5 package | `releases/v0.5.0/K_G1_Disposable_Photo_Probe_v0_5_0_package.zip` | `97badec697dc20abee2b16b30d58d86b599e23b634eb2e97bce7de20e6b6c0a7` |
+| Canonical hardened build commit | — | `b9152f13ed7bacbd2d895a161da3dafbb9461406` |
+| Archive commit | — | `3749b2398c300f8b8677496157fd5d45ad51bd9b` |
+| Build / verification | run `35435019643` | PASS |
+| Hardened source Repository Hygiene | run `35435019654` | PASS |
+| Safety audit / compile / lint / signature | — | PASS |
+| Package ID | — | `com.parkarsite.g1singlephotoprobe` |
+| Selection | — | baseline + exactly one new safe JPG delta |
+| Catalog GETs | — | max 2 |
+| Media GETs | — | max 1 |
+| Media cap | — | 32 MiB |
+| Local target | — | app-private cache |
+| JPEG validation | — | SOI + EOI |
+| Redirect / retry / Range / resume | — | ABSENT |
+| Remote name/path/raw catalog/fingerprint logging | — | ABSENT |
+| Glasses mutation / AP fallback / `02 03` | — | ABSENT |
+| Physical G5 result | — | PENDING |
+
+The earlier first v0.5.0 build is superseded; a pre-physical lifecycle recheck found a delayed BLE-disconnect callback race between phases. The approved artifact is the rebuilt hardened candidate identified by the APK SHA-256 above.

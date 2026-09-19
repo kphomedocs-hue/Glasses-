@@ -303,7 +303,7 @@ Note: G4B2's reported line count 4 included the terminal newline; G4B3's `readLi
 
 ## G5 — one disposable media download
 
-Status: **EXACT CYAN DOWNLOADER TRACED — SOFTWARE BUILD NEXT**.
+Status: **HARDENED VERIFIED BUILD READY — physical test pending**.
 
 Exact static evidence:
 `docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`
@@ -337,6 +337,16 @@ Approved G5 diagnostic design:
    - exit transfer and stop.
 
 Abort before media GET if delta count is not exactly one, the entry is unsafe, or extension is not JPG.
+
+Verified candidate: **K G1 Disposable Photo Probe v0.5.0**.
+- APK SHA-256: `7966cb3f5ecb1be89f876a6686d34b74dbf693c9231603cd8a92dc2b8d361712`
+- hardened build commit: `b9152f13ed7bacbd2d895a161da3dafbb9461406`
+- build run: `35435019643` — PASS
+- archive commit: `3749b2398c300f8b8677496157fd5d45ad51bd9b`
+- hardened source Repository Hygiene: `35435019654` — PASS
+- safety audit / compile / lint / signature: PASS
+
+The first v0.5.0 build was superseded before physical use after a callback-race review. Only the hash above is approved.
 
 G5 does not implement multi-file sync, OPUS/video import, production naming, ledger, deletion, or glasses mutation.
 

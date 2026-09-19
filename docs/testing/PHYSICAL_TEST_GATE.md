@@ -310,9 +310,20 @@ Confirmed:
 Evidence:
 `docs/testing/results/2026-09-19_G4B3_CATALOG_LINE_PASS.md`
 
-## G5 — next design gate
+## G5 — next approved physical diagnostic
 
-**No physical G5 build is approved yet.**
+**Hardened verified build ready; physical result pending.**
+
+App: K G1 Disposable Photo Probe v0.5.0  
+APK: `releases/v0.5.0/K_G1_Disposable_Photo_Probe_v0_5_0.apk`  
+APK SHA-256: `7966cb3f5ecb1be89f876a6686d34b74dbf693c9231603cd8a92dc2b8d361712`  
+Build run: `35435019643` — PASS  
+Hardened source Repository Hygiene: `35435019654` — PASS
+
+The first v0.5.0 build is superseded. Use only the APK hash above.
+
+Exact Cyan single-file download behavior is traced in:
+`docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`.
 
 Exact Cyan single-file download behavior is traced in:
 `docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`.
@@ -337,4 +348,14 @@ Maximum physical scope when a verified build exists:
 
 The media request must abort unless exactly one new safe relative `.jpg` exists.
 
-**G5 remains blocked until its build passes safety audit, compile/lint, signature verification and Repository Hygiene.**
+Physical procedure:
+1. Run Phase A baseline and wait until the app explicitly says Phase A is complete.
+2. While transfer mode is off, capture **exactly one disposable photo** with the glasses.
+3. Do not record audio/video and do not capture a second photo.
+4. Return to the app and tap **I captured ONE test photo — Continue G5**.
+5. Let Phase B finish the single delta-selected JPG download and transfer exit.
+6. Copy the complete report and stop.
+
+The app aborts before media transfer unless the catalog delta is exactly one strict-safe `.jpg`.
+
+**G6 remains blocked until the G5 physical report is reviewed.**
