@@ -131,7 +131,7 @@ Forbidden:
 
 G0 through G4A are physically complete.
 
-**G4B3 exact line-list parser parity: PASS. G5 v0.5.0 physical run: SAFE NO-DELTA STOP. Current next step: G5.1 Cyan-refresh/readiness parity build.**
+**G4B3: PASS. G5 v0.5.0: SAFE NO-DELTA STOP. G5.1 v0.5.1: VERIFIED BUILD READY — physical test pending.**
 
 G4A2 and G4B network prerequisites remain physically proven:
 - exact BLE-reported P2P peer association,
@@ -246,7 +246,31 @@ Post-result exact Cyan trace found two missing parity behaviors in v0.5.0:
 Evidence:
 - `docs/research/CYAN_G5_REFRESH_PARITY_2026-09-19.md`
 
-Immediate next action: build G5.1 with only those two Cyan-parity additions while keeping the same exact-one-new-safe-JPG guard. G6 remains blocked.
+Verified G5.1 candidate: **K G1 Disposable Photo Probe v0.5.1**.
+- APK: `releases/v0.5.1/K_G1_Disposable_Photo_Probe_v0_5_1.apk`
+- APK SHA-256: `20cab114c980e10c2e277cb82960b761975aac8dad467c36d7c88023dd7a403f`
+- Source ZIP SHA-256: `dbca801c17415cae2b27c7b8246dc7530939981081fcf2967e016ae2fe22ced9`
+- Package ZIP SHA-256: `5928b44f68f1c0efbbf60c3d692891505c496a184bc9ae974487001d431dcba0`
+- Canonical source/build commit: `c8e54b68ed817f899aef57030d9e9bf4a442ea2e`
+- Build run: `35436132719` — PASS
+- Archive commit: `353bbd72bbf9d72a81b3ff82f6664a58aa864807`
+- Package ID: `com.parkarsite.g1singlephotoprobe51`
+- G5.1 safety audit / compile / lint / APK signature: PASS
+- source Repository Hygiene on `c8e54b68ed817f899aef57030d9e9bf4a442ea2e`: PASS
+
+G5.1 adds only the two exact Cyan readiness behaviors missing from v0.5.0:
+1. one already-proven `0x41 / 02 04` media-count/config query before P2P enter in each phase;
+2. exact **1000 ms** delay after P2P + passive-IP readiness before each catalog GET.
+
+All v0.5.0 download guards remain:
+- exact peer only;
+- exactly one new strict-safe relative `.jpg` required;
+- one media GET maximum;
+- 32 MiB cap;
+- JPEG SOI/EOI + Content-Length validation;
+- no redirect, retry/resume/Range, AP fallback, `02 03`, raw catalog/name/path logging, fingerprinting, or glasses mutation.
+
+Immediate next action: run G5.1 once using the two-phase workflow and return the complete sanitized report. Stop before G6.
 
 This file remains authoritative for resuming the project.
 

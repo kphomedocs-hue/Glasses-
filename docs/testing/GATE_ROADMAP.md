@@ -303,7 +303,7 @@ Note: G4B2's reported line count 4 included the terminal newline; G4B3's `readLi
 
 ## G5 — one disposable media download
 
-Status: **v0.5.0 SAFE NO-DELTA STOP; G5.1 CYAN-PARITY CORRECTION NEXT**.
+Status: **v0.5.0 SAFE NO-DELTA STOP; G5.1 v0.5.1 VERIFIED BUILD READY — physical test pending**.
 
 Exact static evidence:
 `docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`
@@ -379,3 +379,18 @@ G5 does not implement multi-file sync, OPUS/video import, production naming, led
 - battery/background behavior.
 
 No destructive maintenance commands are part of this roadmap.
+
+
+### G5.1 verified candidate
+
+K G1 Disposable Photo Probe v0.5.1:
+- APK SHA-256 `20cab114c980e10c2e277cb82960b761975aac8dad467c36d7c88023dd7a403f`
+- source/build commit `c8e54b68ed817f899aef57030d9e9bf4a442ea2e`
+- build run `35436132719` — PASS
+- archive commit `353bbd72bbf9d72a81b3ff82f6664a58aa864807`
+
+Only two behavioral deltas from v0.5.0 are authorized:
+1. one exact `0x41 / 02 04` media-count/config query before P2P enter in each phase;
+2. exact 1000 ms wait after P2P + passive-IP readiness before each `/files/media.config` GET.
+
+The media-download boundary is unchanged. G6 remains blocked until the G5.1 physical report is reviewed.

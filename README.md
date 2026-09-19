@@ -18,7 +18,7 @@ Evidence-gated status as of 2026-09-19:
 - **G4B — read-only media listing:** HTTP/body read reached; JSON parser unresolved
 - **G4B2 — catalog response-shape characterization:** PASS
 - **G4B3 — exact line-list parser parity:** PASS
-- **G5 — one disposable JPG download:** HARDENED VERIFIED BUILD READY; physical test pending
+- **G5 — one disposable JPG download:** v0.5.0 SAFE NO-DELTA STOP; v0.5.1 VERIFIED BUILD READY
 
 G4A2 physically confirmed the glasses-side Wi-Fi Direct client address as `192.168.49.176`. G4B v0.4.2 then reached the exact `/files/media.config` local read path with one GET, but Android `JSONObject` parsing failed with `JSONException`. Exact Cyan bytecode confirms it reads the whole file as text and hands that string to Moshi, so G4B2 now characterizes the physical response safely without widening network scope.
 
@@ -330,3 +330,19 @@ Verified G5 candidate: **K G1 Disposable Photo Probe v0.5.0**.
 - no retry/resume/Range, no filename/path logging, no media fingerprinting
 
 The first v0.5.0 build was superseded before physical use after an inter-phase BLE callback race was found and fixed. Use only the hash above.
+
+
+## G5.1 verified candidate — v0.5.1
+
+The v0.5.0 physical run safely stopped because the Phase B catalog did not change after one disposable photo. Exact Cyan re-tracing identified two missing readiness behaviors: `0x41 / 02 04` inventory refresh before import and an exact 1000 ms delay before catalog retrieval.
+
+Verified v0.5.1:
+- APK SHA-256: `20cab114c980e10c2e277cb82960b761975aac8dad467c36d7c88023dd7a403f`
+- source ZIP SHA-256: `dbca801c17415cae2b27c7b8246dc7530939981081fcf2967e016ae2fe22ced9`
+- package ZIP SHA-256: `5928b44f68f1c0efbbf60c3d692891505c496a184bc9ae974487001d431dcba0`
+- build commit: `c8e54b68ed817f899aef57030d9e9bf4a442ea2e`
+- build run: `35436132719` — PASS
+- archive commit: `353bbd72bbf9d72a81b3ff82f6664a58aa864807`
+- package: `com.parkarsite.g1singlephotoprobe51`
+
+G5.1 preserves the same strict delta-selected single-JPG boundary. G6 is still blocked.

@@ -81,7 +81,8 @@ G4A2 passive glasses P2P-IP notification capture: **PASS**.
 G4B read-only media listing: **PHYSICAL HTTP/BODY READ REACHED — JSON PARSER UNRESOLVED**.  
 G4B2 response-shape characterization: **PASS**.  
 G4B3 exact line-list parser parity: **PASS**.  
-G5 one disposable JPG download: **HARDENED VERIFIED BUILD READY — PHYSICAL TEST PENDING**.
+G5 v0.5.0: **SAFE NO-DELTA STOP**.  
+G5.1 v0.5.1: **VERIFIED BUILD READY — PHYSICAL TEST PENDING**.
 
 v0.4.2 reached `/files/media.config` but failed because our diagnostic applied the wrong parser. Physical v0.4.4 then established a 67-byte UTF-8 `text/plain` line-oriented response. Deeper exact Cyan bytecode proves `configFileType==2` is the JSON/vf_list branch, while `configFileType!=2` uses `/files/media.config` plus Kotlin `readLines()`. The physical value is 1, so every line is a catalog entry. G5 remains blocked pending one final sanitized line-list parity check.
 
@@ -422,3 +423,30 @@ First G5 selection is delta-based, not queue-position based. It requires a basel
 | Physical G5 result | — | PENDING |
 
 The earlier first v0.5.0 build is superseded; a pre-physical lifecycle recheck found a delayed BLE-disconnect callback race between phases. The approved artifact is the rebuilt hardened candidate identified by the APK SHA-256 above.
+
+
+## G5.1 verified candidate — v0.5.1
+
+| Item | Value |
+|---|---|
+| APK | `releases/v0.5.1/K_G1_Disposable_Photo_Probe_v0_5_1.apk` |
+| APK SHA-256 | `20cab114c980e10c2e277cb82960b761975aac8dad467c36d7c88023dd7a403f` |
+| Source ZIP SHA-256 | `dbca801c17415cae2b27c7b8246dc7530939981081fcf2967e016ae2fe22ced9` |
+| Package ZIP SHA-256 | `5928b44f68f1c0efbbf60c3d692891505c496a184bc9ae974487001d431dcba0` |
+| Source/build commit | `c8e54b68ed817f899aef57030d9e9bf4a442ea2e` |
+| Build run | `35436132719` — PASS |
+| Archive commit | `353bbd72bbf9d72a81b3ff82f6664a58aa864807` |
+| Package ID | `com.parkarsite.g1singlephotoprobe51` |
+| Per-phase inventory query | one `0x41 / 02 04` |
+| Catalog readiness | exact 1000 ms Cyan delay |
+| Per-phase P2P enter/exit | one / one |
+| Catalog GETs | one per phase |
+| Media GETs | one maximum |
+| Selection | exactly one new strict-safe relative JPG |
+| Media cap | 32 MiB |
+| Redirect / retry / Range / resume | absent |
+| AP fallback / `02 03` | absent |
+| Glasses mutation | absent |
+| Physical result | pending |
+
+v0.5.0 remains preserved as the safe no-delta physical record.

@@ -312,7 +312,7 @@ Evidence:
 
 ## G5 — next approved physical diagnostic
 
-**v0.5.0 physical result: SAFE NO-DELTA STOP. No media file was requested.**
+**v0.5.0: SAFE NO-DELTA STOP. G5.1 v0.5.1: VERIFIED BUILD READY; physical result pending.**
 
 App: K G1 Disposable Photo Probe v0.5.0  
 APK: `releases/v0.5.0/K_G1_Disposable_Photo_Probe_v0_5_0.apk`  
@@ -364,8 +364,27 @@ Evidence:
 - `docs/testing/results/2026-09-19_G5_V0_5_0_SAFE_NO_DELTA.md`
 - `docs/research/CYAN_G5_REFRESH_PARITY_2026-09-19.md`
 
-The next physical build is not approved yet. G5.1 must first add only:
+Approved G5.1 physical candidate:
+- app: K G1 Disposable Photo Probe v0.5.1
+- APK SHA-256: `20cab114c980e10c2e277cb82960b761975aac8dad467c36d7c88023dd7a403f`
+- build run: `35436132719` — PASS
+- package ID: `com.parkarsite.g1singlephotoprobe51`
+
+G5.1 adds exactly:
 - one proven `02 04` inventory query before P2P enter in each phase;
 - exact 1000 ms Cyan delay before each catalog GET.
 
-**G6 remains blocked.**
+Physical procedure:
+1. force-stop Cyan Glasses;
+2. start G5.1 Phase A;
+3. wait for **Phase A complete**;
+4. keep G5.1 open;
+5. capture **exactly one new disposable photo** with the glasses;
+6. capture no audio/video and no second photo;
+7. tap **I captured ONE test photo — Continue G5.1**;
+8. let Phase B finish and copy the complete report;
+9. stop before G6.
+
+The Phase A baseline may now include the previous v0.5.0 test photo; that is acceptable. Only a photo captured after the new Phase A completes is eligible as the G5.1 delta.
+
+**G6 remains blocked until this physical report is reviewed.**
