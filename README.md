@@ -9,10 +9,11 @@ Evidence-gated status as of 2026-09-19:
 - **G0 — software/recovery readiness:** PASS
 - **G1 — physical GATT confirmation:** PASS
 - **G2 — response-channel confirmation:** PASS
-- **G2B — response-semantic correlation:** NEXT / NO CONTROL WRITE
-- **G3 — first allow-listed control command:** BLOCKED pending G2B evidence
+- **G2B — response-semantic correlation:** PASS by exact Cyan trace
+- **G2C — one-command initialization parity:** NEXT
+- **G3 — first media-mode control command:** BLOCKED pending G2C
 
-The current strategy is deliberately passive: correlate physical glasses events with spontaneous notifications while separately tracing the Cyan parser. Do not guess payload meanings and do not send a proprietary BLE control write until G2B is reviewed.
+Exact Cyan tracing resolved the observed `0x73` events and showed that Cyan's first queued proprietary command after service discovery is `0x40` time synchronization. G2C is intentionally limited to that one benign initialization-parity command; no media-mode write is authorized yet.
 
 Authoritative checkpoint:
 - `LATEST_CHECKPOINT.md`
@@ -52,7 +53,11 @@ All three validate against the recovered Cyan envelope:
 Sanitized evidence:
 `docs/testing/results/2026-09-19_G2_NOTIFICATION_ONLY_PASS.md`
 
-The semantic meaning of command `0x73` and its payloads is **not yet established**.
+The observed `0x73` semantics are now resolved by the user's exact Cyan APK:
+- `0x01` = media inventory/count/config report,
+- `0x05` = battery/charging-family report.
+
+See `docs/research/CYAN_EXACT_G2B_TRACE_2026-09-19.md`.
 
 ## Current verified diagnostic builds
 
@@ -77,35 +82,24 @@ The semantic meaning of command `0x73` and its payloads is **not yet established
 - package SHA-256: `b4d2fe59d87866dd993454ff58b53d18bf605891c74d2c9ddce1e9f40af18924`
 - build/verification run: `35413378362`
 
-## Next method — G2B passive correlation
+## Next method — G2C one-command initialization parity
 
-Before G3, use two evidence streams in parallel:
+The exact Cyan receive/init path has been traced, so a passive correlator is no longer required before progression.
 
-1. **Targeted Cyan parser tracing**
-   - follow notification callback → frame parser → command dispatch → state/UI consumer,
-   - specifically resolve command `0x73`,
-   - identify initialization/time semantics from Cyan evidence if present,
-   - do not infer semantics from byte values alone.
+The next build must:
+- keep the verified bonded-device + notify-subscription path,
+- generate Cyan's exact 9-byte dynamic time payload,
+- frame it as command `0x40` with the validated length/CRC envelope,
+- write exactly that one frame to the confirmed Cyan write characteristic,
+- capture the `0x40` response and any `0x73` events,
+- disconnect.
 
-2. **Passive physical event correlation**
-   - subscribe to the already confirmed notify path,
-   - send no proprietary characteristic command,
-   - timestamp received frames,
-   - timestamp user-marked physical actions,
-   - repeat each safe action several times,
-   - compare repeated event/frame associations,
-   - retain only sanitized evidence.
+It must not contain a `0x41` media/control command, P2P/AP activation, HTTP transfer, reset/OTA operation or generic raw-command input.
 
-The planned correlator must not include:
-- proprietary characteristic writes,
-- media-mode control commands,
-- Wi-Fi/P2P/AP,
-- HTTP/media transfer,
-- pairing/unpairing/reset,
-- OTA/firmware functions,
-- generic BLE write console.
+Exact trace:
+`docs/research/CYAN_EXACT_G2B_TRACE_2026-09-19.md`
 
-See `docs/testing/G2B_PASSIVE_CORRELATION_PLAN.md`.
+The passive event-correlation plan remains in the repository as a fallback for future unknown event types.
 
 ## Architecture
 

@@ -131,20 +131,25 @@ Forbidden:
 
 G1 and the notification-only stage of G2 are complete.
 
-**Current gate: G2B — passive response-semantic correlation.**
+**G2B exact static trace: PASS.**
 
-Before any proprietary control write:
-1. trace Cyan's notification callback → frame parser → command dispatcher → state/UI consumer, concentrating on command `0x73`;
-2. if static semantics are incomplete, build a passive Event Correlator that subscribes to the already confirmed notify characteristic and sends no proprietary command;
-3. timestamp user-marked physical glasses actions and received frames;
-4. repeat safe actions to measure reproducible associations rather than guessing from one packet;
-5. review static and physical evidence together;
-6. only then define a single explicit G3 allow-listed command.
+Exact Cyan parser tracing resolved the observed event semantics and the normal initialization order. The passive Event Correlator is now a fallback rather than the next required build.
 
-Plan: `docs/testing/G2B_PASSIVE_CORRELATION_PLAN.md`  
-Tracking issue: #3.
+Current next gate: **G2C — one-command initialization parity**.
 
-G3 remains blocked.
+Approved design target:
+1. connect to exactly one bonded AIMB-G1-family device;
+2. subscribe to the confirmed Cyan notify characteristic;
+3. construct the exact Cyan-equivalent dynamic `0x40` time-sync payload from phone time/language/timezone;
+4. send exactly that one proprietary frame;
+5. capture the `0x40` response and any `0x73` reports;
+6. send no `0x41` control/media command;
+7. disconnect.
+
+Exact static-trace evidence:
+`docs/research/CYAN_EXACT_G2B_TRACE_2026-09-19.md`
+
+G3 media-mode control remains blocked until G2C is physically reviewed.
 
 This file remains authoritative for resuming the project.
 
@@ -349,3 +354,23 @@ Planned correlator:
 - contains no proprietary characteristic-write API and no Cyan control-write UUID.
 
 Do not advance to G3 until G2B evidence is reviewed.
+
+
+## G2B exact Cyan trace — PASS
+
+Exact package traced:
+- Cyan Glasses `1.0.2.18_20260811`
+- split export SHA-256 `1328b3c025f43c06b2a0674d4c17890ec4b76cb6487196a84aa27b2335c2fc49`
+- extracted `base.apk` SHA-256 `1e700628d76fa4fa84047632e2ccce3673f1a01966fbf8c583985568f3aaaf64`
+
+Key findings:
+- command `0x73` is Cyan's asynchronous device-data reporting channel;
+- event `0x01` is a media inventory/count/config report;
+- physical `0x01` decodes as image=1, video=0, record=1, configFileType=1; its optional AP-only flag is absent because the physical frame is one byte shorter than the current parser schema;
+- event `0x05` is a battery/charging-family report; the physical charging flag is 0 in both observed frames;
+- after service discovery, Cyan enables notifications and queues `syncTime(0x40)` first, then device info/settings;
+- Cyan does not wait on or inspect the time-sync callback before continuing, so time sync is normal initialization but not proven to be a media-mode handshake gate.
+
+G2B conclusion: **PASS**.
+
+Passive Event Correlator: retained as fallback, not required before G2C.

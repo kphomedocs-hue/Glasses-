@@ -51,7 +51,7 @@ Evidence:
 
 ## G2B — response-semantic correlation
 
-Status: **NEXT / PASSIVE ONLY**.
+Status: **PASS — exact Cyan static trace**.
 
 Purpose:
 - decode the meaning of observed `0x73` traffic,
@@ -87,12 +87,44 @@ Prohibited:
 Plan:
 `docs/testing/G2B_PASSIVE_CORRELATION_PLAN.md`
 
+Exit criterion: **met by exact Cyan trace**.
+
+Evidence:
+`docs/research/CYAN_EXACT_G2B_TRACE_2026-09-19.md`
+
+Resolved:
+- observed `0x01` event = media inventory/count/config report,
+- observed `0x05` event = battery/charging-family report,
+- Cyan's first queued post-discovery proprietary command = `0x40` syncTime,
+- time-sync callback is not used as a handshake gate.
+
+Passive event correlation remains available as a fallback for future unknown event types.
+
+## G2C — one-command initialization parity
+
+Status: **NEXT**.
+
+Action:
+- connect and subscribe to the confirmed response path,
+- construct Cyan-equivalent dynamic `0x40` time-sync payload,
+- send exactly one `0x40` frame,
+- record any `0x40` response and spontaneous `0x73` reports,
+- disconnect.
+
+Prohibited:
+- `0x41` glassesControl,
+- P2P/AP media payload,
+- Wi-Fi/P2P/AP activation,
+- HTTP/media transfer,
+- reset/restart/OTA/firmware action,
+- generic write console.
+
 Exit criterion:
-- `0x73` semantics and initialization requirements are sufficiently supported by static and/or repeated passive physical evidence to design one named G3 command, or the unresolved uncertainty is explicitly documented and G3 remains blocked.
+- one benign Cyan-parity proprietary write succeeds or fails in a documented way and response behavior is understood.
 
-## G3 — one allow-listed control command
+## G3 — one allow-listed media-mode control command
 
-Status: **BLOCKED pending G2B**.
+Status: **BLOCKED pending G2C**.
 
 Only after G2B review:
 - send exactly one reviewed, named, precomputed command,

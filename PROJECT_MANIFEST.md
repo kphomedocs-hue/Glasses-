@@ -72,10 +72,11 @@ Only interoperability findings and provenance are stored in this public reposito
 G0: PASS.  
 G1 physical GATT confirmation: PASS.  
 G2 notification/response-channel confirmation: PASS.  
-G2B passive response-semantic correlation: **NEXT**.  
-G3 first control command: **BLOCKED**.
+G2B exact response-semantic trace: **PASS**.  
+G2C one-command initialization parity: **NEXT**.  
+G3 media-mode control: **BLOCKED pending G2C**.
 
-The current authorized work is static Cyan parser tracing and, if needed, a passive event-correlation probe. No proprietary control-characteristic write or media-mode command is authorized.
+The next authorized implementation is a single-command Cyan-equivalent `0x40` time-sync probe. No `0x41` control/media command, Wi-Fi transition, HTTP transfer, reset or OTA action is authorized in G2C.
 
 ## Discovery v0.1.2 diagnostic candidate
 
@@ -150,3 +151,20 @@ Issue #2 tracks the physical G2 test. No control-characteristic write is authori
 | G3 | BLOCKED pending G2B review |
 
 No G2B executable has been started at this checkpoint; this entry records the approved method before implementation begins.
+
+
+## G2B exact static-trace result
+
+| Item | Result |
+|---|---|
+| Exact trace evidence | `docs/research/CYAN_EXACT_G2B_TRACE_2026-09-19.md` |
+| `0x73` channel | asynchronous device-data reporting |
+| `0x01` event | media inventory/count/config report |
+| Physical `0x01` stable fields | image=1, video=0, record=1, configFileType=1 |
+| Physical schema note | optional AP-only flag absent from shorter physical frame |
+| `0x05` event | battery/charging family; charging flag directly confirmed |
+| Cyan first post-discovery proprietary command | `0x40` syncTime |
+| Time-sync callback | empty / not used as gate |
+| Passive correlator | fallback only |
+| Next gate | G2C single `0x40` time-sync command |
+| Media-mode `0x41` | BLOCKED pending G2C |

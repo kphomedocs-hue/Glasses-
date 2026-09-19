@@ -132,8 +132,8 @@ Additional Cyan payloads were catalogued during static analysis. They are retain
 | P2P/AP media payload bytes | confirmed in app code |
 | local HTTP media retrieval | confirmed in app code |
 | physical AIMB-G1 exposes expected UUIDs | **confirmed by G1 physical test** |
-| exact response semantics | pending |
-| initialization/time handshake requirement | pending |
+| exact response semantics | **resolved for observed 0x01 / 0x05 events by exact Cyan trace** |
+| initialization/time handshake requirement | **Cyan sends 0x40 time sync first, but does not use its callback as a gate** |
 | first real file download | pending |
 
 ## Safety rule
@@ -205,3 +205,56 @@ The next interpretation process is:
 A future passive Event Correlator may write the standard CCCD only. It must not contain the proprietary Cyan write UUID or any characteristic-write API.
 
 See `docs/testing/G2B_PASSIVE_CORRELATION_PLAN.md`.
+
+
+## Exact G2B Cyan parser trace — 2026-09-19
+
+Detailed evidence:
+`docs/research/CYAN_EXACT_G2B_TRACE_2026-09-19.md`
+
+### Command 0x73
+
+Exact Cyan/Oudmon receive code treats `0x73` (decimal 115) as the persistent asynchronous device-data reporting channel.
+
+The first payload byte at raw frame index 6 is the event type.
+
+### Event 0x01
+
+Exact `PictureFragment$MyDeviceNotifyListener` parses three little-endian 16-bit values, a config byte and an optional AP-only flag, then sums the three counts and updates the Album media-count UI.
+
+The corresponding `GlassModelControlResponse` identifies the count ordering as image, video and record.
+
+Physical G2 frame stable decode:
+- imageCount: 1
+- videoCount: 0
+- recordCount: 1
+- configFileType: 1
+- onlySupportApImport: unavailable because the physical frame is one byte shorter than the current parser's newest schema.
+
+### Event 0x05
+
+Exact Cyan PictureFragment code consumes the third payload byte as the charging boolean. Both physical G2 frames therefore report charging=false.
+
+The middle bytes `0x47` and `0x46` are consistent with the SDK convention for battery level, but the exact app branch's directly required fact is the charging flag.
+
+### Initialization order
+
+Exact post-service-discovery path:
+
+```text
+onServiceDiscovered
+→ LargeDataHandler.initEnable
+→ DeviceCmdInit.initDeviceSetting
+→ DeviceCmdInit.init
+→ syncTime (0x40)
+→ syncDeviceInfo
+→ syncDeviceSetting
+```
+
+`syncTime` is therefore Cyan's first queued proprietary command after notification setup.
+
+Its callback is empty and later initialization is queued immediately; static evidence does not show time sync functioning as a required media-mode handshake.
+
+### G2C rule
+
+Before any `0x41` media/control payload, physically validate one Cyan-equivalent `0x40` time-sync command only.

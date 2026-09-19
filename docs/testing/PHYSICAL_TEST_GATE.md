@@ -29,9 +29,11 @@ The probe:
 - sent no proprietary characteristic command,
 - observed three valid spontaneous `0x73` frames.
 
-## G2B — current approved physical diagnostic
+## G2B — semantic trace
 
-Current method: **passive event correlation only**.
+Status: **PASS by exact Cyan static analysis**.
+
+The passive event-correlator design below is retained as a fallback for future unknown event types, but is not required before the next gate.
 
 A future G2B Event Correlator may:
 - connect to exactly one bonded AIMB-G1-family device,
@@ -64,11 +66,30 @@ Do not assign semantic meaning from one coincidental packet. A proposed mapping 
 See:
 `docs/testing/G2B_PASSIVE_CORRELATION_PLAN.md`
 
-## G3 — first control write
+## G2C — current approved physical diagnostic
 
-Status: **BLOCKED**.
+One and only one proprietary command may be tested after a verified build is produced:
 
-No proprietary characteristic write is authorized until G2B evidence has been reviewed and one explicit allow-listed command has been documented.
+- command: `0x40` Cyan-equivalent time synchronization,
+- payload: dynamically generated using Cyan's 9-byte time/language/timezone schema,
+- frame: standard validated `BC | 40 | len | CRC | payload`,
+- destination: confirmed Cyan write characteristic,
+- response observation: confirmed notify characteristic,
+- stop after this one command.
+
+Not allowed:
+- any `0x41` glasses-control command,
+- media-mode P2P/AP payload,
+- Wi-Fi/P2P/AP activation,
+- HTTP/media transfer,
+- reset/restart/OTA/firmware operation,
+- arbitrary user-entered payloads.
+
+## G3 — first media-mode control write
+
+Status: **BLOCKED pending G2C**.
+
+No media-mode characteristic write is authorized until the single-command G2C result has been reviewed.
 
 ## Later gates
 
