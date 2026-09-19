@@ -18,14 +18,14 @@ Evidence-gated status as of 2026-09-19:
 - **G4B — read-only media listing:** HTTP/body read reached; JSON parser unresolved
 - **G4B2 — catalog response-shape characterization:** PASS
 - **G4B3 — exact line-list parser parity:** PASS
-- **G5 — one disposable JPG download:** v0.5.0 SAFE NO-DELTA STOP; v0.5.1 VERIFIED BUILD READY
+- **G5 — one disposable JPG download:** v0.5.0 + v0.5.2 SAFE NO-DELTA STOPS; capture-visibility v0.5.4 VERIFIED BUILD READY
 
 G4A2 physically confirmed the glasses-side Wi-Fi Direct client address as `192.168.49.176`. G4B v0.4.2 then reached the exact `/files/media.config` local read path with one GET, but Android `JSONObject` parsing failed with `JSONException`. Exact Cyan bytecode confirms it reads the whole file as text and hands that string to Moshi, so G4B2 now characterizes the physical response safely without widening network scope.
 
 Authoritative checkpoint:
 - `LATEST_CHECKPOINT.md`
 - `docs/testing/GATE_ROADMAP.md`
-- tracked work: GitHub Issue #9
+- tracked work: GitHub Issue #10
 
 ## Confirmed physical AIMB-G1 profile
 
@@ -369,3 +369,21 @@ Verified BLE-only diagnostic:
 - package: `com.parkarsite.g1capturevisibilityprobe`
 
 It performs two inventory queries total around one user-captured photo while keeping a single BLE notification connection alive. It contains no Wi-Fi/P2P/HTTP/media access.
+
+
+## Current G5 capture-visibility candidate — v0.5.4
+
+v0.5.3 is superseded before physical use because its 60-second watch was armed after the user was instructed to take the photo. v0.5.4 arms the window first and keeps armed-window counters separate from all-session counters.
+
+- APK: `releases/v0.5.4/K_G1_Capture_Visibility_Probe_v0_5_4.apk`
+- APK SHA-256: `5f508ba014db4f8cfd803e2573419b95672d95d58fc6f4f7319c729c8013426a`
+- build commit: `86b2ac3d642947f1d02b5b1e91e0488a8ec9c687`
+- build run: `35440385274` — PASS
+- archive commit: `4881adff06b31e134ace69b515cabca9a1ce8468`
+- package ID: `com.parkarsite.g1capturevisibilityprobe54`
+- BLE-only; no INTERNET permission; no Wi-Fi/P2P/HTTP/media access
+- only proprietary payload: `0x41 / 02 04`
+- maximum proprietary writes: 2 total
+- observation window: armed before capture, 60 seconds
+
+G6 remains blocked.

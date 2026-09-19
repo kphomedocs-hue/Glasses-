@@ -417,7 +417,7 @@ Next physical diagnostic must:
 No P2P, HTTP or media file request is allowed in this gate.
 
 
-### G5 capture-visibility v0.5.3 — approved physical diagnostic
+### G5 capture-visibility v0.5.3 — superseded before physical use
 
 App: K G1 Capture Visibility Probe v0.5.3  
 APK: `releases/v0.5.3/K_G1_Capture_Visibility_Probe_v0_5_3.apk`  
@@ -436,3 +436,34 @@ Procedure:
 9. copy the complete report and stop.
 
 No P2P, Wi-Fi, HTTP or media file request is allowed in this gate. G6 remains blocked.
+
+
+### G5 capture-visibility v0.5.4 — approved physical diagnostic
+
+App: K G1 Capture Visibility Probe v0.5.4  
+APK: `releases/v0.5.4/K_G1_Capture_Visibility_Probe_v0_5_4.apk`  
+APK SHA-256: `5f508ba014db4f8cfd803e2573419b95672d95d58fc6f4f7319c729c8013426a`  
+Build run: `35440385274` — PASS
+
+Physical procedure:
+1. force-stop Cyan Glasses;
+2. open v0.5.4 and tap **Start BLE baseline**;
+3. wait until baseline inventory completes;
+4. tap **Arm 60s watch — then capture ONE photo**;
+5. only after the watch is armed, capture exactly ONE disposable photo with the glasses;
+6. do not capture a second photo, audio or video during the 60-second window;
+7. keep the app open and BLE connected until the final `02 04` recheck completes;
+8. copy the complete sanitized report and stop.
+
+Allowed proprietary writes: exactly two maximum, both `0x41 / 02 04`.
+
+Not allowed/implemented:
+- P2P or AP transfer mode;
+- Wi-Fi/Wi-Fi Direct;
+- HTTP/catalog/media access;
+- media download;
+- `02 03`;
+- file mutation/deletion;
+- reset/restart/OTA.
+
+G6 remains blocked pending review.

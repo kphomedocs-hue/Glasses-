@@ -82,9 +82,10 @@ G4B read-only media listing: **PHYSICAL HTTP/BODY READ REACHED — JSON PARSER U
 G4B2 response-shape characterization: **PASS**.  
 G4B3 exact line-list parser parity: **PASS**.  
 G5 v0.5.0: **SAFE NO-DELTA STOP**.  
-G5.1 v0.5.1: **VERIFIED BUILD READY — PHYSICAL TEST PENDING**.
+G5.2 v0.5.2: **SAFE NO-DELTA STOP**.  
+G5 capture-visibility v0.5.4: **VERIFIED BUILD READY — PHYSICAL TEST PENDING**.
 
-v0.4.2 reached `/files/media.config` but failed because our diagnostic applied the wrong parser. Physical v0.4.4 then established a 67-byte UTF-8 `text/plain` line-oriented response. Deeper exact Cyan bytecode proves `configFileType==2` is the JSON/vf_list branch, while `configFileType!=2` uses `/files/media.config` plus Kotlin `readLines()`. The physical value is 1, so every line is a catalog entry. G5 remains blocked pending one final sanitized line-list parity check.
+v0.4.2 reached `/files/media.config` but failed because our diagnostic applied the wrong parser. Physical v0.4.4 then established a 67-byte UTF-8 `text/plain` line-oriented response. Deeper exact Cyan bytecode proves `configFileType==2` is the JSON/vf_list branch, while `configFileType!=2` uses `/files/media.config` plus Kotlin `readLines()`. The physical value is 1, so every line is a catalog entry. G4B3 subsequently passed; G5 is now isolated at the capture-visibility stage.
 
 ## Discovery v0.1.2 diagnostic candidate
 
@@ -420,7 +421,7 @@ First G5 selection is delta-based, not queue-position based. It requires a basel
 | Redirect / retry / Range / resume | — | ABSENT |
 | Remote name/path/raw catalog/fingerprint logging | — | ABSENT |
 | Glasses mutation / AP fallback / `02 03` | — | ABSENT |
-| Physical G5 result | — | PENDING |
+| Physical G5 result | `docs/testing/results/2026-09-19_G5_V0_5_0_SAFE_NO_DELTA.md` | SAFE NO-DELTA STOP |
 
 The earlier first v0.5.0 build is superseded; a pre-physical lifecycle recheck found a delayed BLE-disconnect callback race between phases. The approved artifact is the rebuilt hardened candidate identified by the APK SHA-256 above.
 
@@ -447,7 +448,7 @@ The earlier first v0.5.0 build is superseded; a pre-physical lifecycle recheck f
 | Redirect / retry / Range / resume | absent |
 | AP fallback / `02 03` | absent |
 | Glasses mutation | absent |
-| Physical result | pending |
+| Physical result | superseded before physical use |
 
 v0.5.0 remains preserved as the safe no-delta physical record.
 
@@ -488,3 +489,25 @@ v0.5.1 is superseded before physical use.
 | Post-capture watch | 60 seconds |
 | P2P/Wi-Fi/HTTP/media access | ABSENT |
 | Physical result | PENDING |
+
+
+## G5 capture-visibility verified candidate — v0.5.4
+
+| Item | Value |
+|---|---|
+| APK | `releases/v0.5.4/K_G1_Capture_Visibility_Probe_v0_5_4.apk` |
+| APK SHA-256 | `5f508ba014db4f8cfd803e2573419b95672d95d58fc6f4f7319c729c8013426a` |
+| Source ZIP SHA-256 | `f474098f126257dcf9fb5d379afd6ff1b7adbd4fa2b4290483227e6ff7914971` |
+| Package ZIP SHA-256 | `ccc3b8fca6627c6640d57023b5d054c7d28ec77889c779e4aee4d878ffe57450` |
+| Source/build commit | `86b2ac3d642947f1d02b5b1e91e0488a8ec9c687` |
+| Build run | `35440385274` — PASS |
+| Archive commit | `4881adff06b31e134ace69b515cabca9a1ce8468` |
+| Package ID | `com.parkarsite.g1capturevisibilityprobe54` |
+| Proprietary payload | `0x41 / 02 04` only |
+| Proprietary writes | max 2 |
+| Capture watch | arm first, then one photo during 60 s window |
+| P2P/Wi-Fi/HTTP/media access | ABSENT |
+| INTERNET permission | ABSENT |
+| Physical result | PENDING |
+
+v0.5.3 is superseded before physical use due to observation-window timing ambiguity.

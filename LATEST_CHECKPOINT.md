@@ -131,7 +131,7 @@ Forbidden:
 
 G0 through G4A are physically complete.
 
-**G4B3: PASS. G5 v0.5.0 and G5.2: SAFE NO-DELTA STOPS. G5 capture-visibility v0.5.3: VERIFIED BUILD READY — physical test pending.**
+**G4B3: PASS. G5 v0.5.0 and G5.2: SAFE NO-DELTA STOPS. G5 capture-visibility v0.5.4: VERIFIED BUILD READY — physical test pending. v0.5.3 superseded before physical use.**
 
 G4A2 and G4B network prerequisites remain physically proven:
 - exact BLE-reported P2P peer association,
@@ -810,3 +810,29 @@ Absent:
 - raw-frame logging.
 
 Immediate next action: run v0.5.3 once and return the complete sanitized report. G6 remains blocked.
+
+
+## Detailed pre-physical recheck — v0.5.4
+
+A full source/runtime review found one diagnostic-quality weakness in v0.5.3: the user was told to capture the photo before arming the 60-second observation window. BLE notifications were already active, so this was not unsafe, but it made capture-attribution less precise.
+
+v0.5.4 fixes only the measurement timing:
+- baseline `02 04` completes;
+- user explicitly arms the 60-second watch;
+- armed-window counters reset;
+- user captures exactly one photo during the armed window;
+- only armed-window `0x73` / `0x01` events contribute to capture-visibility evidence;
+- one final `02 04` recheck closes the gate.
+
+Verified v0.5.4:
+- APK SHA-256: `5f508ba014db4f8cfd803e2573419b95672d95d58fc6f4f7319c729c8013426a`
+- Source ZIP SHA-256: `f474098f126257dcf9fb5d379afd6ff1b7adbd4fa2b4290483227e6ff7914971`
+- Package ZIP SHA-256: `ccc3b8fca6627c6640d57023b5d054c7d28ec77889c779e4aee4d878ffe57450`
+- Source/build commit: `86b2ac3d642947f1d02b5b1e91e0488a8ec9c687`
+- Build run: `35440385274` — PASS
+- Archive commit: `4881adff06b31e134ace69b515cabca9a1ce8468`
+- Package ID: `com.parkarsite.g1capturevisibilityprobe54`
+- Safety audit / compile / lint / signature / artifact upload: PASS
+- source Repository Hygiene: `35440385257` — PASS
+
+Network/protocol scope is unchanged from v0.5.3: BLE only, exactly two maximum `0x41 / 02 04` writes, no P2P/Wi-Fi/HTTP/media access.
