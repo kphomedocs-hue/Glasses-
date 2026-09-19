@@ -1,0 +1,11 @@
+# K G1 Disposable Photo Probe v0.5.6 — Verified Repository Build
+- Canonical build commit: cee088d1f7eae87ea3ab125c330414a3af33ca14
+- Canonical build run: 35461427615
+- Visibility-gated safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Package ID: com.parkarsite.g1singlephotoprobe56
+- Phase-B P2P blocked until exact +1 image inventory confirmation
+- 60-second visibility watch
+- one media GET maximum after exact single-JPG catalog delta
