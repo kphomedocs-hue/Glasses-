@@ -312,7 +312,7 @@ Evidence:
 
 ## G5 — next approved physical diagnostic
 
-**Hardened verified build ready; physical result pending.**
+**v0.5.0 physical result: SAFE NO-DELTA STOP. No media file was requested.**
 
 App: K G1 Disposable Photo Probe v0.5.0  
 APK: `releases/v0.5.0/K_G1_Disposable_Photo_Probe_v0_5_0.apk`  
@@ -358,4 +358,14 @@ Physical procedure:
 
 The app aborts before media transfer unless the catalog delta is exactly one strict-safe `.jpg`.
 
-**G6 remains blocked until the G5 physical report is reviewed.**
+v0.5.0 Phase B saw zero new catalog entries and therefore performed zero media-file GETs.
+
+Evidence:
+- `docs/testing/results/2026-09-19_G5_V0_5_0_SAFE_NO_DELTA.md`
+- `docs/research/CYAN_G5_REFRESH_PARITY_2026-09-19.md`
+
+The next physical build is not approved yet. G5.1 must first add only:
+- one proven `02 04` inventory query before P2P enter in each phase;
+- exact 1000 ms Cyan delay before each catalog GET.
+
+**G6 remains blocked.**

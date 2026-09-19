@@ -303,7 +303,7 @@ Note: G4B2's reported line count 4 included the terminal newline; G4B3's `readLi
 
 ## G5 — one disposable media download
 
-Status: **HARDENED VERIFIED BUILD READY — physical test pending**.
+Status: **v0.5.0 SAFE NO-DELTA STOP; G5.1 CYAN-PARITY CORRECTION NEXT**.
 
 Exact static evidence:
 `docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`
@@ -346,7 +346,13 @@ Verified candidate: **K G1 Disposable Photo Probe v0.5.0**.
 - hardened source Repository Hygiene: `35435019654` — PASS
 - safety audit / compile / lint / signature: PASS
 
-The first v0.5.0 build was superseded before physical use after a callback-race review. Only the hash above is approved.
+The hardened v0.5.0 physical run stopped safely before media transfer because Phase B returned the unchanged 3-entry / 67-byte catalog after one user-captured JPG.
+
+Post-result static parity recheck:
+- Cyan calls `readAlbumCounts()` / `0x41 02 04` before import from `loadDataData()`;
+- Cyan delays catalog retrieval by exactly 1000 ms via `ktxRunOnUiDelay(..., 0x03e8, ...)`.
+
+G5.1 may add only those two already-supported Cyan behaviors. The exact-one-new-safe-JPG selection rule remains mandatory.
 
 G5 does not implement multi-file sync, OPUS/video import, production naming, ledger, deletion, or glasses mutation.
 

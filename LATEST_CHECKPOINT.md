@@ -131,7 +131,7 @@ Forbidden:
 
 G0 through G4A are physically complete.
 
-**G4B3 exact line-list parser parity: PASS. Current next gate: G5 one disposable JPG download — hardened verified build ready; physical test pending.**
+**G4B3 exact line-list parser parity: PASS. G5 v0.5.0 physical run: SAFE NO-DELTA STOP. Current next step: G5.1 Cyan-refresh/readiness parity build.**
 
 G4A2 and G4B network prerequisites remain physically proven:
 - exact BLE-reported P2P peer association,
@@ -227,7 +227,26 @@ Verified G5 candidate: **K G1 Disposable Photo Probe v0.5.0**.
 
 A pre-physical lifecycle recheck caught and fixed a delayed BLE-disconnect callback race between Phase A and the user-photo wait state. The approved APK is only the rebuilt hardened artifact above; the earlier first v0.5.0 build is superseded.
 
-Immediate next action: run the hardened v0.5.0 exactly as the two-phase on-screen workflow instructs, then return the complete sanitized G5 report. Stop before G6.
+Physical G5 v0.5.0 result: **SAFE NO-DELTA STOP**.
+- Phase A catalog: 3 entries / 67 bytes / `.jpg=2, .opus=1`
+- user captured exactly one disposable JPG after transfer exit
+- Phase B catalog: unchanged 3 entries / 67 bytes
+- new-entry delta: 0
+- media-file GETs: 0
+- transfer exit: successful
+- no remote filenames/paths logged
+
+Evidence:
+- `docs/testing/results/2026-09-19_G5_V0_5_0_SAFE_NO_DELTA.md`
+
+Post-result exact Cyan trace found two missing parity behaviors in v0.5.0:
+1. `PictureFragment.loadDataData()` calls `readAlbumCounts()` → proven `0x41 / 02 04` media-count query before import.
+2. `PictureFragment.downloadMediaConfig()` waits exactly **1000 ms** before fetching the catalog on the physical configFileType=1 branch.
+
+Evidence:
+- `docs/research/CYAN_G5_REFRESH_PARITY_2026-09-19.md`
+
+Immediate next action: build G5.1 with only those two Cyan-parity additions while keeping the same exact-one-new-safe-JPG guard. G6 remains blocked.
 
 This file remains authoritative for resuming the project.
 
