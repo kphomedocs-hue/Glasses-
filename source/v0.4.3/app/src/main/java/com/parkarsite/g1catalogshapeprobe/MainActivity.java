@@ -683,13 +683,6 @@ public final class MainActivity extends Activity {
         }catch(NumberFormatException e){return false;}
     }
 
-    private static final class CatalogSummary{
-        final int totalItems,validPaths; final String keySummary,extensionSummary;
-        CatalogSummary(int totalItems,int validPaths,String keySummary,String extensionSummary){
-            this.totalItems=totalItems;this.validPaths=validPaths;this.keySummary=keySummary;this.extensionSummary=extensionSummary;
-        }
-    }
-
     private void sendExit(){
         cancelTimeout(); if(reportFinished||exitWriteAttempted)return;
         append("");append("EXIT TRANSFER MODE");append("Command: 0x41 / 02 01 09");append("No retry policy: TRUE");
