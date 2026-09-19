@@ -1,0 +1,13 @@
+# K G1 P2P IP Notify Probe v0.4.1 — Verified Repository Build
+- Canonical build commit: a1eafae6da7202b0af32ff8ee3fc017422608a4b
+- Canonical build run: 35429585616
+- G4A2 safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Internet permission: ABSENT
+- HTTP/socket/media access: ABSENT
+- P2P-IP query 02 03: ABSENT
+- Proprietary writes: P2P enter once + transfer exit once only
+- 0x73 reporting: sanitized event IDs; IPv4 only for event 0x08
+- Peer selection: exact BLE-reported P2P name only
