@@ -1,6 +1,7 @@
 package com.parkarsite.g1p2passociationprobe;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.*;
 import android.content.*;
@@ -15,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@SuppressLint("MissingPermission")
 public final class MainActivity extends Activity {
     private static final int REQ_PERMISSION = 4101;
     private static final String TARGET_NAME = "AIMB-G1";
@@ -53,6 +55,8 @@ public final class MainActivity extends Activity {
     private boolean enterWriteAttempted;
     private boolean exitWriteAttempted;
     private boolean targetPeerMatched;
+    private boolean failurePending;
+    private String failureReason;
     private String expectedP2pName;
     private String credentialPassword;
     private Runnable timeout;
@@ -114,7 +118,7 @@ public final class MainActivity extends Activity {
     private void runProbe(){
         cleanupRuntime(false);
         report.setLength(0); reportFinished=false; enterWriteAttempted=false; exitWriteAttempted=false; targetPeerMatched=false;
-        expectedP2pName=null; credentialPassword=null; phase=Phase.IDLE;
+        expectedP2pName=null; credentialPassword=null; failurePending=false; failureReason=null; phase=Phase.IDLE;
         runButton.setEnabled(false);copyButton.setEnabled(false);shareButton.setEnabled(false);
         append("K G1 P2P ASSOCIATION PROBE REPORT");
         append("Generated: "+isoNow());
@@ -304,18 +308,45 @@ public final class MainActivity extends Activity {
     }
 
     private void failWithExit(String msg){
-        cancelTimeout(); append("G4A ERROR: "+msg);
-        if(enterWriteAttempted&&!exitWriteAttempted&&gatt!=null){sendExit();} else fail(msg);
+        cancelTimeout();
+        append("G4A ERROR: "+msg);
+        failurePending=true;
+        failureReason=msg;
+        if(enterWriteAttempted&&!exitWriteAttempted&&gatt!=null){
+            sendExit();
+        } else {
+            fail(msg);
+        }
     }
 
     private void cleanupSuccess(){
         phase=Phase.CLEANUP; cancelTimeout(); append("");append("CLEANUP");
-        try{if(p2pManager!=null&&p2pChannel!=null)p2pManager.removeGroup(p2pChannel,new WifiP2pManager.ActionListener(){public void onSuccess(){append("removeGroup: SUCCESS");finishSuccess();}public void onFailure(int r){append("removeGroup: nonfatal reason="+r);finishSuccess();}}); else finishSuccess();}
-        catch(SecurityException e){append("removeGroup: permission error (nonfatal)");finishSuccess();}
+        try{
+            if(p2pManager!=null&&p2pChannel!=null){
+                p2pManager.removeGroup(p2pChannel,new WifiP2pManager.ActionListener(){
+                    public void onSuccess(){append("removeGroup: SUCCESS");finishAfterCleanup();}
+                    public void onFailure(int r){append("removeGroup: nonfatal reason="+r);finishAfterCleanup();}
+                });
+            } else finishAfterCleanup();
+        } catch(SecurityException e){
+            append("removeGroup: permission error (nonfatal)");
+            finishAfterCleanup();
+        }
+    }
+
+    private void finishAfterCleanup(){
+        if(failurePending){
+            String reason=failureReason==null?"G4A did not complete.":failureReason;
+            cleanupRuntime(false);
+            append("");append("SUMMARY");append("Exact target peer matched: "+targetPeerMatched);append("HTTP/socket/media operations: 0");append("Credentials logged/persisted: NO");append("RESULT: FAILED — "+reason);append("END REPORT");
+            reportFinished=true;phase=Phase.COMPLETE;setStatus(reason);enableActions();
+            return;
+        }
+        finishSuccess();
     }
 
     private void finishSuccess(){
-        cleanupRuntime(false); append("");append("SUMMARY");append("Exact target peer matched: "+targetPeerMatched);append("P2P group formed: "+(phase==Phase.CLEANUP));append("HTTP/socket/media operations: 0");append("Credentials logged/persisted: NO");append("END REPORT");
+        cleanupRuntime(false); append("");append("SUMMARY");append("Exact target peer matched: "+targetPeerMatched);append("P2P group formed: TRUE");append("HTTP/socket/media operations: 0");append("Credentials logged/persisted: NO");append("RESULT: PASS");append("END REPORT");
         reportFinished=true;phase=Phase.COMPLETE;setStatus("G4A association probe complete.");enableActions();
     }
 
