@@ -469,3 +469,22 @@ v0.5.0 remains preserved as the safe no-delta physical record.
 | Physical result | pending |
 
 v0.5.1 is superseded before physical use.
+
+
+## G5 capture-visibility verified candidate — v0.5.3
+
+| Item | Value |
+|---|---|
+| APK | `releases/v0.5.3/K_G1_Capture_Visibility_Probe_v0_5_3.apk` |
+| APK SHA-256 | `36c508e98cfb2ba26d54ad54b0b7716fcbdbede0ed6a724ed0a4964a9bbacdc1` |
+| Source ZIP SHA-256 | `2239168ddbd1e9bb020cef8600b9d55eeda1d887851a538b35d054b9b84ace43` |
+| Package ZIP SHA-256 | `a97980367d0c6ce4bd7ac5ccdb7ec612cb2f8a4d9cd70c9b04be6177fbd8c1e6` |
+| Source/build commit | `245c9d944e1b2eed10494ad2e8d5fe4d7810c5f9` |
+| Build run | `35438040193` — PASS |
+| Archive commit | `45892085a8024aec032131c7c093e1c7e2b75b0d` |
+| Package ID | `com.parkarsite.g1capturevisibilityprobe` |
+| Proprietary payload | `0x41 / 02 04` only |
+| Proprietary writes | max 2 total |
+| Post-capture watch | 60 seconds |
+| P2P/Wi-Fi/HTTP/media access | ABSENT |
+| Physical result | PENDING |

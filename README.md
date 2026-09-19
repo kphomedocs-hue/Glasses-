@@ -359,3 +359,13 @@ v0.5.2 fixes:
 Verified APK SHA-256: `14fa9447ee938d20c35c935f5665bbcd72f0edb61b33f1e266d96aacb18bfe7a`  
 Build run: `35436808167` — PASS  
 Package: `com.parkarsite.g1singlephotoprobe52`
+
+
+## G5 capture-visibility v0.5.3
+
+Verified BLE-only diagnostic:
+- APK SHA-256: `36c508e98cfb2ba26d54ad54b0b7716fcbdbede0ed6a724ed0a4964a9bbacdc1`
+- build run: `35438040193` — PASS
+- package: `com.parkarsite.g1capturevisibilityprobe`
+
+It performs two inventory queries total around one user-captured photo while keeping a single BLE notification connection alive. It contains no Wi-Fi/P2P/HTTP/media access.

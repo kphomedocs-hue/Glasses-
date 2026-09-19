@@ -415,3 +415,24 @@ Next physical diagnostic must:
 - disconnect.
 
 No P2P, HTTP or media file request is allowed in this gate.
+
+
+### G5 capture-visibility v0.5.3 — approved physical diagnostic
+
+App: K G1 Capture Visibility Probe v0.5.3  
+APK: `releases/v0.5.3/K_G1_Capture_Visibility_Probe_v0_5_3.apk`  
+APK SHA-256: `36c508e98cfb2ba26d54ad54b0b7716fcbdbede0ed6a724ed0a4964a9bbacdc1`  
+Build run: `35438040193` — PASS
+
+Procedure:
+1. force-stop Cyan Glasses;
+2. open v0.5.3 and tap **Start BLE baseline**;
+3. wait until **Baseline complete**;
+4. keep the app open and connected;
+5. capture **exactly one disposable photo** with the glasses;
+6. tap **I captured ONE photo — Start 60s watch**;
+7. do not capture anything else during the 60-second watch;
+8. let the final `02 04` recheck finish automatically;
+9. copy the complete report and stop.
+
+No P2P, Wi-Fi, HTTP or media file request is allowed in this gate. G6 remains blocked.

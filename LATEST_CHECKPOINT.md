@@ -131,7 +131,7 @@ Forbidden:
 
 G0 through G4A are physically complete.
 
-**G4B3: PASS. G5 v0.5.0: SAFE NO-DELTA STOP. G5.2 v0.5.2 physical run: SAFE NO-DELTA STOP. Next: capture-visibility diagnostic; no P2P/HTTP.**
+**G4B3: PASS. G5 v0.5.0 and G5.2: SAFE NO-DELTA STOPS. G5 capture-visibility v0.5.3: VERIFIED BUILD READY — physical test pending.**
 
 G4A2 and G4B network prerequisites remain physically proven:
 - exact BLE-reported P2P peer association,
@@ -774,3 +774,39 @@ Evidence:
 - `docs/testing/results/2026-09-19_G5_V0_5_2_SAFE_NO_DELTA.md`
 
 Next gate: BLE-only capture visibility. Keep notifications connected while transfer mode is off, capture one photo, observe sanitized `0x73` events, then perform one bounded `02 04` recheck. No Wi-Fi Direct or HTTP.
+
+
+## G5 capture-visibility verified candidate — v0.5.3
+
+Purpose: isolate when one physical photo becomes visible to the glasses inventory before another download attempt.
+
+Verified build:
+- APK: `releases/v0.5.3/K_G1_Capture_Visibility_Probe_v0_5_3.apk`
+- APK SHA-256: `36c508e98cfb2ba26d54ad54b0b7716fcbdbede0ed6a724ed0a4964a9bbacdc1`
+- Source ZIP SHA-256: `2239168ddbd1e9bb020cef8600b9d55eeda1d887851a538b35d054b9b84ace43`
+- Package ZIP SHA-256: `a97980367d0c6ce4bd7ac5ccdb7ec612cb2f8a4d9cd70c9b04be6177fbd8c1e6`
+- Source/build commit: `245c9d944e1b2eed10494ad2e8d5fe4d7810c5f9`
+- Build run: `35438040193` — PASS
+- Archive commit: `45892085a8024aec032131c7c093e1c7e2b75b0d`
+- Package ID: `com.parkarsite.g1capturevisibilityprobe`
+- BLE-only safety audit / compile / lint / APK signature: PASS
+
+Physical boundary:
+- one continuous BLE connection;
+- one baseline `0x41 / 02 04` query;
+- user captures exactly one photo while transfer mode remains off;
+- passive sanitized `0x73` observation;
+- 60-second bounded post-capture watch;
+- one final `0x41 / 02 04` query;
+- disconnect.
+
+Absent:
+- INTERNET permission;
+- Wi-Fi/P2P;
+- HTTP/URL/socket;
+- media.config/media-file access;
+- file writes/deletes;
+- AP mode / `02 03` / reset/restart/OTA;
+- raw-frame logging.
+
+Immediate next action: run v0.5.3 once and return the complete sanitized report. G6 remains blocked.

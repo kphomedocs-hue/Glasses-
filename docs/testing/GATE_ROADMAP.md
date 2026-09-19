@@ -303,7 +303,7 @@ Note: G4B2's reported line count 4 included the terminal newline; G4B3's `readLi
 
 ## G5 — one disposable media download
 
-Status: **v0.5.0 SAFE NO-DELTA STOP; v0.5.2 SAFE NO-DELTA STOP; CAPTURE-VISIBILITY DIAGNOSTIC NEXT**.
+Status: **v0.5.0 SAFE NO-DELTA STOP; v0.5.2 SAFE NO-DELTA STOP; BLE-ONLY CAPTURE-VISIBILITY v0.5.3 VERIFIED BUILD READY**.
 
 Exact static evidence:
 `docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`
@@ -426,3 +426,13 @@ Forbidden:
 - `02 03`;
 - file mutation/deletion;
 - reset/restart/OTA.
+
+
+### G5 capture-visibility verified candidate — v0.5.3
+
+- APK SHA-256: `36c508e98cfb2ba26d54ad54b0b7716fcbdbede0ed6a724ed0a4964a9bbacdc1`
+- build commit: `245c9d944e1b2eed10494ad2e8d5fe4d7810c5f9`
+- build run: `35438040193` — PASS
+- archive commit: `45892085a8024aec032131c7c093e1c7e2b75b0d`
+
+Only `02 04` is implemented, with a maximum of two proprietary writes total. No P2P/Wi-Fi/HTTP/media path exists.
