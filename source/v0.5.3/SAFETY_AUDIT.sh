@@ -8,6 +8,8 @@ fail=0
 bad(){ if grep -RniE "$1" "$SRC" >/tmp/g53_hits 2>/dev/null; then echo "FAIL: $2"; cat /tmp/g53_hits; fail=1; else echo "PASS: $2 absent"; fi; }
 
 grep -Fq 'android.permission.BLUETOOTH_CONNECT' "$MANIFEST" || { echo "FAIL: BLUETOOTH_CONNECT missing"; fail=1; }
+grep -Fq 'checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT)==PackageManager.PERMISSION_GRANTED' "$JAVA" || { echo "FAIL: runtime BLUETOOTH_CONNECT permission gate missing"; fail=1; }
+grep -Fq '@SuppressLint("MissingPermission")' "$JAVA" || { echo "FAIL: targeted lint annotation missing"; fail=1; }
 bad 'android.permission.INTERNET' 'Internet permission'
 bad 'android.permission.NEARBY_WIFI_DEVICES|android.permission.ACCESS_WIFI_STATE|android.permission.CHANGE_WIFI_STATE' 'Wi-Fi permissions'
 bad 'WifiP2p|WifiManager|ConnectivityManager|NetworkRequest|NetworkCapabilities' 'Wi-Fi/network APIs'

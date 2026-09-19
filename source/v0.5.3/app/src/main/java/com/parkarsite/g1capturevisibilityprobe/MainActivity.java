@@ -1,6 +1,7 @@
 package com.parkarsite.g1capturevisibilityprobe;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -32,6 +33,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+@SuppressLint("MissingPermission")
 public final class MainActivity extends Activity {
     private static final int REQ_PERMISSION = 5301;
     private static final long CONNECT_TIMEOUT_MS = 30000L;
