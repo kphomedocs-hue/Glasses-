@@ -132,3 +132,16 @@ Do not merge the legacy transport into the active diagnostic line. Reuse only pr
 ## Public-repository rule
 
 The third-party Cyan APK, Bluetooth addresses, device-specific name suffixes, credentials, personal data, client/site media and unsanitized diagnostic captures are not committed. Store only reviewed interoperability findings and sanitized physical evidence.
+
+
+## G2C verified build
+
+K G1 Init Probe v0.2.1 is ready for the one-command physical initialization-parity test.
+
+- APK: `releases/v0.2.1/K_G1_Init_Probe_v0_2_1.apk`
+- APK SHA-256: `7c0ce5d859e79c6ee2ed05316f5f5db736919912802fbbab040ce612ea368e5c`
+- build/verification run: `35416416013` — PASS
+
+It sends exactly one dynamically generated Cyan-equivalent `0x40` time-sync frame after notification subscription, has no retry, and contains no `0x41` media/control command or network-transfer implementation.
+
+G3 remains blocked until the G2C physical report is reviewed.

@@ -102,7 +102,9 @@ Passive event correlation remains available as a fallback for future unknown eve
 
 ## G2C — one-command initialization parity
 
-Status: **NEXT**.
+Status: **VERIFIED BUILD READY FOR PHYSICAL TEST**.
+
+Candidate: K G1 Init Probe v0.2.1. GitHub Actions run `35416416013`: PASS.
 
 Action:
 - connect and subscribe to the confirmed response path,

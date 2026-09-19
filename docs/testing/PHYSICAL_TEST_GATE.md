@@ -68,7 +68,12 @@ See:
 
 ## G2C — current approved physical diagnostic
 
-One and only one proprietary command may be tested after a verified build is produced:
+Verified candidate: **K G1 Init Probe v0.2.1**.
+
+- APK SHA-256: `7c0ce5d859e79c6ee2ed05316f5f5db736919912802fbbab040ce612ea368e5c`
+- build/verification run: `35416416013` — PASS
+
+One and only one proprietary command may be tested:
 
 - command: `0x40` Cyan-equivalent time synchronization,
 - payload: dynamically generated using Cyan's 9-byte time/language/timezone schema,

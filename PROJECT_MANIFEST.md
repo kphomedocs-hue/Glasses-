@@ -168,3 +168,18 @@ No G2B executable has been started at this checkpoint; this entry records the ap
 | Passive correlator | fallback only |
 | Next gate | G2C single `0x40` time-sync command |
 | Media-mode `0x41` | BLOCKED pending G2C |
+
+
+## G2C verified candidate — v0.2.1
+
+| Item | Repository path | SHA-256 / status |
+|---|---|---|
+| G2C source | `releases/v0.2.1/K_G1_Init_Probe_v0_2_1_source_v1.zip` | `d14e3e56586a45616c335f6e0d85ac93131bbe7754dd4e422b2661c98c915761` |
+| G2C APK | `releases/v0.2.1/K_G1_Init_Probe_v0_2_1.apk` | `7c0ce5d859e79c6ee2ed05316f5f5db736919912802fbbab040ce612ea368e5c` |
+| G2C package | `releases/v0.2.1/K_G1_Init_Probe_v0_2_1_package.zip` | `5c8d2bfaf042cfcb9d54f8fe5804396087e1bc18b84658f851b92fb38fd1e7c8` |
+| Build/verification | GitHub Actions run `35416416013` | PASS |
+| Proprietary write scope | exactly one command-`0x40` time-sync attempt, no retry | PASS |
+| Media/control command `0x41` | absent | PASS |
+| Wi-Fi/network/reset/OTA | absent | PASS |
+
+Issue #4 tracks the physical G2C test. G3 media-mode control remains blocked until that report is reviewed.

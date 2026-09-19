@@ -374,3 +374,35 @@ Key findings:
 G2B conclusion: **PASS**.
 
 Passive Event Correlator: retained as fallback, not required before G2C.
+
+
+## G2C verified build ready — K G1 Init Probe v0.2.1
+
+Verified repository artifacts:
+- APK: `releases/v0.2.1/K_G1_Init_Probe_v0_2_1.apk`
+- APK SHA-256: `7c0ce5d859e79c6ee2ed05316f5f5db736919912802fbbab040ce612ea368e5c`
+- Source ZIP: `releases/v0.2.1/K_G1_Init_Probe_v0_2_1_source_v1.zip`
+- Source SHA-256: `d14e3e56586a45616c335f6e0d85ac93131bbe7754dd4e422b2661c98c915761`
+- Package ZIP: `releases/v0.2.1/K_G1_Init_Probe_v0_2_1_package.zip`
+- Package SHA-256: `5c8d2bfaf042cfcb9d54f8fe5804396087e1bc18b84658f851b92fb38fd1e7c8`
+- Canonical build commit: `7666393a08e8093ae81524a701f65c80717e2191`
+- Archive commit: `92d017ba3ff43ce1ba8fa2831d79306632e7d390`
+- Build/verification run: `35416416013`
+- G2C single-command scope verification: PASS
+- G2C safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+
+Physical-test boundary:
+- notification subscription on the confirmed Cyan response characteristic,
+- exactly one proprietary characteristic-write attempt,
+- the only implemented proprietary command is dynamically generated Cyan-equivalent `0x40` time sync,
+- no retry,
+- no `0x41` media/control command,
+- no Wi-Fi/P2P/AP,
+- no HTTP/media transfer,
+- no reset/restart/OTA/firmware operation,
+- no arbitrary command input.
+
+Next action: run the verified v0.2.1 APK once and return the complete G2C report. Do not proceed to media mode afterward.
