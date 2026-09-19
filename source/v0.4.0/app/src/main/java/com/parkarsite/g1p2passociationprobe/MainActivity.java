@@ -373,7 +373,7 @@ public final class MainActivity extends Activity {
         expectedP2pName=null; credentialPassword=null;
         if(receiverRegistered&&p2pReceiver!=null){try{unregisterReceiver(p2pReceiver);}catch(Exception ignored){} receiverRegistered=false;p2pReceiver=null;}
         BluetoothGatt x=gatt;gatt=null;writeChar=null;if(x!=null){try{x.disconnect();}catch(Exception ignored){}try{x.close();}catch(Exception ignored){}}
-        if(destroy&&p2pChannel!=null){try{p2pChannel.close();}catch(Exception ignored){}}
+        if(destroy&&p2pChannel!=null&&Build.VERSION.SDK_INT>=27){try{p2pChannel.close();}catch(Exception ignored){}}
     }
 
     private void copy(){ClipboardManager c=(ClipboardManager)getSystemService(CLIPBOARD_SERVICE);if(c!=null){c.setPrimaryClip(ClipData.newPlainText("G4A P2P Association Report",report.toString()));Toast.makeText(this,"Report copied",Toast.LENGTH_SHORT).show();}}
