@@ -1,0 +1,23 @@
+name: G6A Persistence Core Selftest
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "source/g6a-core/**"
+      - ".github/workflows/g6a-core-selftest.yml"
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: { distribution: temurin, java-version: "17" }
+      - name: Verify transport-free scope
+        run: |
+          set -euo pipefail
+          ! grep -RniE 'Bluetooth|WifiP2p|HttpURLConnection|android\.|0x41|0x73' source/g6a-core/src source/g6a-core/selftest
+      - name: Run persistence selftest
+        run: bash source/g6a-core/run_selftest.sh
