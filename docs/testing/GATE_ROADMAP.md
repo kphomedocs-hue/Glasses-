@@ -533,3 +533,25 @@ Verified candidate; supersedes v0.5.6 before physical use.
 - archive commit: `20a7dfc0f6baa8447360c0946d61da5dc0e0cf96`
 
 Protocol/network boundary is unchanged from v0.5.6. Added only timing/state diagnostics, temporary-cache cleanup, single-run lock, and foreground integrity protection.
+
+
+## G5 — PASS
+
+Physical v0.5.7 completed the bounded single-disposable-JPG transfer successfully.
+
+- baseline inventory/catalog established;
+- one physical capture observed as passive +1 image;
+- active `02 04` independently confirmed +1;
+- P2P entered only after visibility confirmation;
+- one refreshed catalog contained exactly one new safe JPG;
+- one media GET only;
+- HTTP 200;
+- Content-Length matched;
+- JPEG SOI/EOI passed;
+- temporary local file cleanup passed;
+- no glasses mutation/deletion.
+
+Evidence:
+`docs/testing/results/2026-09-20_G5_7_SINGLE_JPG_DOWNLOAD_PASS.md`
+
+G6 is now unblocked.

@@ -818,3 +818,28 @@ Diagnostic-only improvements over v0.5.6:
 - no extra protocol/network commands and no catalog polling.
 
 Immediate next action: run v0.5.7 once and return the complete sanitized report. G6 remains blocked.
+
+
+## G5.7 physical result — PASS
+
+Physical v0.5.7 completed the full bounded G5 path successfully.
+
+Key proof:
+- Phase A inventory: images=6, videos=0, recordings=1.
+- Phase A catalog: 7 safe entries (.jpg=6, .opus=1).
+- After exactly one captured photo, passive `0x73/0x01` reported images=7 after 2850 ms.
+- One active `0x41 / 02 04` confirmed exactly +1 image after 3080 ms.
+- Phase-B P2P was entered only after the visibility gate passed.
+- Phase-B catalog: 8 safe entries, full baseline retained, exactly one new safe JPG.
+- Exactly one media GET returned HTTP 200 and 844806 bytes.
+- Content-Length matched exactly.
+- JPEG SOI/EOI checks passed.
+- App-private temporary file cleanup passed.
+- No glasses mutation/deletion occurred.
+
+Evidence:
+`docs/testing/results/2026-09-20_G5_7_SINGLE_JPG_DOWNLOAD_PASS.md`
+
+**G5 is now physically complete.**
+
+G6 automatic sync is now unblocked for design. Do not add glasses-side deletion/mutation.
