@@ -49,6 +49,10 @@ Evidence:
 
 Only after G1.
 
+Status: **READY FOR PHYSICAL NOTIFICATION-ONLY PROBE**.
+
+Verified candidate: K G1 Response Probe v0.2, GitHub Actions run `35413378362`.
+
 Action:
 - enable only the physically confirmed `de5bf729-d711-4e47-af26-65e3012a5dc7` notification path,
 - observe spontaneous response traffic for a bounded interval,

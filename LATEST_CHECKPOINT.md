@@ -262,3 +262,31 @@ Physical test date: 2026-09-19
 - Sanitized evidence: `docs/testing/results/2026-09-19_G1_PHYSICAL_DISCOVERY_PASS.md`.
 - G1 conclusion: **PASS**.
 - Next gate: G2 notification/response-channel confirmation only; no proprietary control write yet.
+
+
+## G2 notification-only probe — verified build ready
+
+**K G1 Response Probe v0.2** is the current physical-test candidate for G2.
+
+Verified repository artifacts:
+- APK: `releases/v0.2/K_G1_Response_Probe_v0_2.apk`
+- APK SHA-256: `86b9738ac909577b173264be233242c17c9715be5bae183fffa6c9d497174ff2`
+- Source ZIP SHA-256: `86fa0f9f72171cb90c4edbc04d1a2db2b2c40c19c976978ea08a63c399700d39`
+- Package ZIP SHA-256: `b4d2fe59d87866dd993454ff58b53d18bf605891c74d2c9ddce1e9f40af18924`
+- Canonical build commit: `e4ef4667ae0db5b9be1e449abe571f988f5064c9`
+- Build/verification run: `35413378362`
+- G2 notification-only scope verification: PASS
+- G2 safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+
+Safety boundary:
+- may enable notifications only on `de5bf729-d711-4e47-af26-65e3012a5dc7`,
+- may write only the standard CCCD enable-notification value required for that subscription,
+- contains no proprietary characteristic-write API,
+- contains no `de5bf72a-...` control-write UUID,
+- contains no initialization/media command,
+- contains no Wi-Fi/network/reset/OTA behavior.
+
+Next physical action: install v0.2, force-stop Cyan Glasses, leave AIMB-G1 paired, run the 30-second notification-only probe, and return the complete report before any control write is considered.

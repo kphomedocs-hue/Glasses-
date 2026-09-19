@@ -97,3 +97,18 @@ v0.1.2 does not replace the frozen v0.1 baseline. It is the next diagnostic G1 c
 | Hardware revision | `AM01SPG1_V1.4` |
 | BLE scan callbacks | 0; bonded LE fallback used |
 | Next gate | G2 notification-only response-channel confirmation |
+
+
+## G2 response-channel candidate — v0.2
+
+| Item | Repository path | SHA-256 / status |
+|---|---|---|
+| G2 source | `releases/v0.2/K_G1_Response_Probe_v0_2_source_v1.zip` | `86fa0f9f72171cb90c4edbc04d1a2db2b2c40c19c976978ea08a63c399700d39` |
+| G2 APK | `releases/v0.2/K_G1_Response_Probe_v0_2.apk` | `86b9738ac909577b173264be233242c17c9715be5bae183fffa6c9d497174ff2` |
+| G2 package | `releases/v0.2/K_G1_Response_Probe_v0_2_package.zip` | `b4d2fe59d87866dd993454ff58b53d18bf605891c74d2c9ddce1e9f40af18924` |
+| GitHub Actions build/verification | run `35413378362` | PASS |
+| Scope | notification subscription on confirmed Cyan response characteristic only | PASS |
+| Proprietary characteristic write API | absent | PASS |
+| Cyan control-write UUID `de5bf72a-...` | absent from v0.2 source | PASS |
+
+Issue #2 tracks the physical G2 test. No control-characteristic write is authorized until its notification-only result is reviewed.
