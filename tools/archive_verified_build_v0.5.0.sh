@@ -5,6 +5,7 @@ cd "$GITHUB_WORKSPACE"
 git pull --rebase origin main
 SRC="source/v0.5.0"
 REL="releases/v0.5.0"
+rm -rf "$REL"
 mkdir -p "$REL"
 APK="$RUNNER_TEMP/g5/K_G1_Disposable_Photo_Probe_v0_5_0.apk"
 LINT="$RUNNER_TEMP/g5/lint-results-debug.html"

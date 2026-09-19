@@ -954,7 +954,7 @@ public final class MainActivity extends Activity {
         append("Transfer mode exited before user capture: YES");
         append("Baseline filename/path values logged: NO");
         stage=Stage.WAIT_FOR_CAPTURE;
-        phase=Phase.IDLE;
+        phase=Phase.COMPLETE;
         setStatus("Phase A complete. Now use the glasses to capture EXACTLY ONE disposable photo. Then tap Continue G5.");
         runButton.setText("I captured ONE test photo — Continue G5");
         runButton.setEnabled(true);
@@ -1006,7 +1006,7 @@ public final class MainActivity extends Activity {
     private void schedule(Runnable r,long ms){cancelTimeout();timeout=r;handler.postDelayed(r,ms);}
     private void cancelTimeout(){if(timeout!=null){handler.removeCallbacks(timeout);timeout=null;}}
 
-    private void fail(String m){if(reportFinished)return;cancelTimeout();append("G5 RESULT: FAILED — "+m);cleanupRuntime(false);baselineCatalog.clear();baselineReady=false;append("END REPORT");reportFinished=true;phase=Phase.COMPLETE;stage=Stage.BASELINE;setStatus(m);runButton.setText("Start G5 baseline");enableActions();}
+    private void fail(String m){if(reportFinished)return;cancelTimeout();reportFinished=true;phase=Phase.COMPLETE;append("G5 RESULT: FAILED — "+m);cleanupRuntime(false);baselineCatalog.clear();baselineReady=false;append("END REPORT");stage=Stage.BASELINE;setStatus(m);runButton.setText("Start G5 baseline");enableActions();}
     private void closeAndFail(String m){handler.post(()->fail(m));}
 
     private void cleanupRuntime(boolean destroy){
