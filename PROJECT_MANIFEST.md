@@ -69,7 +69,7 @@ Only interoperability findings and provenance are stored in this public reposito
 
 ## Current gate
 
-No active protocol write is authorized yet. The next action remains the read-only physical GATT discovery test using Discovery v0.1.
+G1 physical GATT confirmation is PASS. The next authorized diagnostic is G2 response-channel confirmation: notification subscription on the physically confirmed Cyan notify characteristic only. No proprietary control-characteristic write or media-mode command is authorized yet.
 
 
 ## Discovery v0.1.2 diagnostic candidate
@@ -83,3 +83,17 @@ No active protocol write is authorized yet. The next action remains the read-onl
 | Safety scope | G1 read-only observation + unique bonded fallback | PASS |
 
 v0.1.2 does not replace the frozen v0.1 baseline. It is the next diagnostic G1 candidate after scan-identification ambiguity.
+
+
+## G1 physical confirmation
+
+| Item | Result |
+|---|---|
+| Physical G1 result | PASS |
+| Sanitized report | `docs/testing/results/2026-09-19_G1_PHYSICAL_DISCOVERY_PASS.md` |
+| Cyan service `de5bf728-...` | PRESENT |
+| Cyan notify `de5bf729-...` | PRESENT / NOTIFY |
+| Cyan write `de5bf72a-...` | PRESENT / WRITE + WRITE_NO_RESPONSE |
+| Hardware revision | `AM01SPG1_V1.4` |
+| BLE scan callbacks | 0; bonded LE fallback used |
+| Next gate | G2 notification-only response-channel confirmation |

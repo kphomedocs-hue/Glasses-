@@ -25,7 +25,7 @@ Primary navigation:
 ## Frozen physical-test baseline
 **K G1 Discovery v0.1**
 
-Status: software build gate **and clean-room recovery gate complete**; first physical read-only test pending.
+Status: software recovery complete; G1 physical read-only GATT confirmation **PASS**.
 
 ### Verified artifacts
 - Repository APK: `releases/v0.1/K_G1_Discovery_v0_1.apk`
@@ -129,14 +129,15 @@ Forbidden:
 
 ## Next action
 
-1. Force-stop Cyan Glasses.
-2. Turn on AIMB-G1.
-3. Install K G1 Discovery v0.1.
-4. Grant Nearby Devices/Bluetooth permission.
-5. Scan and inspect AIMB-G1.
-6. Share the generated report.
-7. Confirm the physical profile.
-8. Only after review, design the next controlled test.
+G1 is complete. The next gate is **G2 — response-channel confirmation**.
+
+First G2 step:
+1. Connect to the uniquely identified bonded AIMB-G1-family device over LE GATT.
+2. Confirm the physically verified Cyan service/notify characteristic.
+3. Enable notifications only on `de5bf729-d711-4e47-af26-65e3012a5dc7`.
+4. Observe for spontaneous response traffic for a bounded interval.
+5. Disconnect.
+6. Do not write to the proprietary control characteristic and do not send media-mode commands.
 
 This file remains authoritative for resuming the project.
 
@@ -245,3 +246,19 @@ Verified artifacts:
 - APK signature verification: PASS
 
 The v0.1 frozen branch and v0.1/v0.1.1 source/release trees remain unchanged.
+
+
+## G1 physical result — PASS
+
+Physical test date: 2026-09-19
+
+- K G1 Discovery v0.1.2 connected through the uniquely identified bonded-device LE fallback.
+- BLE scan callbacks during the 30-second observation window: 0.
+- Physical Cyan service `de5bf728-d711-4e47-af26-65e3012a5dc7`: PRESENT.
+- Physical notify characteristic `de5bf729-d711-4e47-af26-65e3012a5dc7`: PRESENT / NOTIFY.
+- Physical write characteristic `de5bf72a-d711-4e47-af26-65e3012a5dc7`: PRESENT / WRITE + WRITE_NO_RESPONSE.
+- Hardware revision read: `AM01SPG1_V1.4`.
+- Firmware revision read returned Android GATT status `133`; retained as an anomaly, not a G1 blocker.
+- Sanitized evidence: `docs/testing/results/2026-09-19_G1_PHYSICAL_DISCOVERY_PASS.md`.
+- G1 conclusion: **PASS**.
+- Next gate: G2 notification/response-channel confirmation only; no proprietary control write yet.

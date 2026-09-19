@@ -38,16 +38,23 @@ Prohibited:
 Exit criterion:
 - actual physical profile reviewed.
 
+Status: **PASS** (2026-09-19).
+
+Evidence:
+- sanitized physical report: `docs/testing/results/2026-09-19_G1_PHYSICAL_DISCOVERY_PASS.md`,
+- expected Cyan service/notify/write UUID family physically present,
+- read-only LE GATT connection and service enumeration completed.
+
 ## G2 — response-channel confirmation
 
 Only after G1.
 
 Action:
-- enable only the evidence-backed response/notification path,
-- observe connection/initialization behavior,
-- determine whether time/init handshake is required.
+- enable only the physically confirmed `de5bf729-d711-4e47-af26-65e3012a5dc7` notification path,
+- observe spontaneous response traffic for a bounded interval,
+- determine whether any initialization/time handshake appears necessary.
 
-No media-mode command yet unless initialization semantics are understood.
+First G2 probe must not write the proprietary `de5bf72a-...` control characteristic. No media-mode command yet.
 
 ## G3 — one allow-listed media-mode command
 

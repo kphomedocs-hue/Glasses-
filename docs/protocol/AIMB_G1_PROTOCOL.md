@@ -31,7 +31,7 @@ Write:
 de5bf72a-d711-4e47-af26-65e3012a5dc7
 ```
 
-These UUIDs are **confirmed in Cyan** but still await first physical GATT confirmation on the user's AIMB-G1.
+These UUIDs are **confirmed in Cyan and physically confirmed on the user's AIMB-G1** by the sanitized G1 test recorded in `docs/testing/results/2026-09-19_G1_PHYSICAL_DISCOVERY_PASS.md`.
 
 ## Control framing recovered from Cyan
 
@@ -131,7 +131,7 @@ Additional Cyan payloads were catalogued during static analysis. They are retain
 | CRC-16/MODBUS | confirmed in app code |
 | P2P/AP media payload bytes | confirmed in app code |
 | local HTTP media retrieval | confirmed in app code |
-| physical AIMB-G1 exposes expected UUIDs | pending physical read-only test |
+| physical AIMB-G1 exposes expected UUIDs | **confirmed by G1 physical test** |
 | exact response semantics | pending |
 | initialization/time handshake requirement | pending |
 | first real file download | pending |
@@ -139,3 +139,16 @@ Additional Cyan payloads were catalogued during static analysis. They are retain
 ## Safety rule
 
 Protocol knowledge is stored separately from execution. Production code must use an explicit command allow-list and must not expose a generic raw BLE command console.
+
+
+## Physical G1 confirmation — 2026-09-19
+
+A read-only LE GATT connection physically confirmed the expected Cyan-family profile on the AIMB-G1:
+
+- service `de5bf728-d711-4e47-af26-65e3012a5dc7`: present,
+- notify `de5bf729-d711-4e47-af26-65e3012a5dc7`: present with NOTIFY,
+- write `de5bf72a-d711-4e47-af26-65e3012a5dc7`: present with WRITE and WRITE_NO_RESPONSE.
+
+Hardware revision `AM01SPG1_V1.4` was read from the standard Device Information Service. Firmware revision returned Android GATT status 133 during the sequential standard-field read.
+
+The next protocol question is the response-channel behavior. G2 begins with notification subscription only and sends no proprietary control payload.

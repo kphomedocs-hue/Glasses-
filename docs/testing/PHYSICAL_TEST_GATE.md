@@ -1,6 +1,6 @@
 # Physical AIMB-G1 Test Gate
 
-## Gate 1 — current approved test
+## Gate 1 — completed
 
 Use **K G1 Discovery v0.1** only.
 
@@ -34,14 +34,28 @@ de5bf72a-d711-4e47-af26-65e3012a5dc7  expected write
 
 The report must also retain all discovered services/characteristics/properties so an unexpected profile can be analysed safely.
 
-## Gate 2 — only after Gate 1 review
+## Gate 1 result
 
-Potential next diagnostic:
-- subscribe to the known response path,
-- perform only required initialization,
-- allow one explicitly allow-listed media-mode test command,
-- record the response,
-- stop.
+**PASS — 2026-09-19.**
+
+The physical AIMB-G1 exposed the expected Cyan service, notify and write characteristic UUIDs. Sanitized evidence is stored at `docs/testing/results/2026-09-19_G1_PHYSICAL_DISCOVERY_PASS.md`.
+
+## Gate 2 — current approved diagnostic
+
+First G2 probe:
+- connect to the uniquely identified bonded AIMB-G1-family device,
+- subscribe only to the physically confirmed `de5bf729-d711-4e47-af26-65e3012a5dc7` notification path,
+- observe for spontaneous notifications for a bounded interval,
+- record raw response bytes locally for review,
+- disconnect.
+
+Not allowed in the first G2 probe:
+- characteristic writes to `de5bf72a-...` or any other proprietary characteristic,
+- initialization/time command unless separately reviewed after the notification-only result,
+- media-mode command,
+- Wi-Fi/P2P/AP,
+- HTTP/media transfer,
+- reset/restart/OTA/firmware operations.
 
 No automatic media download at Gate 2.
 
