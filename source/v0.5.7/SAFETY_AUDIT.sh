@@ -15,7 +15,7 @@ bad 'java\.net\.Socket|ServerSocket|DatagramSocket|okhttp|AndroidNetworking' 'al
 bad 'setRequestMethod\("(POST|PUT|PATCH|DELETE|HEAD)"\)' 'non-GET HTTP method'
 bad 'setInstanceFollowRedirects\(true\)|setFollowRedirects\(true\)' 'redirect enablement'
 bad 'setRequestProperty\(' 'custom HTTP request headers / Range'
-bad 'FileInputStream|RandomAccessFile|Files\.write|deleteFile|\.delete\(' 'unexpected local file mutation helper'
+bad 'FileInputStream|RandomAccessFile|Files\.write|deleteFile' 'unexpected local file mutation helper'
 bad '/files/log/|vf_list\.txt|storage/sd0/C/DCIM/1' 'alternate catalog endpoint'
 bad 'JSONObject|JSONArray|JSONTokener|PtPFileModel|file_list' 'wrong JSON catalog branch'
 bad '0x02[[:space:]]*,[[:space:]]*0x01[[:space:]]*,[[:space:]]*0x04[[:space:]]*,[[:space:]]*0x02' 'AP-mode payload'
@@ -74,6 +74,10 @@ grep -Fq 'ARMED -> passive +1 visibility:' "$JAVA" || { echo "FAIL: passive timi
 grep -Fq 'Active confirmation -> P2P group ready:' "$JAVA" || { echo "FAIL: P2P timing missing"; fail=1; }
 grep -Fq 'Temporary file cleanup after validation:' "$JAVA" || { echo "FAIL: temp cleanup reporting missing"; fail=1; }
 grep -Fq 'if(localFile!=null&&localFile.exists())localFile.delete()' "$JAVA" || { echo "FAIL: temp cleanup finally missing"; fail=1; }
+delete_sites="$(grep -Fo 'localFile.delete()' "$JAVA" | wc -l | tr -d ' ')"
+[[ "$delete_sites" == "2" ]] || { echo "FAIL: expected exactly two app-private temp-delete sites, found $delete_sites"; fail=1; }
+other_delete_sites="$(grep -nE '\.delete\(|deleteFile\(' "$JAVA" | grep -v 'localFile.delete()' || true)"
+[[ -z "$other_delete_sites" ]] || { echo "FAIL: unexpected delete site"; echo "$other_delete_sites"; fail=1; }
 grep -Fq 'runButton.setEnabled(false)' "$JAVA" || { echo "FAIL: terminal run lock missing"; fail=1; }
 grep -Fq 'App left foreground during controlled test; baseline invalidated.' "$JAVA" || { echo "FAIL: foreground integrity guard missing"; fail=1; }
 exit "$fail"
