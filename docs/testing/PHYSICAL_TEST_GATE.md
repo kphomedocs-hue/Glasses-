@@ -291,10 +291,33 @@ Evidence:
 - `docs/testing/results/2026-09-19_G4B2_RESPONSE_SHAPE_PASS.md`
 - `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
 
-## G4B3 — next approved design gate
+## G4B3 — next approved physical diagnostic
 
-No physical G4B3 build is approved yet.
+**Verified build ready; physical result pending.**
 
-The candidate must retain the exact one-GET boundary and may expose only sanitized line-list counts/type counts/path-safety flags. It must not log any actual catalog line, filename or path and must not request any media file.
+App: K G1 Catalog Line Probe v0.4.5  
+APK: `releases/v0.4.5/K_G1_Catalog_Line_Probe_v0_4_5.apk`  
+APK SHA-256: `2f62c8798ac42ff0d619962490b9066b5cae2a1b2eb7498bf96e053ddc03ca72`  
+Build run: `35433799612` — PASS
 
-**G5 remains blocked.**
+Allowed:
+- same P2P enter once and transfer exit once;
+- exact BLE-reported peer only;
+- passive `0x73 / 0x08` glasses IP only;
+- exactly one GET to `/files/media.config`;
+- parse in memory with line semantics equivalent to Cyan/Kotlin `readLines()`;
+- report only total/non-empty/blank counts, extension counts and path-safety counts.
+
+Still prohibited:
+- actual catalog lines, filenames or paths;
+- raw response logging or response fingerprints;
+- media-file GET/download;
+- `vf_list.txt` or JSON fallback;
+- redirects or retry;
+- file writes/deletes;
+- `02 03` query;
+- AP fallback;
+- arbitrary URL input;
+- reset/restart/OTA.
+
+Run exactly once and return the complete sanitized report. **Stop before G5.**

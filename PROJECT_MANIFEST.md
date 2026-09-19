@@ -80,7 +80,7 @@ G4A phone-side Wi-Fi Direct association: PASS.
 G4A2 passive glasses P2P-IP notification capture: **PASS**.  
 G4B read-only media listing: **PHYSICAL HTTP/BODY READ REACHED — JSON PARSER UNRESOLVED**.  
 G4B2 response-shape characterization: **PASS**.  
-G4B3 exact line-list parser parity: **SOFTWARE BUILD/VERIFICATION NEXT**.
+G4B3 exact line-list parser parity: **VERIFIED BUILD READY — PHYSICAL TEST PENDING**.
 
 v0.4.2 reached `/files/media.config` but failed because our diagnostic applied the wrong parser. Physical v0.4.4 then established a 67-byte UTF-8 `text/plain` line-oriented response. Deeper exact Cyan bytecode proves `configFileType==2` is the JSON/vf_list branch, while `configFileType!=2` uses `/files/media.config` plus Kotlin `readLines()`. The physical value is 1, so every line is a catalog entry. G5 remains blocked pending one final sanitized line-list parity check.
 
@@ -368,16 +368,24 @@ Exact static evidence: `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`.
 
 Corrected exact static evidence: `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`.
 
-## G4B3 next gate
+## G4B3 verified candidate — v0.4.5
 
-Purpose: mirror Cyan's physical `configFileType=1` line-list semantics while retaining the same one-GET boundary.
+| Item | Repository path | SHA-256 / status |
+|---|---|---|
+| G4B3 source | `releases/v0.4.5/K_G1_Catalog_Line_Probe_v0_4_5_source_v1.zip` | `dd5b3c70f0e2e48cb2d657679adf1f9982cb04ce8f6a8a6624e4f943657945e7` |
+| G4B3 APK | `releases/v0.4.5/K_G1_Catalog_Line_Probe_v0_4_5.apk` | `2f62c8798ac42ff0d619962490b9066b5cae2a1b2eb7498bf96e053ddc03ca72` |
+| G4B3 package | `releases/v0.4.5/K_G1_Catalog_Line_Probe_v0_4_5_package.zip` | `0df71cf55921cb067dc779cbdd1c5587ee614df764e4fa7396f042162fc934c0` |
+| Canonical build commit | — | `2c7885a0970cdec5fe96d49178af83447a018d87` |
+| Archive commit | — | `5f2a517628e2a9d7845aef1f77d4f384af221ac2` |
+| GitHub Actions build/verification | run `35433799612` | PASS |
+| Source-commit Repository Hygiene | run `35433799644` | PASS |
+| G4B3 safety audit / compile / lint / signature | — | PASS |
+| Package ID | — | `com.parkarsite.g1cataloglineprobe` |
+| Parser | — | `configFileType=1` line-list parity |
+| JSON / vf_list alternate branch | — | ABSENT |
+| HTTP scope | — | exactly one GET to `/files/media.config` |
+| Raw body / filename/path / response fingerprint logging | — | ABSENT |
+| Media-file GET/download/mutation | — | ABSENT |
+| Physical G4B3 result | — | PENDING |
 
-Allowed result fields only:
-- line-list entry count,
-- blank/whitespace-entry count,
-- extension/type counts,
-- relative-vs-absolute/path-traversal/control-character safety counts.
-
-Actual line, filename and path values remain prohibited. Media-file GET/download remains prohibited.
-
-Issue #9 remains open. G5 remains blocked.
+Issue #9 remains open for the one-run physical G4B3 report. G5 remains blocked.

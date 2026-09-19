@@ -131,7 +131,7 @@ Forbidden:
 
 G0 through G4A are physically complete.
 
-**G4B2 response-shape physical test: PASS. Current next gate: G4B3 exact line-list parser parity — software build/verification next.**
+**G4B2 response-shape physical test: PASS. Current next gate: G4B3 exact line-list parser parity — verified build ready; physical test pending.**
 
 G4A2 and G4B network prerequisites remain physically proven:
 - exact BLE-reported P2P peer association,
@@ -170,7 +170,21 @@ Evidence:
 - `docs/testing/results/2026-09-19_G4B2_RESPONSE_SHAPE_PASS.md`
 - `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
 
-Immediate next action: build and verify G4B3 with exact line-list semantics. It may repeat the same single catalog GET and report only non-empty entry count, blank-entry count, extension/type counts, and path-safety flags. It must not log any actual line/filename/path and must make zero media-file GET requests. G5 remains blocked.
+Verified G4B3 candidate: **K G1 Catalog Line Probe v0.4.5**.
+- APK: `releases/v0.4.5/K_G1_Catalog_Line_Probe_v0_4_5.apk`
+- APK SHA-256: `2f62c8798ac42ff0d619962490b9066b5cae2a1b2eb7498bf96e053ddc03ca72`
+- Source ZIP SHA-256: `dd5b3c70f0e2e48cb2d657679adf1f9982cb04ce8f6a8a6624e4f943657945e7`
+- Package ZIP SHA-256: `0df71cf55921cb067dc779cbdd1c5587ee614df764e4fa7396f042162fc934c0`
+- Canonical build commit: `2c7885a0970cdec5fe96d49178af83447a018d87`
+- Build run: `35433799612` — PASS
+- Archive commit: `5f2a517628e2a9d7845aef1f77d4f384af221ac2`
+- Source-commit Repository Hygiene: `35433799644` — PASS
+- Package ID: `com.parkarsite.g1cataloglineprobe`
+- exact `configFileType=1` line-list parser; JSON/vf_list branch absent
+- exactly one GET to `/files/media.config`
+- no redirects, retry, media-file GET/download, raw-body logging, filename/path logging, response fingerprinting, file mutation, `02 03`, or AP fallback
+
+Immediate next action: run v0.4.5 exactly once and return the complete sanitized G4B3 report. Stop before G5.
 
 This file remains authoritative for resuming the project.
 

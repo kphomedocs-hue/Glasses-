@@ -284,9 +284,17 @@ Evidence:
 
 ## G4B3 — exact line-list parser parity
 
-Status: **SOFTWARE BUILD/VERIFICATION NEXT**.
+Status: **VERIFIED BUILD READY — physical test pending**.
 
-The next candidate may:
+Verified candidate: **K G1 Catalog Line Probe v0.4.5**.
+- APK SHA-256: `2f62c8798ac42ff0d619962490b9066b5cae2a1b2eb7498bf96e053ddc03ca72`
+- canonical build commit: `2c7885a0970cdec5fe96d49178af83447a018d87`
+- build run: `35433799612` — PASS
+- archive commit: `5f2a517628e2a9d7845aef1f77d4f384af221ac2`
+- source-commit Repository Hygiene: `35433799644` — PASS
+- safety audit / compile / lint / APK signature: PASS
+
+The physical candidate may:
 - repeat the exact proven P2P enter/association/passive-IP/exit lifecycle;
 - make exactly one GET to `/files/media.config`;
 - parse the bounded UTF-8 response with line semantics equivalent to Kotlin `readLines()`;

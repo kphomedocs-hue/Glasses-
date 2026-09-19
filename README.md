@@ -17,7 +17,7 @@ Evidence-gated status as of 2026-09-19:
 - **G4A2 — passive glasses P2P-IP notification capture:** PASS
 - **G4B — read-only media listing:** HTTP/body read reached; JSON parser unresolved
 - **G4B2 — catalog response-shape characterization:** PASS
-- **G4B3 — exact line-list parser parity:** SOFTWARE BUILD/VERIFICATION NEXT
+- **G4B3 — exact line-list parser parity:** VERIFIED BUILD READY; physical test pending
 
 G4A2 physically confirmed the glasses-side Wi-Fi Direct client address as `192.168.49.176`. G4B v0.4.2 then reached the exact `/files/media.config` local read path with one GET, but Android `JSONObject` parsing failed with `JSONException`. Exact Cyan bytecode confirms it reads the whole file as text and hands that string to Moshi, so G4B2 now characterizes the physical response safely without widening network scope.
 
@@ -303,4 +303,15 @@ Evidence:
 - `docs/testing/results/2026-09-19_G4B2_RESPONSE_SHAPE_PASS.md`
 - `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
 
-G4B3 will verify exact line-list parity without exposing any line/filename/path value and without requesting any media file. G5 remains blocked.
+Verified G4B3 candidate: **K G1 Catalog Line Probe v0.4.5**
+- APK: `releases/v0.4.5/K_G1_Catalog_Line_Probe_v0_4_5.apk`
+- APK SHA-256: `2f62c8798ac42ff0d619962490b9066b5cae2a1b2eb7498bf96e053ddc03ca72`
+- build commit: `2c7885a0970cdec5fe96d49178af83447a018d87`
+- build run: `35433799612` — PASS
+- archive commit: `5f2a517628e2a9d7845aef1f77d4f384af221ac2`
+- package ID: `com.parkarsite.g1cataloglineprobe`
+- exact line-list parsing only; JSON/vf_list branch absent
+- one catalog GET, zero media-file GETs
+- no raw catalog values, filename/path values, or catalog fingerprints logged
+
+Run v0.4.5 exactly once and return its complete sanitized report. G5 remains blocked.
