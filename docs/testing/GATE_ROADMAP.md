@@ -274,14 +274,17 @@ Exact Cyan bytecode correction:
 
 ## G4B2 — safe response-shape characterization
 
-Status: **VERIFIED BUILD READY — physical test pending**.
+Status: **HARDENED VERIFIED BUILD READY — physical test pending**.
 
-Candidate: **K G1 Catalog Shape Probe v0.4.3**.
-- APK SHA-256: `033e08f6e2880f1a929602610ee37edaf7cdbce3be0bae75af9724333f868ee7`
-- canonical build commit: `a4aa1a91f4cdda4e01f04c99b3c5019586f4d7ae`
-- build run: `35432388833` — PASS
-- archive commit: `3ec480e5f857d23fc5eeafd12109688aa6c7e76e`
-- safety audit / compile / lint / APK signature: PASS
+v0.4.3 was superseded before physical use after a privacy recheck found that it would report a SHA-256 fingerprint of the entire private catalog response. That fingerprint was unnecessary for parser diagnosis.
+
+Approved candidate: **K G1 Catalog Shape Probe v0.4.4**.
+- APK SHA-256: `8d61807f8edf3a49a0d172a73695cc1a1422852a1b284b033e00cc58711d06c0`
+- canonical build commit: `38483c269fbfdd987f0c9a3a9f5671a48e094d68`
+- build run: `35433077797` — PASS
+- archive commit: `892c82e9101cd8812468b770955b4fcd3d944062`
+- source-commit Repository Hygiene: PASS
+- hardened safety audit / compile / lint / APK signature: PASS
 
 Physical boundary:
 - identical proven P2P enter/association/passive-IP/exit lifecycle,
@@ -291,8 +294,9 @@ Physical boundary:
 - no media-file GET,
 - no raw-body logging,
 - no filename/path value logging,
+- no full-response hash/fingerprint logging,
 - no file write/delete/mutation,
-- structural output only: body size/hash, Content-Type/Encoding, strict UTF-8 status, BOM, line count, token classes, raw/normalized JSON type, root-key count, `file_list` type/count, known protocol-key presence, unknown-key count and extension counts.
+- structural output only: response byte count, sanitized Content-Type/Encoding, strict UTF-8 status, BOM, line count, token classes, raw/normalized JSON type, root-key count, `file_list` type/count, known protocol-key presence, unknown-key count and extension counts.
 
 Exit criterion:
 - physically characterize the response enough to explain the v0.4.2 parse failure and determine the exact safe parser rule. Do not advance to G5 until the report is reviewed.

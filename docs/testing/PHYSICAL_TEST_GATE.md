@@ -276,12 +276,14 @@ The endpoint remains fixed by exact Cyan evidence. Do not change to another URL 
 
 ## G4B2 — next approved physical diagnostic
 
-**Verified build ready; physical result pending.**
+**Hardened verified build ready; physical result pending.**
 
-App: K G1 Catalog Shape Probe v0.4.3  
-APK: `releases/v0.4.3/K_G1_Catalog_Shape_Probe_v0_4_3.apk`  
-APK SHA-256: `033e08f6e2880f1a929602610ee37edaf7cdbce3be0bae75af9724333f868ee7`  
-Build run: `35432388833` — PASS
+Do **not** use v0.4.3. A pre-physical privacy recheck superseded it because its report contained a SHA-256 fingerprint of the complete private catalog response.
+
+App: K G1 Catalog Shape Probe v0.4.4  
+APK: `releases/v0.4.4/K_G1_Catalog_Shape_Probe_v0_4_4.apk`  
+APK SHA-256: `8d61807f8edf3a49a0d172a73695cc1a1422852a1b284b033e00cc58711d06c0`  
+Build run: `35433077797` — PASS
 
 Allowed:
 - same P2P enter once,
@@ -291,7 +293,7 @@ Allowed:
 - no redirects or retry,
 - bounded body in memory only,
 - safe structural characterization:
-  - body byte count and SHA-256,
+  - response byte count,
   - sanitized Content-Type / Content-Encoding,
   - UTF-8 validity and BOM,
   - line count,
@@ -305,6 +307,7 @@ Allowed:
 
 Still prohibited:
 - raw response text logging,
+- response hash/fingerprint logging,
 - actual filename/path values,
 - media-file GET/download,
 - file-system write/delete,

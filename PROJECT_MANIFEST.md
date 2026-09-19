@@ -81,7 +81,7 @@ G4A2 passive glasses P2P-IP notification capture: **PASS**.
 G4B read-only media listing: **PHYSICAL HTTP/BODY READ REACHED — JSON PARSER UNRESOLVED**.  
 G4B2 response-shape characterization: **VERIFIED BUILD READY — PHYSICAL TEST PENDING**.
 
-v0.4.2 reached the exact `/files/media.config` read path with one GET and read the bounded body, then Android `JSONObject` parsing failed with `JSONException`. Exact Cyan bytecode confirms its current branch uses whole-file `readText` followed by Moshi `PtPFileModel.fromJson`. v0.4.3 keeps the same endpoint and request count and adds only safe structural response characterization. G5 remains blocked.
+v0.4.2 reached the exact `/files/media.config` read path with one GET and read the bounded body, then Android `JSONObject` parsing failed with `JSONException`. Exact Cyan bytecode confirms its current branch uses whole-file `readText` followed by Moshi `PtPFileModel.fromJson`. v0.4.3 added structural response characterization but was superseded before physical use because it still logged a SHA-256 fingerprint of the full private catalog response. v0.4.4 removes that fingerprint while keeping the exact same one-GET network boundary. G5 remains blocked.
 
 ## Discovery v0.1.2 diagnostic candidate
 
@@ -349,23 +349,24 @@ Issue #8 is complete. G4B is unblocked for separate read-only design and verific
 
 Exact static evidence: `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`.
 
-## G4B2 verified candidate — v0.4.3
+## G4B2 hardened verified candidate — v0.4.4
 
 | Item | Repository path | SHA-256 / status |
 |---|---|---|
-| G4B2 source | `releases/v0.4.3/K_G1_Catalog_Shape_Probe_v0_4_3_source_v1.zip` | `0adfe9045ce72cd947fea3947214269a9f376de4568242a8493e865b23a1b681` |
-| G4B2 APK | `releases/v0.4.3/K_G1_Catalog_Shape_Probe_v0_4_3.apk` | `033e08f6e2880f1a929602610ee37edaf7cdbce3be0bae75af9724333f868ee7` |
-| G4B2 package | `releases/v0.4.3/K_G1_Catalog_Shape_Probe_v0_4_3_package.zip` | `a7eab8ede3dc6f61610d4071b0de9675cda594d5cfd806526ad5989c2e0e8d41` |
-| Canonical build commit | — | `a4aa1a91f4cdda4e01f04c99b3c5019586f4d7ae` |
-| Archive commit | — | `3ec480e5f857d23fc5eeafd12109688aa6c7e76e` |
-| GitHub Actions build/verification | run `35432388833` | PASS |
-| G4B2 source-commit hygiene | run `35432388807` | PASS |
-| G4B2 safety audit / compile / lint / signature | — | PASS |
-| Package ID | — | `com.parkarsite.g1catalogshapeprobe` |
-| HTTP scope | — | same one GET to `/files/media.config` |
+| G4B2 source | `releases/v0.4.4/K_G1_Catalog_Shape_Probe_v0_4_4_source_v1.zip` | `8a87dcb8b09bf0b3df6f4ba42fd510b56371e6b48cec056b02c995526e88623e` |
+| G4B2 APK | `releases/v0.4.4/K_G1_Catalog_Shape_Probe_v0_4_4.apk` | `8d61807f8edf3a49a0d172a73695cc1a1422852a1b284b033e00cc58711d06c0` |
+| G4B2 package | `releases/v0.4.4/K_G1_Catalog_Shape_Probe_v0_4_4_package.zip` | `8f614c3a9bd0dd140e9c3091e7d7bcfa3dc26cd0a5473014485ac253f947bfa3` |
+| Canonical build commit | — | `38483c269fbfdd987f0c9a3a9f5671a48e094d68` |
+| Archive commit | — | `892c82e9101cd8812468b770955b4fcd3d944062` |
+| GitHub Actions build/verification | run `35433077797` | PASS |
+| Source-commit Repository Hygiene | run `35433077837` | PASS |
+| Hardened G4B2 safety audit / compile / lint / signature | — | PASS |
+| Package ID | — | `com.parkarsite.g1catalogshapeprobe4` |
+| HTTP scope | — | exactly one GET to `/files/media.config` |
 | Raw body / filename/path value logging | — | ABSENT |
+| Catalog fingerprint/hash logging | — | ABSENT |
 | Media-file GET/download/mutation | — | ABSENT |
-| Response output | — | encoding/BOM/JSON type/protocol key presence/counts only |
+| Response output | — | byte count + encoding/BOM/JSON type/protocol key presence/counts only |
 | Physical G4B2 result | — | PENDING |
 
-Issue #9 remains open for the G4B2 physical report. G5 remains blocked.
+v0.4.3 is superseded pre-physical and must not be used. Issue #9 remains open for the v0.4.4 G4B2 physical report. G5 remains blocked.

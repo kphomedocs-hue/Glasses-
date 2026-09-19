@@ -16,7 +16,7 @@ Evidence-gated status as of 2026-09-19:
 - **G4A — phone-side Wi-Fi Direct association:** PASS
 - **G4A2 — passive glasses P2P-IP notification capture:** PASS
 - **G4B — read-only media listing:** HTTP/body read reached; JSON parser unresolved
-- **G4B2 — catalog response-shape characterization:** VERIFIED BUILD READY; physical test pending
+- **G4B2 — catalog response-shape characterization:** HARDENED VERIFIED BUILD v0.4.4 READY; physical test pending
 
 G4A2 physically confirmed the glasses-side Wi-Fi Direct client address as `192.168.49.176`. G4B v0.4.2 then reached the exact `/files/media.config` local read path with one GET, but Android `JSONObject` parsing failed with `JSONException`. Exact Cyan bytecode confirms it reads the whole file as text and hands that string to Moshi, so G4B2 now characterizes the physical response safely without widening network scope.
 
@@ -297,17 +297,17 @@ Evidence: `docs/testing/results/2026-09-19_G4B_CATALOG_PARSE_FAIL.md`.
 
 Exact Cyan bytecode confirms the current branch uses Kotlin `readText` followed by Moshi `PtPFileModel.fromJson`; the endpoint is unchanged.
 
-Verified candidate: **K G1 Catalog Shape Probe v0.4.3**
-- APK: `releases/v0.4.3/K_G1_Catalog_Shape_Probe_v0_4_3.apk`
-- APK SHA-256: `033e08f6e2880f1a929602610ee37edaf7cdbce3be0bae75af9724333f868ee7`
-- source ZIP SHA-256: `0adfe9045ce72cd947fea3947214269a9f376de4568242a8493e865b23a1b681`
-- package ZIP SHA-256: `a7eab8ede3dc6f61610d4071b0de9675cda594d5cfd806526ad5989c2e0e8d41`
-- canonical build commit: `a4aa1a91f4cdda4e01f04c99b3c5019586f4d7ae`
-- build run: `35432388833` — PASS
-- archive commit: `3ec480e5f857d23fc5eeafd12109688aa6c7e76e`
-- package ID: `com.parkarsite.g1catalogshapeprobe`
-- same one GET to `/files/media.config`
-- no redirect/retry/raw-body logging/filename-path logging/media-file GET/mutation
-- response classification only: encoding/BOM, JSON type, known protocol keys and counts
+Pre-physical privacy recheck: v0.4.3 was superseded before physical use because it reported a full-response SHA-256 fingerprint. The hardened v0.4.4 removes that field without changing network/protocol behavior.
 
-G5 remains blocked until the G4B2 physical report is reviewed.
+Verified candidate: **K G1 Catalog Shape Probe v0.4.4**
+- APK: `releases/v0.4.4/K_G1_Catalog_Shape_Probe_v0_4_4.apk`
+- APK SHA-256: `8d61807f8edf3a49a0d172a73695cc1a1422852a1b284b033e00cc58711d06c0`
+- source/build commit: `38483c269fbfdd987f0c9a3a9f5671a48e094d68`
+- build run: `35433077797` — PASS
+- archive commit: `892c82e9101cd8812468b770955b4fcd3d944062`
+- package ID: `com.parkarsite.g1catalogshapeprobe4`
+- same one GET to `/files/media.config`
+- no redirect/retry/raw-body logging/filename-path logging/catalog-fingerprint logging/media-file GET/mutation
+- response classification only: byte count, Content-Type/Encoding, UTF-8/BOM, JSON type, known protocol keys and counts
+
+G5 remains blocked until the G4B2 v0.4.4 physical report is reviewed.
