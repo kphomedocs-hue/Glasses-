@@ -312,7 +312,7 @@ Evidence:
 
 ## G5 — next approved physical diagnostic
 
-**v0.5.0: SAFE NO-DELTA STOP. G5.2 v0.5.2: VERIFIED BUILD READY; v0.5.1 superseded before physical use.**
+**v0.5.0: SAFE NO-DELTA STOP. G5.2 v0.5.2: SAFE NO-DELTA STOP. Next physical gate is BLE-only capture visibility.**
 
 App: K G1 Disposable Photo Probe v0.5.0  
 APK: `releases/v0.5.0/K_G1_Disposable_Photo_Probe_v0_5_0.apk`  
@@ -399,3 +399,19 @@ Use only:
 - build run: `35436808167` — PASS
 
 The physical procedure is unchanged from G5.1. G6 remains blocked pending report review.
+
+
+### G5 capture-visibility gate
+
+No further media-download test is approved yet.
+
+Next physical diagnostic must:
+- use BLE only;
+- take one baseline `02 04` inventory reading;
+- remain subscribed to notifications while transfer mode is off;
+- ask the user to capture exactly one photo;
+- observe sanitized `0x73` event IDs / event `0x01` count fields;
+- issue one final `02 04` recheck;
+- disconnect.
+
+No P2P, HTTP or media file request is allowed in this gate.

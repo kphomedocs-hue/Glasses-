@@ -131,7 +131,7 @@ Forbidden:
 
 G0 through G4A are physically complete.
 
-**G4B3: PASS. G5 v0.5.0: SAFE NO-DELTA STOP. G5.2 v0.5.2: VERIFIED BUILD READY — physical test pending. v0.5.1 superseded before physical use.**
+**G4B3: PASS. G5 v0.5.0: SAFE NO-DELTA STOP. G5.2 v0.5.2 physical run: SAFE NO-DELTA STOP. Next: capture-visibility diagnostic; no P2P/HTTP.**
 
 G4A2 and G4B network prerequisites remain physically proven:
 - exact BLE-reported P2P peer association,
@@ -751,3 +751,26 @@ before sending P2P enter.
 Any completed failure now resets to BASELINE and restores the Start button.
 
 All previous G5.1 safety limits remain unchanged. G6 stays blocked.
+
+
+## G5.2 physical result — safe no-delta stop
+
+Physical G5.2:
+- Phase A `02 04`: images=2, videos=0, recordings=1;
+- Phase A catalog: 3 safe entries / 67 bytes / `.jpg=2, .opus=1`;
+- user confirmed exactly one disposable JPG capture;
+- Phase B `02 04`: images=2, videos=0, recordings=1;
+- inventory deltas: 0 / 0 / 0;
+- Phase B catalog: unchanged 3 safe entries / 67 bytes;
+- new catalog entries: 0;
+- media GETs: 0;
+- transfer exit: successful.
+
+This localizes the current issue upstream of catalog download: the newly captured image was not visible to either the BLE inventory query or `media.config` immediately afterward.
+
+Version-label note: v0.5.2 source/package/versionName are correct, but one report literal printed `App version: 0.5.1`. Cosmetic only.
+
+Evidence:
+- `docs/testing/results/2026-09-19_G5_V0_5_2_SAFE_NO_DELTA.md`
+
+Next gate: BLE-only capture visibility. Keep notifications connected while transfer mode is off, capture one photo, observe sanitized `0x73` events, then perform one bounded `02 04` recheck. No Wi-Fi Direct or HTTP.

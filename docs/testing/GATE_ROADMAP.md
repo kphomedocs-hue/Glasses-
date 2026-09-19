@@ -303,7 +303,7 @@ Note: G4B2's reported line count 4 included the terminal newline; G4B3's `readLi
 
 ## G5 — one disposable media download
 
-Status: **v0.5.0 SAFE NO-DELTA STOP; G5.2 v0.5.2 VERIFIED BUILD READY — physical test pending; v0.5.1 superseded**.
+Status: **v0.5.0 SAFE NO-DELTA STOP; v0.5.2 SAFE NO-DELTA STOP; CAPTURE-VISIBILITY DIAGNOSTIC NEXT**.
 
 Exact static evidence:
 `docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`
@@ -403,3 +403,26 @@ v0.5.2 adds no new protocol/network behavior. It only:
 - resets failed two-phase runs back to BASELINE for a clean retry.
 
 Verified APK SHA-256: `14fa9447ee938d20c35c935f5665bbcd72f0edb61b33f1e266d96aacb18bfe7a`.
+
+
+### G5 capture-visibility diagnostic
+
+Purpose: isolate when a physical photo becomes visible to the glasses inventory before another download attempt.
+
+Allowed:
+- BLE connect + notification subscription;
+- one `0x41 / 02 04` baseline query;
+- keep BLE connected while transfer mode is OFF;
+- user captures exactly one photo;
+- observe only sanitized `0x73` event IDs and media-count/config fields for event `0x01`;
+- after a bounded observation window, one `02 04` recheck;
+- disconnect.
+
+Forbidden:
+- P2P enter;
+- Wi-Fi Direct;
+- HTTP/catalog/media GET;
+- AP mode;
+- `02 03`;
+- file mutation/deletion;
+- reset/restart/OTA.
