@@ -1,0 +1,98 @@
+name: Build K G1 Init Probe v0.2.1
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "source/v0.2.1/**"
+      - ".github/workflows/build-g2c-init-probe-v0.2.1.yml"
+      - "tools/archive_verified_build_v0.2.1.sh"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install Android SDK packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKMANAGER="/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0" "platform-tools"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.6.0"
+
+      - name: Verify G2C single-command scope
+        shell: bash
+        working-directory: source/v0.2.1
+        run: |
+          set -euo pipefail
+          JAVA="app/src/main/java/com/parkarsite/g1initprobe/MainActivity.java"
+          grep -Fq 'de5bf729-d711-4e47-af26-65e3012a5dc7' "$JAVA"
+          grep -Fq 'de5bf72a-d711-4e47-af26-65e3012a5dc7' "$JAVA"
+          grep -Fq 'frame[1] = 0x40;' "$JAVA"
+          grep -Fq 'RESPONSE_WINDOW_MS = 12_000L' "$JAVA"
+          [[ "$(grep -Fc 'writeCharacteristic(' "$JAVA")" -eq 1 ]]
+          ! grep -Eq 'frame\[1\][[:space:]]*=[[:space:]]*0x41' "$JAVA"
+          echo "PASS: G2C one-command scope present"
+
+      - name: G2C safety audit
+        shell: bash
+        working-directory: source/v0.2.1
+        run: |
+          set -euo pipefail
+          chmod +x SAFETY_AUDIT.sh
+          ./SAFETY_AUDIT.sh
+
+      - name: Compile and lint
+        shell: bash
+        working-directory: source/v0.2.1
+        run: |
+          set -euo pipefail
+          gradle --no-daemon clean :app:assembleDebug :app:lintDebug
+
+      - name: Verify APK signature
+        shell: bash
+        working-directory: source/v0.2.1
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/kg1g2c"
+          cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/kg1g2c/K_G1_Init_Probe_v0_2_1.apk"
+          cp app/build/reports/lint-results-debug.html "$RUNNER_TEMP/kg1g2c/lint-results-debug.html"
+          sha256sum "$RUNNER_TEMP/kg1g2c/K_G1_Init_Probe_v0_2_1.apk"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$RUNNER_TEMP/kg1g2c/K_G1_Init_Probe_v0_2_1.apk"
+
+      - name: Archive verified build into repository
+        shell: bash
+        run: bash tools/archive_verified_build_v0.2.1.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: K_G1_Init_Probe_v0_2_1
+          path: |
+            releases/v0.2.1/K_G1_Init_Probe_v0_2_1.apk
+            releases/v0.2.1/K_G1_Init_Probe_v0_2_1_APK_SHA256.txt
+            releases/v0.2.1/K_G1_Init_Probe_v0_2_1_source_v1.zip
+            releases/v0.2.1/K_G1_Init_Probe_v0_2_1_source_SHA256.txt
+            releases/v0.2.1/K_G1_Init_Probe_v0_2_1_package.zip
+            releases/v0.2.1/K_G1_Init_Probe_v0_2_1_package_SHA256.txt
+            releases/v0.2.1/BUILD_INFO.md
+            releases/v0.2.1/lint-results-debug.html
+          if-no-files-found: error
