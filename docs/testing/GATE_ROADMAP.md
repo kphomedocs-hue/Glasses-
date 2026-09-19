@@ -455,3 +455,24 @@ Verified:
 - archive commit `4881adff06b31e134ace69b515cabca9a1ce8468`
 
 No network/protocol scope was added.
+
+
+### G5 capture-visibility v0.5.5
+
+v0.5.5 supersedes v0.5.4 before physical use.
+
+Reason:
+- v0.5.4 retained a stale exported-report version literal (`App version: 0.5.3`).
+- v0.5.5 corrects report provenance only; diagnostic behavior is unchanged.
+
+Verified:
+- APK SHA-256 `d6ee69fe4929719de31410f35a2e5f27c281598eec75163a10142c4367a8f55a`
+- build commit `2aec1fc118291506fb4a0da338f82f88f51f103b`
+- build run `35450379889` — PASS
+- archive commit `da9600289372f8d2385e8f3629f28ade7415f64d`
+- source Repository Hygiene `35450379856` — PASS
+- safety audit / compile / lint / APK signature: PASS
+
+Physical boundary remains BLE-only with at most two `0x41 / 02 04` writes and no network/media path.
+
+Next action: run v0.5.5 once and review the sanitized capture-visibility report before any further G5 download attempt.

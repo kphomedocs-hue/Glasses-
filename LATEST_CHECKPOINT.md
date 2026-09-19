@@ -129,148 +129,29 @@ Forbidden:
 
 ## Next action
 
-G0 through G4A are physically complete.
+G0 through G4B3 are physically complete.
 
-**G4B3: PASS. G5 v0.5.0 and G5.2: SAFE NO-DELTA STOPS. G5 capture-visibility v0.5.4: VERIFIED BUILD READY — physical test pending. v0.5.3 superseded before physical use.**
+**Current physical candidate: G5 capture-visibility v0.5.5.**
 
-G4A2 and G4B network prerequisites remain physically proven:
-- exact BLE-reported P2P peer association,
-- phone group owner at `192.168.49.1`,
-- passive glasses IP from `0x73 / 0x08` at `192.168.49.176`,
-- exact catalog endpoint `/files/media.config`,
-- one local GET only,
-- clean transfer exit.
+Why this diagnostic is next:
+- G5 v0.5.0 and G5.2 both stopped safely because the newly captured JPG did not appear in the immediate BLE inventory or catalog delta.
+- Before another media-download attempt, we need to determine when the capture becomes visible to the glasses inventory.
+- v0.5.5 keeps one continuous BLE connection, performs one baseline `0x41 / 02 04` query, arms a bounded 60-second passive watch before the user captures exactly one photo, then performs one final `0x41 / 02 04` query.
+- It has no P2P, Wi-Fi, HTTP, catalog access, media GET, file write/delete, AP mode or `02 03`.
 
-Physical G4B2 v0.4.4 returned:
-- HTTP 200,
-- `Content-Type: text/plain`,
-- 67 response bytes,
-- valid UTF-8,
-- no BOM,
-- diagnostic line count 4,
-- not JSON before or after normalization,
-- zero media-file GET requests,
-- no credential, filename/path, raw-body or catalog-fingerprint logging.
+Verified v0.5.5:
+- APK: `releases/v0.5.5/K_G1_Capture_Visibility_Probe_v0_5_5.apk`
+- APK SHA-256: `d6ee69fe4929719de31410f35a2e5f27c281598eec75163a10142c4367a8f55a`
+- canonical source/build commit: `2aec1fc118291506fb4a0da338f82f88f51f103b`
+- build run: `35450379889` — PASS
+- archive commit: `da9600289372f8d2385e8f3629f28ade7415f64d`
+- source Repository Hygiene: `35450379856` — PASS
+- safety audit / compile / lint / APK signature: PASS
+- package ID: `com.parkarsite.g1capturevisibilityprobe55`
 
-A deeper bytecode-level recheck of the exact Cyan APK corrected the earlier parser interpretation:
+v0.5.5 supersedes v0.5.4 before physical use. The only runtime delta from v0.5.4 is corrected exported report metadata: v0.5.4 printed `App version: 0.5.3`; v0.5.5 correctly prints `App version: 0.5.5`.
 
-`PictureFragment$downloadMediaConfig$2`:
-- if `configFileType == 2` → `:80/storage/sd0/C/DCIM/1/vf_list.txt`;
-- otherwise → `/files/media.config`.
-
-`AlbumDepository.readPhotoFile`:
-- if `configFileType == 2` → Kotlin `readText()` + Moshi `PtPFileModel` JSON parser;
-- otherwise → Kotlin `readLines()`.
-
-The physical G3 value is `configFileType = 1`. Therefore this AIMB-G1 is **line-oriented**, not JSON. Cyan iterates each line returned from `media.config` and constructs `http://<glassDeviceWifiIP>/files/<line>`, passing the URL and original line into `PictureDownloadBean(String, String)`.
-
-G4B2 conclusion: **PASS — response format identified and previous JSONException explained.**
-
-Evidence:
-- `docs/testing/results/2026-09-19_G4B2_RESPONSE_SHAPE_PASS.md`
-- `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
-
-Physical G4B3 v0.4.5 conclusion: **PASS**.
-- catalog HTTP status: 200
-- response bytes: 67
-- exact Cyan line-list entries: 3
-- non-empty entries: 3
-- safe relative entries: 3
-- blank / absolute URL / leading slash / traversal / control-character entries: 0
-- extension summary: `.jpg=2, .opus=1`
-- media-file GET requests: 0
-- raw body / filename-path values / catalog fingerprint logging: absent
-- transfer exit: successful
-
-G4B2's earlier diagnostic "line count 4" is corrected: it counted the trailing newline as an extra line. Cyan-equivalent `readLine()` semantics physically produce 3 catalog entries.
-
-Evidence:
-- `docs/testing/results/2026-09-19_G4B3_CATALOG_LINE_PASS.md`
-- `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
-
-Exact Cyan G5 trace now confirms:
-- catalog line → `PictureDownloadBean(path=http://<glasses-IP>/files/<line>, fileName=line)`
-- Cyan uses `AndroidNetworking.download(url, albumDir, filename)`
-- tag `download_file`, priority MEDIUM, progress listener, then `startDownload`
-- no alternate media endpoint in this caller
-- no custom request header / Range / HEAD / explicit resume configuration visible before start
-- Cyan may retry at app level after errors, but the first G5 diagnostic will **not** retry
-
-Safe G5 selection rule:
-1. baseline current catalog in memory and exit transfer mode;
-2. user physically captures exactly one disposable JPG test photo;
-3. reconnect and fetch catalog again;
-4. require exactly one new safe relative `.jpg` entry by set difference;
-5. download only that new entry once;
-6. verify HTTP 200, non-empty bounded stream, Content-Length when present, and JPEG signature;
-7. never log the remote line/filename/path;
-8. exit and stop for review.
-
-Evidence:
-- `docs/research/CYAN_EXACT_G5_TRACE_2026-09-19.md`
-
-Verified G5 candidate: **K G1 Disposable Photo Probe v0.5.0**.
-- APK: `releases/v0.5.0/K_G1_Disposable_Photo_Probe_v0_5_0.apk`
-- APK SHA-256: `7966cb3f5ecb1be89f876a6686d34b74dbf693c9231603cd8a92dc2b8d361712`
-- Source ZIP SHA-256: `9b4023279957adb38f79cae4dd323e0ffef314e13e17e31632b19c29d924e7f9`
-- Package ZIP SHA-256: `97badec697dc20abee2b16b30d58d86b599e23b634eb2e97bce7de20e6b6c0a7`
-- Canonical hardened build commit: `b9152f13ed7bacbd2d895a161da3dafbb9461406`
-- Build run: `35435019643` — PASS
-- Archive commit: `3749b2398c300f8b8677496157fd5d45ad51bd9b`
-- Source-commit Repository Hygiene: `35435019654` — PASS
-- Package ID: `com.parkarsite.g1singlephotoprobe`
-- two-phase baseline + exact-one new JPG delta
-- max 2 catalog GETs + 1 media GET
-- media cap 32 MiB
-- JPEG SOI/EOI validation
-- no redirect, retry, Range/resume, alternate endpoint, raw catalog/name/path logging, media fingerprinting, glasses mutation, AP fallback, or `02 03`
-
-A pre-physical lifecycle recheck caught and fixed a delayed BLE-disconnect callback race between Phase A and the user-photo wait state. The approved APK is only the rebuilt hardened artifact above; the earlier first v0.5.0 build is superseded.
-
-Physical G5 v0.5.0 result: **SAFE NO-DELTA STOP**.
-- Phase A catalog: 3 entries / 67 bytes / `.jpg=2, .opus=1`
-- user captured exactly one disposable JPG after transfer exit
-- Phase B catalog: unchanged 3 entries / 67 bytes
-- new-entry delta: 0
-- media-file GETs: 0
-- transfer exit: successful
-- no remote filenames/paths logged
-
-Evidence:
-- `docs/testing/results/2026-09-19_G5_V0_5_0_SAFE_NO_DELTA.md`
-
-Post-result exact Cyan trace found two missing parity behaviors in v0.5.0:
-1. `PictureFragment.loadDataData()` calls `readAlbumCounts()` → proven `0x41 / 02 04` media-count query before import.
-2. `PictureFragment.downloadMediaConfig()` waits exactly **1000 ms** before fetching the catalog on the physical configFileType=1 branch.
-
-Evidence:
-- `docs/research/CYAN_G5_REFRESH_PARITY_2026-09-19.md`
-
-Verified G5.1 candidate: **K G1 Disposable Photo Probe v0.5.1**.
-- APK: `releases/v0.5.1/K_G1_Disposable_Photo_Probe_v0_5_1.apk`
-- APK SHA-256: `20cab114c980e10c2e277cb82960b761975aac8dad467c36d7c88023dd7a403f`
-- Source ZIP SHA-256: `dbca801c17415cae2b27c7b8246dc7530939981081fcf2967e016ae2fe22ced9`
-- Package ZIP SHA-256: `5928b44f68f1c0efbbf60c3d692891505c496a184bc9ae974487001d431dcba0`
-- Canonical source/build commit: `c8e54b68ed817f899aef57030d9e9bf4a442ea2e`
-- Build run: `35436132719` — PASS
-- Archive commit: `353bbd72bbf9d72a81b3ff82f6664a58aa864807`
-- Package ID: `com.parkarsite.g1singlephotoprobe51`
-- G5.1 safety audit / compile / lint / APK signature: PASS
-- source Repository Hygiene on `c8e54b68ed817f899aef57030d9e9bf4a442ea2e`: PASS
-
-G5.1 adds only the two exact Cyan readiness behaviors missing from v0.5.0:
-1. one already-proven `0x41 / 02 04` media-count/config query before P2P enter in each phase;
-2. exact **1000 ms** delay after P2P + passive-IP readiness before each catalog GET.
-
-All v0.5.0 download guards remain:
-- exact peer only;
-- exactly one new strict-safe relative `.jpg` required;
-- one media GET maximum;
-- 32 MiB cap;
-- JPEG SOI/EOI + Content-Length validation;
-- no redirect, retry/resume/Range, AP fallback, `02 03`, raw catalog/name/path logging, fingerprinting, or glasses mutation.
-
-Immediate next action: run G5.1 once using the two-phase workflow and return the complete sanitized report. Stop before G6.
+Immediate action: run v0.5.5 once, arm the watch before taking exactly one disposable photo, wait for the bounded final recheck, and return the complete sanitized report. Stop before any further G5 media-download attempt or G6 work.
 
 This file remains authoritative for resuming the project.
 
@@ -836,3 +717,33 @@ Verified v0.5.4:
 - source Repository Hygiene: `35440385257` — PASS
 
 Network/protocol scope is unchanged from v0.5.3: BLE only, exactly two maximum `0x41 / 02 04` writes, no P2P/Wi-Fi/HTTP/media access.
+
+
+## G5 capture-visibility verified candidate — v0.5.5
+
+v0.5.5 supersedes v0.5.4 before physical use.
+
+The only runtime change from v0.5.4 is report provenance:
+- v0.5.4's UI/package metadata was 0.5.4 but its exported report literal still said `App version: 0.5.3`;
+- v0.5.5 correctly reports `App version: 0.5.5`.
+
+Verified artifacts:
+- APK: `releases/v0.5.5/K_G1_Capture_Visibility_Probe_v0_5_5.apk`
+- APK SHA-256: `d6ee69fe4929719de31410f35a2e5f27c281598eec75163a10142c4367a8f55a`
+- canonical source/build commit: `2aec1fc118291506fb4a0da338f82f88f51f103b`
+- build run: `35450379889` — PASS
+- archive commit: `da9600289372f8d2385e8f3629f28ade7415f64d`
+- source Repository Hygiene: `35450379856` — PASS
+- safety audit / compile / lint / APK signature: PASS
+
+Protocol/network boundary is unchanged:
+- BLE only;
+- `0x41 / 02 04` only;
+- maximum two proprietary writes;
+- continuous BLE connection across the physical capture;
+- 60-second armed watch begins before capture;
+- no P2P/Wi-Fi/HTTP/media access;
+- no raw-frame logging;
+- no file write/delete.
+
+Physical test is now the only next step.
