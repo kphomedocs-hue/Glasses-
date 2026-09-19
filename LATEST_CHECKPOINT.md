@@ -131,7 +131,7 @@ Forbidden:
 
 G0 through G4A are physically complete.
 
-**G4A2 physical test: PASS. Current next gate: G4B read-only local media listing.**
+**G4A2 physical test: PASS. Current next gate: G4B physical read-only catalog test — verified software build ready.**
 
 G4A physically confirmed:
 - exact BLE-reported P2P peer discovery,
@@ -146,11 +146,36 @@ No new proprietary query was needed. `0x41 / 02 03`, Internet permission, HTTP, 
 
 G4A2 conclusion: **PASS**.
 
-Immediate next action: define the smallest G4B read-only local-media-listing probe. Before any physical HTTP request, confirm the exact Cyan/legacy read-only catalog URL and response shape. G4B must remain GET-only, local-network only, and must not download or mutate media.
+Exact Cyan static trace now confirms that the physical `configFileType=1` branch uses:
+
+```text
+GET http://<glassDeviceWifiIP>/files/media.config
+```
+
+The response is JSON with root key `file_list`; Cyan's compact item model exposes keys `c,e,f,h,s,t,w`, with `f` used as the later remote media path. The exact P2P album path does not add explicit process-network binding.
+
+Verified G4B candidate: **K G1 Media Catalog Probe v0.4.2**.
+- APK: `releases/v0.4.2/K_G1_Media_Catalog_Probe_v0_4_2.apk`
+- APK SHA-256: `ffd7233a7006909d7090e39291afb214e0dc72cc771d9f54896d0612c1c5d6f2`
+- Source ZIP SHA-256: `b81f9c9c22c74460e06799ca817d7a4bf2453c9534207f308d256ad86196130f`
+- Package ZIP SHA-256: `8dc6f962ff4deabc9a1dc675b006fa82ee59c3c02b9e322067659c65bbe9c0c5`
+- Canonical source/build commit: `d9cd2e28fdd1a5f62b25e21fd7d6eb81c5840508`
+- Verified build run: `35431413193`
+- Archive commit: `2fbe008aaec3192cb846d91d7839c6fee51366c6`
+- G4B safety audit / compile / lint / APK signature: PASS
+- package ID: `com.parkarsite.g1mediacatalogprobe`
+- exactly one GET site: `/files/media.config`
+- redirects disabled; response capped at 65,536 bytes
+- no media-file GET/download/mutation
+- no actual filename/path value logging
+- `0x41 / 02 03`: absent
+
+Immediate next action: run the verified v0.4.2 APK once and return the complete sanitized report. Do not proceed to a media-file download even if the catalog succeeds.
 
 Evidence:
 - `docs/testing/results/2026-09-19_G4A_P2P_ASSOCIATION_PASS.md`
 - `docs/testing/results/2026-09-19_G4A2_P2P_IP_NOTIFY_PASS.md`
+- `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
 
 This file remains authoritative for resuming the project.
 

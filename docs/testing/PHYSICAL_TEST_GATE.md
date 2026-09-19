@@ -256,17 +256,48 @@ Observed:
 Evidence:
 `docs/testing/results/2026-09-19_G4A2_P2P_IP_NOTIFY_PASS.md`
 
-## G4B — next approved design gate
+## G4B — next approved physical diagnostic
 
-G4B is now unblocked because the glasses-side local IP is physically known. No G4B HTTP request has been run yet.
+**Verified build ready; physical result pending.**
 
-Before a physical G4B test, verify a candidate that:
-- uses only the proven P2P enter/association/exit lifecycle,
-- targets only the resolved local glasses endpoint,
-- uses GET-only local HTTP,
-- reads only the exact confirmed catalog/listing resource,
-- displays metadata/filenames only,
-- does not download media,
-- does not mutate/delete files,
-- exposes no arbitrary URL or command input,
-- retains sanitized reporting and credential redaction.
+App: K G1 Media Catalog Probe v0.4.2  
+APK: `releases/v0.4.2/K_G1_Media_Catalog_Probe_v0_4_2.apk`  
+APK SHA-256: `ffd7233a7006909d7090e39291afb214e0dc72cc771d9f54896d0612c1c5d6f2`  
+Build run: `35431413193` — PASS
+
+Exact Cyan trace confirms the physical `configFileType=1` branch reads:
+
+```text
+GET http://<glassDeviceWifiIP>/files/media.config
+```
+
+The physical G4B run may:
+- enter P2P transfer mode once,
+- associate only with the exact BLE-reported peer,
+- resolve the glasses IP only from passive `0x73 / 0x08`,
+- require the already observed phone-group-owner topology,
+- make exactly one GET to `/files/media.config`,
+- parse the bounded JSON catalog in memory,
+- report only item count, safe key names and extension counts,
+- exit transfer mode once,
+- clean up.
+
+Safety limits:
+- exact local endpoint only; no arbitrary URL input,
+- confirmed `192.168.49.0/24` P2P subnet guard,
+- redirects disabled,
+- 4-second connect/read timeouts,
+- 65,536-byte response cap,
+- maximum 256 catalog items,
+- no retry,
+- no actual filename/path values in the report,
+- no media-file GET,
+- no file-system write/delete,
+- no `0x41 / 02 03` query,
+- no AP-mode fallback,
+- no reset/restart/OTA.
+
+Run exactly once and return the complete sanitized report. **Do not proceed to G5 even if G4B succeeds.**
+
+Static evidence:
+`docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`

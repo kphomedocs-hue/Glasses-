@@ -15,9 +15,9 @@ Evidence-gated status as of 2026-09-19:
 - **G3B — P2P transfer lifecycle:** PASS
 - **G4A — phone-side Wi-Fi Direct association:** PASS
 - **G4A2 — passive glasses P2P-IP notification capture:** PASS
-- **G4B — read-only media listing:** UNBLOCKED; design/verification next
+- **G4B — read-only media listing:** VERIFIED BUILD READY; physical test pending
 
-G4A2 physically confirmed the glasses-side Wi-Fi Direct client address as `192.168.49.176` from passive `0x73 / 0x08`, while the phone remained group owner at `192.168.49.1`. No `02 03` query, HTTP, socket or media operation was performed. G4B is now unblocked for a separately verified read-only local listing probe.
+G4A2 physically confirmed the glasses-side Wi-Fi Direct client address as `192.168.49.176` from passive `0x73 / 0x08`, while the phone remained group owner at `192.168.49.1`. G4B static tracing then confirmed the exact `configFileType=1` Cyan catalog endpoint as `/files/media.config`, and the verified v0.4.2 candidate is ready for one physical read-only catalog test.
 
 Authoritative checkpoint:
 - `LATEST_CHECKPOINT.md`
@@ -281,4 +281,23 @@ Physical G4A2 result: `0x73 / 0x08` was observed and resolved the glasses client
 
 Evidence: `docs/testing/results/2026-09-19_G4A2_P2P_IP_NOTIFY_PASS.md`.
 
-Next gate: G4B read-only local media listing. No G4B implementation or physical HTTP request has been performed yet.
+Next gate: G4B read-only local media listing.
+
+Exact Cyan evidence:
+- `configFileType=1` → `GET http://<glassDeviceWifiIP>/files/media.config`
+- JSON root key: `file_list`
+- item keys: `c,e,f,h,s,t,w`
+- `f` is used by Cyan as the later remote media path
+- P2P album path shows no explicit process-network binding
+
+Verified candidate: **K G1 Media Catalog Probe v0.4.2**
+- APK: `releases/v0.4.2/K_G1_Media_Catalog_Probe_v0_4_2.apk`
+- APK SHA-256: `ffd7233a7006909d7090e39291afb214e0dc72cc771d9f54896d0612c1c5d6f2`
+- source/build commit: `d9cd2e28fdd1a5f62b25e21fd7d6eb81c5840508`
+- build run: `35431413193` — PASS
+- archive commit: `2fbe008aaec3192cb846d91d7839c6fee51366c6`
+- package ID: `com.parkarsite.g1mediacatalogprobe`
+- exactly one local GET site; redirects disabled; 65,536-byte response cap
+- no media-file GET/download/mutation or filename/path value logging
+
+No physical G4B HTTP request has been performed yet.

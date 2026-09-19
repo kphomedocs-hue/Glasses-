@@ -249,17 +249,53 @@ Verified candidate: K G1 P2P IP Notify Probe v0.4.1. APK SHA-256 `3c9104c34fbf06
 
 ## G4B — read-only local media listing
 
-Status: **UNBLOCKED — design/verification next; no physical HTTP request yet**.
+Status: **VERIFIED BUILD READY — physical test pending**.
 
-Prerequisite now satisfied: the glasses-side local IP is physically resolved.
+Prerequisites satisfied:
+- P2P association path physically proven,
+- phone group-owner topology physically proven,
+- passive glasses IP physically resolved from `0x73 / 0x08`,
+- exact Cyan `configFileType=1` catalog branch statically traced.
 
-Next design must:
-- reuse the confirmed P2P association path,
-- bind to the confirmed P2P network as required,
-- use only narrowly scoped local HTTP GET requests,
-- first confirm the exact Cyan/legacy read-only catalog URL and response shape before physical execution,
-- display filenames/metadata only,
-- perform no media file download and no mutation.
+Exact Cyan endpoint for this physical state:
+
+```text
+GET http://<glassDeviceWifiIP>/files/media.config
+```
+
+Expected response:
+- JSON object,
+- root key `file_list`,
+- compact item keys `c,e,f,h,s,t,w`,
+- `f` is used by Cyan only for later media-file retrieval, which remains outside G4B.
+
+Verified candidate: **K G1 Media Catalog Probe v0.4.2**.
+- APK SHA-256: `ffd7233a7006909d7090e39291afb214e0dc72cc771d9f54896d0612c1c5d6f2`
+- source/build commit: `d9cd2e28fdd1a5f62b25e21fd7d6eb81c5840508`
+- build run: `35431413193` — PASS
+- archive commit: `2fbe008aaec3192cb846d91d7839c6fee51366c6`
+- safety audit / compile / lint / signature: PASS
+- source-commit repository hygiene: PASS
+
+Physical boundary:
+- same proven P2P enter/association/passive-IP/exit lifecycle,
+- require phone as group owner,
+- runtime-derived glasses IP must remain in confirmed `192.168.49.0/24`,
+- exactly one GET site to `/files/media.config`,
+- redirects disabled,
+- 4-second connect/read timeouts,
+- catalog capped at 65,536 bytes and 256 items,
+- parse in memory only,
+- report structural counts/keys/extensions only,
+- do not log filename/path values,
+- no retry,
+- no media-file GET/download/mutation.
+
+Exit criterion:
+- one physical run either validates a bounded `file_list` catalog or fails in a documented way, then exits transfer mode. Do not advance to G5 until the report is reviewed.
+
+Evidence:
+`docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`
 
 ## G5 — one disposable media download
 

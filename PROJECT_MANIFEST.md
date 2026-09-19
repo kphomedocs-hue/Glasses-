@@ -78,9 +78,9 @@ G3 media-count query: PASS.
 G3B bounded P2P transfer lifecycle: PASS.  
 G4A phone-side Wi-Fi Direct association: PASS.  
 G4A2 passive glasses P2P-IP notification capture: **PASS**.  
-G4B read-only media listing: **UNBLOCKED — design/verification next; not yet physically run**.
+G4B read-only media listing: **VERIFIED BUILD READY — PHYSICAL TEST PENDING**.
 
-G4A2 resolved the glasses-side client IP passively from `0x73 / 0x08`; the separate `0x41 / 02 03` query was not needed. The next authorized work is to define and verify a narrow G4B GET-only local listing probe before any physical HTTP request.
+G4A2 resolved the glasses-side client IP passively from `0x73 / 0x08`; the separate `0x41 / 02 03` query was not needed. Exact Cyan tracing now fixes the G4B catalog endpoint for physical `configFileType=1` as `GET /files/media.config`. The verified v0.4.2 probe is ready for one bounded physical catalog read; no media-file GET is yet authorized.
 
 ## Discovery v0.1.2 diagnostic candidate
 
@@ -319,3 +319,31 @@ Issue #6 tracks the physical G3B lifecycle test. G4 local-network/media listing 
 | `0x41 / 02 03` query | — | NOT USED |
 
 Issue #8 is complete. G4B is unblocked for separate read-only design and verification.
+
+## G4B verified candidate — v0.4.2
+
+| Item | Repository path | SHA-256 / status |
+|---|---|---|
+| G4B source | `releases/v0.4.2/K_G1_Media_Catalog_Probe_v0_4_2_source_v1.zip` | `b81f9c9c22c74460e06799ca817d7a4bf2453c9534207f308d256ad86196130f` |
+| G4B APK | `releases/v0.4.2/K_G1_Media_Catalog_Probe_v0_4_2.apk` | `ffd7233a7006909d7090e39291afb214e0dc72cc771d9f54896d0612c1c5d6f2` |
+| G4B package | `releases/v0.4.2/K_G1_Media_Catalog_Probe_v0_4_2_package.zip` | `8dc6f962ff4deabc9a1dc675b006fa82ee59c3c02b9e322067659c65bbe9c0c5` |
+| Canonical build commit | — | `d9cd2e28fdd1a5f62b25e21fd7d6eb81c5840508` |
+| Archive commit | — | `2fbe008aaec3192cb846d91d7839c6fee51366c6` |
+| GitHub Actions build/verification | run `35431413193` | PASS |
+| Repository Hygiene on source commit | run `35431413187` | PASS |
+| G4B safety audit | — | PASS |
+| Android compile + lint | — | PASS |
+| APK signature verification | — | PASS |
+| Package ID | — | `com.parkarsite.g1mediacatalogprobe` |
+| Exact Cyan catalog branch | — | `configFileType=1 → /files/media.config` |
+| HTTP method/sites | — | GET only / exactly one URL constructor |
+| Redirects | — | DISABLED |
+| Catalog response cap | — | 65,536 bytes |
+| P2P-IP query `02 03` | — | ABSENT |
+| Media-file GET/download/mutation | — | ABSENT |
+| Filename/path value logging | — | ABSENT |
+| Physical G4B result | — | PENDING |
+
+Exact static evidence: `docs/research/CYAN_EXACT_G4B_TRACE_2026-09-19.md`.
+
+Issue #9 tracks the one-run physical G4B catalog test. G5 remains blocked until that sanitized report is reviewed.
