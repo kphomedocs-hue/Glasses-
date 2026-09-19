@@ -1,6 +1,6 @@
 # K G1 P2P Association Probe v0.4.0 — Verified Repository Build
-- Canonical build commit: 58da7b49e5456f344d18d59f4e6032ae76b31791
-- Canonical build run: 35423601975
+- Canonical build commit: c6133ab4b83b600572e9a35572872c2a947a374d
+- Canonical build run: 35423606609
 - G4A safety audit: PASS
 - Android compile: PASS
 - Android Lint: PASS

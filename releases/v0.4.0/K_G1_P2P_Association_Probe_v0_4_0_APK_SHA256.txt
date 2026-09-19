@@ -1,1 +1,1 @@
-8fa3a0888a70cee6aeb776013c3140baf5b7c38892817083dce86883667ec12b  releases/v0.4.0/K_G1_P2P_Association_Probe_v0_4_0.apk
+b75d217d3b2b0c49300cdbd3beded0a199747c25638b99fb8969bb8414b3e880  releases/v0.4.0/K_G1_P2P_Association_Probe_v0_4_0.apk
