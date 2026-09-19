@@ -652,6 +652,8 @@ public final class MainActivity extends Activity {
 
         try {
             return callbackGatt.writeCharacteristic(writer);
+        } catch (SecurityException e) {
+            return false;
         } catch (RuntimeException e) {
             return false;
         }
