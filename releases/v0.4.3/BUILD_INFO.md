@@ -1,0 +1,18 @@
+# K G1 Catalog Shape Probe v0.4.3 — Verified Repository Build
+- Canonical build commit: a4aa1a91f4cdda4e01f04c99b3c5019586f4d7ae
+- Canonical build run: 35432388833
+- G4B2 safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Package ID: com.parkarsite.g1catalogshapeprobe
+- HTTP requests: exactly one GET site
+- Catalog path: /files/media.config
+- Redirects: disabled
+- Catalog response cap: 65536 bytes
+- Raw body logging: ABSENT
+- Filename/path value logging: ABSENT
+- Media-file GET/download/mutation: ABSENT
+- P2P-IP query 02 03: ABSENT
+- Proprietary writes: P2P enter once + transfer exit once only
+- Response classification: encoding/BOM/JSON structure/counts only
