@@ -508,3 +508,16 @@ Next G5 design:
 - stop after validation.
 
 G6 remains blocked.
+
+
+### G5 visibility-gated v0.5.6
+
+Verified candidate.
+
+- APK SHA-256: `cc997c3d196cb59875707aeaadfa2c96c0be1d0cd9e7951d0703155f93566c9c`
+- source/build commit: `cee088d1f7eae87ea3ab125c330414a3af33ca14`
+- build run: `35461427615` — PASS
+- archive commit: `0dcdaa3e11f9bf8fcdeea021fc8ca452253a4323`
+- safety audit / compile / lint / APK signature: PASS
+
+The app will not enter Phase-B P2P until the capture is physically confirmed as exactly +1 image inventory. One media GET maximum remains the hard boundary.

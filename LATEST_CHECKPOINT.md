@@ -773,3 +773,24 @@ Evidence:
 Conclusion: **PASS — one physical capture becomes visible asynchronously and is confirmed by both passive and active BLE inventory paths.**
 
 Next: design a visibility-gated one-file G5 transfer. Do not advance to G6.
+
+
+## G5 visibility-gated v0.5.6 verified candidate
+
+v0.5.6 combines the physically proven v0.5.5 capture-visibility gate with the bounded v0.5.2 single-file transfer path.
+
+Verified:
+- APK: `releases/v0.5.6/K_G1_Disposable_Photo_Probe_v0_5_6.apk`
+- APK SHA-256: `cc997c3d196cb59875707aeaadfa2c96c0be1d0cd9e7951d0703155f93566c9c`
+- source/build commit: `cee088d1f7eae87ea3ab125c330414a3af33ca14`
+- build run: `35461427615` — PASS
+- archive commit: `0dcdaa3e11f9bf8fcdeea021fc8ca452253a4323`
+- source Repository Hygiene: PASS
+- safety audit / compile / lint / APK signature: PASS
+
+Phase B rule:
+- arm the BLE visibility watch before taking the photo;
+- block P2P until exactly +1 image is confirmed with video/recording unchanged;
+- only then enter P2P, fetch one catalog, require exactly one new safe relative JPG, and permit one media GET maximum.
+
+G6 remains blocked until the v0.5.6 physical report is reviewed.
