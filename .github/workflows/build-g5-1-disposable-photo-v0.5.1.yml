@@ -1,0 +1,59 @@
+name: Build K G1 Disposable Photo Probe v0.5.1
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "source/v0.5.1/**"
+      - ".github/workflows/build-g5-1-disposable-photo-v0.5.1.yml"
+      - "tools/archive_verified_build_v0.5.1.sh"
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: { distribution: temurin, java-version: "17" }
+      - name: Install Android SDK packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKMANAGER="/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0" "platform-tools"
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: "9.6.0" }
+      - name: Verify G5.1 bounded scope
+        shell: bash
+        working-directory: source/v0.5.1
+        run: |
+          set -euo pipefail
+          chmod +x SAFETY_AUDIT.sh
+          ./SAFETY_AUDIT.sh
+      - name: Compile and lint
+        shell: bash
+        working-directory: source/v0.5.1
+        run: gradle --no-daemon clean :app:assembleDebug :app:lintDebug
+      - name: Verify APK signature
+        shell: bash
+        working-directory: source/v0.5.1
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/g51"
+          cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/g51/K_G1_Disposable_Photo_Probe_v0_5_1.apk"
+          cp app/build/reports/lint-results-debug.html "$RUNNER_TEMP/g51/lint-results-debug.html"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$RUNNER_TEMP/g51/K_G1_Disposable_Photo_Probe_v0_5_1.apk"
+          sha256sum "$RUNNER_TEMP/g51/K_G1_Disposable_Photo_Probe_v0_5_1.apk"
+      - name: Archive verified build
+        shell: bash
+        run: bash tools/archive_verified_build_v0.5.1.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: K_G1_Disposable_Photo_Probe_v0_5_1
+          path: releases/v0.5.1/**
+          if-no-files-found: error
