@@ -185,7 +185,7 @@ Exit criterion:
 
 ## G4A — phone-side P2P discovery/association
 
-Status: **NEXT**.
+Status: **PASS — 2026-09-19**.
 
 Purpose:
 - validate Android Wi-Fi Direct discovery/association against the physically confirmed glasses P2P mode,
@@ -212,11 +212,34 @@ Prohibited:
 Exit criterion:
 - glasses P2P network is discovered/associated from the phone and local connection metadata is captured without accessing media.
 
+## G4A2 — passive P2P-IP notification capture
+
+Status: **NEXT**.
+
+Purpose:
+- resolve the glasses-side P2P client IP without adding any new proprietary command.
+
+Method:
+- repeat the physically proven G4A association path,
+- expose only sanitized `0x73` event identifiers,
+- if event `0x08` appears, parse IPv4 bytes `[7..10]` in memory,
+- do not log credentials, peer addresses, or unrelated raw payloads,
+- exit transfer mode and clean up exactly as G4A.
+
+Allowed proprietary writes:
+1. P2P enter `0x41 / 02 01 04 01`, once;
+2. transfer exit `0x41 / 02 01 09`, once.
+
+No additional query is allowed in G4A2.
+
+If event `0x08` is not observed, stop and review before considering the exact read-style `0x41 / 02 03` P2P-IP query in a separate gate.
+
 ## G4B — read-only local media listing
 
-Status: **BLOCKED pending G4A**.
+Status: **BLOCKED pending glasses-IP resolution**.
 
-Only after G4A:
+Only after the glasses-side local IP is physically resolved:
+- bind to the confirmed P2P network as required,
 - issue narrowly scoped local HTTP GET requests,
 - first retrieve `media.config` or the exact equivalent catalog,
 - display filenames/metadata only,

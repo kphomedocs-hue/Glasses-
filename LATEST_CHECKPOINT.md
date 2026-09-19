@@ -129,27 +129,23 @@ Forbidden:
 
 ## Next action
 
-G1 and the notification-only stage of G2 are complete.
+G0 through G4A are physically complete.
 
-**G2B exact static trace: PASS.**
+**Current next gate: G4A2 — passive P2P-IP notification capture only.**
 
-Exact Cyan parser tracing resolved the observed event semantics and the normal initialization order. The passive Event Correlator is now a fallback rather than the next required build.
+G4A physically confirmed:
+- exact BLE-reported P2P peer discovery,
+- Wi-Fi Direct association,
+- P2P group formation,
+- phone acting as group owner at `192.168.49.1`,
+- zero HTTP/socket/media operations.
 
-Current next gate: **G2C — one-command initialization parity**.
+Because the phone is group owner, the glasses client IP still needs to be resolved before any HTTP gate.
 
-Approved design target:
-1. connect to exactly one bonded AIMB-G1-family device;
-2. subscribe to the confirmed Cyan notify characteristic;
-3. construct the exact Cyan-equivalent dynamic `0x40` time-sync payload from phone time/language/timezone;
-4. send exactly that one proprietary frame;
-5. capture the `0x40` response and any `0x73` reports;
-6. send no `0x41` control/media command;
-7. disconnect.
+G4A2 must repeat the same bounded association lifecycle and only expose sanitized `0x73` event identifiers. If event `0x08` appears, parse its IPv4 bytes in memory. Do not add the `02 03` query yet.
 
-Exact static-trace evidence:
-`docs/research/CYAN_EXACT_G2B_TRACE_2026-09-19.md`
-
-G3 media-mode control remains blocked until G2C is physically reviewed.
+Evidence:
+`docs/testing/results/2026-09-19_G4A_P2P_ASSOCIATION_PASS.md`
 
 This file remains authoritative for resuming the project.
 
@@ -554,3 +550,27 @@ Evidence:
 G3B conclusion: **PASS**.
 
 Next gate: **G4A — phone-side Wi-Fi Direct discovery/association only**. No HTTP or media listing yet.
+
+
+## G4A physical result — PASS
+
+Physical test date: 2026-09-19.
+
+K G1 P2P Association Probe v0.4.0:
+- entered P2P transfer mode successfully,
+- parsed the returned transfer credentials only in memory,
+- discovered exactly one P2P peer and matched it by the exact BLE-reported name,
+- sent a Wi-Fi Direct connect request successfully,
+- formed a P2P group,
+- confirmed the phone is group owner at `192.168.49.1`,
+- performed zero HTTP/socket/media operations,
+- exited transfer mode successfully.
+
+`removeGroup` returned Android Wi-Fi Direct reason 2 (BUSY); recorded as a non-blocking cleanup anomaly.
+
+Evidence:
+`docs/testing/results/2026-09-19_G4A_P2P_ASSOCIATION_PASS.md`
+
+G4A conclusion: **PASS**.
+
+Next: **G4A2 passive `0x73 / 0x08` P2P-IP notification capture only**.

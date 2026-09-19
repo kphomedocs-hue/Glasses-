@@ -269,3 +269,22 @@ Issue #6 tracks the physical G3B lifecycle test. G4 local-network/media listing 
 | Phone-side Wi-Fi/P2P | none |
 | HTTP/media transfer | none |
 | Next gate | G4A Wi-Fi Direct discovery/association only |
+
+
+## G4A physical result
+
+| Item | Result |
+|---|---|
+| Physical G4A result | PASS |
+| Sanitized report | `docs/testing/results/2026-09-19_G4A_P2P_ASSOCIATION_PASS.md` |
+| Exact P2P peer match | YES |
+| Wi-Fi Direct connect request | SUCCESS |
+| P2P group formed | TRUE |
+| Phone is group owner | TRUE |
+| Group-owner address | `192.168.49.1` (phone-side) |
+| HTTP/socket operations | 0 |
+| Media/file access | 0 |
+| Credentials persisted/logged | NO |
+| Transfer exit | SUCCESS |
+| Cleanup anomaly | `removeGroup` reason 2 / BUSY |
+| Next gate | G4A2 passive glasses-IP notification capture |

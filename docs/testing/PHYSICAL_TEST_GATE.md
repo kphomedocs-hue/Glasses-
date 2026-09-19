@@ -214,3 +214,39 @@ Not allowed:
 - AP mode,
 - reset/restart/OTA,
 - arbitrary command entry.
+
+
+## G4A physical result
+
+**PASS — 2026-09-19.**
+
+Evidence:
+`docs/testing/results/2026-09-19_G4A_P2P_ASSOCIATION_PASS.md`
+
+Confirmed:
+- exact BLE-reported P2P peer discovered,
+- association request succeeded,
+- P2P group formed,
+- phone is group owner at `192.168.49.1`,
+- no HTTP/socket/media request occurred,
+- transfer exit succeeded.
+
+The glasses-side client IP remains unresolved.
+
+## G4A2 — next approved physical diagnostic
+
+Passive P2P-IP notification capture only.
+
+Use the same G4A lifecycle and expose only sanitized `0x73` event identifiers. If event `0x08` appears, parse its IPv4 bytes in memory.
+
+No new proprietary command is allowed in G4A2.
+
+Still prohibited:
+- `0x41 / 02 03` IP query,
+- HTTP/socket requests,
+- `media.config`,
+- file listing/download,
+- file mutation,
+- AP mode,
+- reset/restart/OTA,
+- arbitrary command input.

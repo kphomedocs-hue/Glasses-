@@ -9,16 +9,20 @@ Evidence-gated status as of 2026-09-19:
 - **G0 — software/recovery readiness:** PASS
 - **G1 — physical GATT confirmation:** PASS
 - **G2 — response-channel confirmation:** PASS
-- **G2B — response-semantic correlation:** PASS by exact Cyan trace
-- **G2C — one-command initialization parity:** NEXT
-- **G3 — first media-mode control command:** BLOCKED pending G2C
+- **G2B — response-semantic correlation:** PASS
+- **G2C — initialization parity:** PASS
+- **G3 — media-count query:** PASS
+- **G3B — P2P transfer lifecycle:** PASS
+- **G4A — phone-side Wi-Fi Direct association:** PASS
+- **G4A2 — passive glasses P2P-IP notification capture:** NEXT
+- **G4B — read-only media listing:** BLOCKED pending glasses-IP resolution
 
-Exact Cyan tracing resolved the observed `0x73` events and showed that Cyan's first queued proprietary command after service discovery is `0x40` time synchronization. G2C is intentionally limited to that one benign initialization-parity command; no media-mode write is authorized yet.
+G4A physically confirmed exact-peer Wi-Fi Direct association with the phone acting as group owner at `192.168.49.1`. No HTTP or media operation was performed. The next gate stays network-only and adds no new proprietary command.
 
 Authoritative checkpoint:
 - `LATEST_CHECKPOINT.md`
-- `docs/testing/G2B_PASSIVE_CORRELATION_PLAN.md`
-- tracked work: GitHub Issue #3
+- `docs/testing/GATE_ROADMAP.md`
+- tracked work: GitHub Issue #8
 
 ## Confirmed physical AIMB-G1 profile
 
@@ -245,3 +249,17 @@ Evidence:
 `docs/testing/results/2026-09-19_G3B_P2P_LIFECYCLE_PASS.md`
 
 The next gate is **G4A phone-side Wi-Fi Direct discovery/association only**. HTTP and media listing remain blocked until that association path is physically confirmed.
+
+
+## G4A physical result
+
+G4A passed on 2026-09-19.
+
+The phone discovered and associated with the exact BLE-reported glasses P2P peer. The P2P group formed successfully with the phone as group owner at `192.168.49.1`.
+
+No HTTP/socket request, `media.config` access, file listing or download occurred.
+
+Evidence:
+`docs/testing/results/2026-09-19_G4A_P2P_ASSOCIATION_PASS.md`
+
+Because the phone is group owner, the glasses client IP is still needed. The next gate is G4A2 passive `0x73 / 0x08` IP-notify capture only; no additional proprietary query is yet authorized.
