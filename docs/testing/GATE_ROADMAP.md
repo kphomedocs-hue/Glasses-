@@ -521,3 +521,15 @@ Verified candidate.
 - safety audit / compile / lint / APK signature: PASS
 
 The app will not enter Phase-B P2P until the capture is physically confirmed as exactly +1 image inventory. One media GET maximum remains the hard boundary.
+
+
+### G5 diagnostic-hardened v0.5.7
+
+Verified candidate; supersedes v0.5.6 before physical use.
+
+- APK SHA-256: `63a43f06175f9a591db72570a78a0f977841c836b77fb834648546b52a8092b3`
+- source/build commit: `594dbd906c34778c0276d5d4385431f0a94d2d6b`
+- build run: `35462487457` — PASS
+- archive commit: `20a7dfc0f6baa8447360c0946d61da5dc0e0cf96`
+
+Protocol/network boundary is unchanged from v0.5.6. Added only timing/state diagnostics, temporary-cache cleanup, single-run lock, and foreground integrity protection.

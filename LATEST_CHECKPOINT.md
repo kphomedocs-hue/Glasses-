@@ -794,3 +794,27 @@ Phase B rule:
 - only then enter P2P, fetch one catalog, require exactly one new safe relative JPG, and permit one media GET maximum.
 
 G6 remains blocked until the v0.5.6 physical report is reviewed.
+
+
+## G5 diagnostic-hardened v0.5.7 verified candidate
+
+v0.5.7 supersedes v0.5.6 before physical use.
+
+Verified:
+- APK: `releases/v0.5.7/K_G1_Disposable_Photo_Probe_v0_5_7.apk`
+- APK SHA-256: `63a43f06175f9a591db72570a78a0f977841c836b77fb834648546b52a8092b3`
+- source/build commit: `594dbd906c34778c0276d5d4385431f0a94d2d6b`
+- build run: `35462487457` — PASS
+- archive commit: `20a7dfc0f6baa8447360c0946d61da5dc0e0cf96`
+- safety audit / compile / lint / APK signature: PASS
+
+Diagnostic-only improvements over v0.5.6:
+- monotonic stage timing;
+- explicit ARMED / PHOTO VISIBLE / P2P / catalog / media validation milestones;
+- separate HTTP 200, Content-Length, size-cap, JPEG SOI/EOI reporting;
+- app-private temporary JPG deleted after validation;
+- Phase-B single-run lock;
+- foreground integrity guard;
+- no extra protocol/network commands and no catalog polling.
+
+Immediate next action: run v0.5.7 once and return the complete sanitized report. G6 remains blocked.
