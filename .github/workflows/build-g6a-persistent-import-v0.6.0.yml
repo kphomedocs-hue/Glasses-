@@ -1,0 +1,50 @@
+name: Build K G1 G6A Persistent Import v0.6.0
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "source/v0.6.0/**"
+      - ".github/workflows/build-g6a-persistent-import-v0.6.0.yml"
+      - "tools/archive_verified_build_v0.6.0.sh"
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: { distribution: temurin, java-version: "17" }
+      - name: Install Android SDK packages
+        run: |
+          set -euo pipefail
+          SDKMANAGER="/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0" "platform-tools"
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: "9.6.0" }
+      - name: Verify G6A bounded scope
+        working-directory: source/v0.6.0
+        run: chmod +x SAFETY_AUDIT.sh && ./SAFETY_AUDIT.sh
+      - name: Compile and lint
+        working-directory: source/v0.6.0
+        run: gradle --no-daemon clean :app:assembleDebug :app:lintDebug
+      - name: Verify APK signature
+        working-directory: source/v0.6.0
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/g6a60"
+          cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/g6a60/K_G1_G6A_Persistent_Import_v0_6_0.apk"
+          cp app/build/reports/lint-results-debug.html "$RUNNER_TEMP/g6a60/lint-results-debug.html"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$RUNNER_TEMP/g6a60/K_G1_G6A_Persistent_Import_v0_6_0.apk"
+      - name: Archive verified build
+        run: bash tools/archive_verified_build_v0.6.0.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: K_G1_G6A_Persistent_Import_v0_6_0
+          path: releases/v0.6.0/**
+          if-no-files-found: error
