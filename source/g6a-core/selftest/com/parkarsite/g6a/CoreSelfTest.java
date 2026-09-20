@@ -16,6 +16,8 @@ public final class CoreSelfTest {
             testFailedValidationLeavesNoFinal(root);
             testStalePartRecovery(root);
             testCrashWindowRecovery(root);
+            testCoordinatorOpaqueDedup(root);
+            testCoordinatorRejectsBadJpeg(root);
             System.out.println("G6A CORE SELFTEST: PASS");
         }finally{
             deleteTree(tmp);
@@ -65,6 +67,36 @@ public final class CoreSelfTest {
         }catch(IOException expected){}
         if(ledger.size()!=before) fail("failed item entered ledger");
         if(findBySuffix(root,".part")>0) fail("part remains after failure");
+    }
+
+    static void testCoordinatorOpaqueDedup(File root) throws Exception {
+        ImportLedger ledger=new ImportLedger(root);
+        FileArchive archive=new FileArchive(root,ZoneId.of("UTC"),ledger);
+        SingleItemImportCoordinator c=new SingleItemImportCoordinator(archive,ledger);
+        String privateIdentity="secret/catalog/path/new-photo.jpg";
+        byte[] jpeg=new byte[]{(byte)0xff,(byte)0xd8,(byte)0xff,1,2,3,(byte)0xff,(byte)0xd9};
+        int before=ledger.size();
+        ImportRecord first=c.importNewJpg(privateIdentity,1767225600000L,out->out.write(jpeg));
+        if(ledger.size()!=before+1)fail("coordinator commit");
+        String ledgerText=Files.readString(new File(root,".g6a_imported.tsv").toPath());
+        if(ledgerText.contains(privateIdentity)||ledgerText.contains("new-photo.jpg"))fail("private identity leaked to ledger");
+
+        ImportRecord second=c.importNewJpg(privateIdentity,1767225600000L,
+                out->{throw new IOException("duplicate should not stream");});
+        if(!second.opaqueId().equals(first.opaqueId())||!second.localRelativePath().equals(first.localRelativePath()))fail("coordinator dedup");
+    }
+
+    static void testCoordinatorRejectsBadJpeg(File root) throws Exception {
+        ImportLedger ledger=new ImportLedger(root);
+        FileArchive archive=new FileArchive(root,ZoneId.of("UTC"),ledger);
+        SingleItemImportCoordinator c=new SingleItemImportCoordinator(archive,ledger);
+        int before=ledger.size();
+        try{
+            c.importNewJpg("secret/catalog/path/bad.jpg",1767225600000L,out->out.write(new byte[]{1,2,3,4,5,6}));
+            fail("bad jpeg accepted");
+        }catch(IOException expected){}
+        if(ledger.size()!=before)fail("bad jpeg ledger entry");
+        if(findBySuffix(root,".part")>0)fail("bad jpeg part remains");
     }
 
     static void testCrashWindowRecovery(File root) throws Exception {

@@ -29,3 +29,24 @@ On restart, the ledger scans sidecars:
 - no remote filename/path is stored in the sidecar.
 
 This closes the crash window between final-file move and ledger append without exposing the private remote path.
+
+
+## G5.7 -> G6A integration contract
+
+`SingleItemImportCoordinator` is the transport-neutral bridge for the next Android slice.
+
+The proven G5.7 transport will provide:
+- a private remote identity string held only in memory;
+- the first-seen timestamp;
+- a one-shot byte stream for the selected JPG.
+
+The coordinator:
+1. hashes the private identity to an opaque SHA-256 key;
+2. checks the persistent ledger before requesting bytes;
+3. streams into `.part`;
+4. validates JPEG SOI/EOI and exact local byte count;
+5. commits the final file;
+6. commits the opaque ledger record;
+7. returns an existing record without re-streaming when already imported.
+
+No BLE/P2P/HTTP code is present in the coordinator.
