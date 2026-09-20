@@ -33,9 +33,11 @@ public final class FileArchive {
         String finalName=NumberingPolicy.fileName(next,kind);
         File finalFile=new File(dir,finalName);
         File part=new File(dir,finalName+".part");
+        File source=new File(dir,"."+finalName+".source");
 
         if(finalFile.exists()) throw new IOException("Final destination already exists");
         if(part.exists()&&!part.delete()) throw new IOException("Cannot clear stale part");
+        if(source.exists()&&!source.delete()) throw new IOException("Cannot clear stale source sidecar");
 
         long bytes=0;
         try {
@@ -46,6 +48,7 @@ public final class FileArchive {
             }
             if(bytes<=0) throw new IOException("Empty import");
             validator.validate(part,bytes);
+            writeSynced(source,opaqueId);
             moveCommitted(part,finalFile);
 
             long completed=System.currentTimeMillis();
@@ -55,7 +58,17 @@ public final class FileArchive {
             return record;
         } catch(Exception e){
             if(part.exists()) part.delete();
+            if(!finalFile.exists()&&source.exists()) source.delete();
             throw e;
+        }
+    }
+
+    private static void writeSynced(File file,String value) throws IOException {
+        try(FileOutputStream out=new FileOutputStream(file)){
+            out.write(value.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            out.write('\n');
+            out.flush();
+            out.getFD().sync();
         }
     }
 

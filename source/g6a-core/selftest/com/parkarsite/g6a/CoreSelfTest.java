@@ -15,6 +15,7 @@ public final class CoreSelfTest {
             testCommitAndRestartDedup(root);
             testFailedValidationLeavesNoFinal(root);
             testStalePartRecovery(root);
+            testCrashWindowRecovery(root);
             System.out.println("G6A CORE SELFTEST: PASS");
         }finally{
             deleteTree(tmp);
@@ -64,6 +65,23 @@ public final class CoreSelfTest {
         }catch(IOException expected){}
         if(ledger.size()!=before) fail("failed item entered ledger");
         if(findBySuffix(root,".part")>0) fail("part remains after failure");
+    }
+
+    static void testCrashWindowRecovery(File root) throws Exception {
+        File day=new File(root,"2099-02-02"); if(!day.mkdirs()&&!day.isDirectory())fail("mkdir recovery");
+        String opaque=OpaqueIdentity.sha256("private/recovery.jpg");
+        File finalFile=new File(day,"0001.jpg");
+        Files.write(finalFile.toPath(),new byte[]{(byte)0xff,(byte)0xd8,(byte)0xff,1,(byte)0xff,(byte)0xd9});
+        File sidecar=new File(day,".0001.jpg.source");
+        Files.writeString(sidecar.toPath(),opaque+"\n");
+        ImportLedger recovered=new ImportLedger(root);
+        if(!recovered.contains(opaque))fail("crash-window sidecar recovery");
+        int before=recovered.size();
+        FileArchive archive=new FileArchive(root,ZoneId.of("UTC"),recovered);
+        ImportRecord again=archive.importOne(opaque,MediaKind.JPG,1767225600000L,
+                out->{throw new IOException("must not redownload recovered duplicate");},
+                (f,b)->{throw new IOException("must not validate recovered duplicate");});
+        if(recovered.size()!=before||!again.localRelativePath().equals("2099-02-02/0001.jpg")) fail("recovered dedup");
     }
 
     static void testStalePartRecovery(File root) throws Exception {

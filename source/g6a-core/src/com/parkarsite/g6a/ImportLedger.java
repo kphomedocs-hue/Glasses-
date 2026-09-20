@@ -13,6 +13,7 @@ public final class ImportLedger {
         if(!root.exists()&&!root.mkdirs()) throw new IOException("Cannot create root");
         file=new File(root,".g6a_imported.tsv");
         load();
+        recoverCommittedSidecars(root);
     }
 
     private void load() throws IOException {
@@ -30,6 +31,39 @@ public final class ImportLedger {
             if(!ImportRecord.COMMITTED.equals(p[6])) throw new IOException("Unexpected ledger status");
             committed.put(p[0],new ImportRecord(p[0],kind,p[2],bytes,first,complete,p[6]));
         }
+    }
+
+    private void recoverCommittedSidecars(File root) throws IOException {
+        File[] dayDirs=root.listFiles(File::isDirectory);
+        if(dayDirs==null)return;
+        for(File day:dayDirs){
+            File[] sidecars=day.listFiles((d,n)->n.startsWith(".")&&n.endsWith(".source"));
+            if(sidecars==null)continue;
+            for(File sidecar:sidecars){
+                String n=sidecar.getName();
+                String finalName=n.substring(1,n.length()-".source".length());
+                File finalFile=new File(day,finalName);
+                if(!finalFile.isFile()||finalFile.length()<=0){
+                    sidecar.delete();
+                    continue;
+                }
+                String opaqueId=Files.readString(sidecar.toPath(),StandardCharsets.UTF_8).trim();
+                if(!OpaqueIdentity.isOpaqueId(opaqueId)) throw new IOException("Invalid recovery sidecar identity");
+                if(committed.containsKey(opaqueId)) continue;
+                MediaKind kind=kindFromName(finalName);
+                String rel=day.getName()+"/"+finalName;
+                ImportRecord r=new ImportRecord(opaqueId,kind,rel,finalFile.length(),finalFile.lastModified(),finalFile.lastModified(),ImportRecord.COMMITTED);
+                commit(r);
+            }
+        }
+    }
+
+    private static MediaKind kindFromName(String name) throws IOException {
+        String x=name.toLowerCase(Locale.ROOT);
+        if(x.endsWith(".jpg"))return MediaKind.JPG;
+        if(x.endsWith(".mp4"))return MediaKind.MP4;
+        if(x.endsWith(".opus"))return MediaKind.OPUS;
+        throw new IOException("Unsupported recovery extension");
     }
 
     public synchronized boolean contains(String opaqueId){
