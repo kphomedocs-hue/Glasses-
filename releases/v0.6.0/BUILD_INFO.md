@@ -1,0 +1,12 @@
+# K G1 G6A Persistent Import v0.6.0 — Verified Repository Build
+- Canonical build commit: bfa03548766be47bfba6d4773042c82f9783fdf3
+- Canonical build run: 36214661413
+- G6A safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Package ID: com.parkarsite.g6aimport60
+- G5.7 transport boundary preserved
+- one new JPG maximum per run
+- persistent app-private archive + opaque ledger
+- no glasses mutation/deletion
