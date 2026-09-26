@@ -47,7 +47,7 @@ public final class ImportLedger {
                     sidecar.delete();
                     continue;
                 }
-                String opaqueId=Files.readString(sidecar.toPath(),StandardCharsets.UTF_8).trim();
+                String opaqueId=new String(Files.readAllBytes(sidecar.toPath()),StandardCharsets.UTF_8).trim();
                 if(!OpaqueIdentity.isOpaqueId(opaqueId)) throw new IOException("Invalid recovery sidecar identity");
                 if(committed.containsKey(opaqueId)) continue;
                 MediaKind kind=kindFromName(finalName);
