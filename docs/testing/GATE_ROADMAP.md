@@ -649,3 +649,39 @@ Physical procedure:
 7. return the full diagnostic report.
 
 G6B remains blocked until the v0.6.2 physical result is understood and G6A restart dedup passes safely.
+
+
+## G6A v0.6.2 physical Part 2 — RESTART CATALOG REVERSION / DEDUP MISMATCH
+
+Part 2 was run on the same v0.6.2 installation after the successful Part-1 import.
+
+Observed after force-stop/reopen:
+- ledger committed entries at verification start: 1;
+- inventory: images=8, videos=0, recordings=1;
+- catalog: 9 safe entries (.jpg=8, .opus=1);
+- exact opaque ledger matches: 0;
+- committed exact-ID token: `4c28b1090be7`;
+- basename-derived matches: 0;
+- lowercase-exact matches: 0;
+- identity-shape matches: 8;
+- media-file GET requests: 0;
+- catalog GET requests: 1;
+- no glasses mutation/deletion command.
+
+Critical cross-session fact:
+- Part-1 baseline: 8 JPG / 9 total catalog entries;
+- Part-1 post-capture/import: 9 JPG / 10 total entries;
+- Part-2 restart: 8 JPG / 9 total entries.
+
+The remote catalog therefore reverted exactly to the pre-capture count. The committed item's exact/basename/lowercase identity is absent. v0.6.2 cannot distinguish whether the new transferred JPG disappeared, or another JPG disappeared while the new identity changed. The `Identity-shape matches: 8` result is non-discriminating and must not be treated as proof of a rename.
+
+Evidence:
+`docs/testing/results/2026-09-29_G6A_V0_6_2_PART2_CATALOG_REVERSION.md`
+
+Gate status:
+- persistent local import: physically proven;
+- restart-safe remote-identity dedup: NOT proven;
+- remote post-transfer retention semantics: unresolved;
+- **G6A remains open; G6B remains blocked.**
+
+Next diagnostic must persist an opaque hash set of the entire pre-capture baseline catalog plus the new-item opaque identity, then compare the restart catalog against both with zero media GETs. No raw remote filename/path logging and no glasses deletion/mutation.
