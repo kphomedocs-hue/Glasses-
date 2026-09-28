@@ -925,3 +925,41 @@ Physical procedure:
 7. return the full diagnostic report.
 
 G6B remains blocked until the v0.6.2 physical result is understood and G6A restart dedup passes safely.
+
+
+## G6A v0.6.2 physical Part 1 — PASS
+
+Physical Part 1 completed successfully on 2026-09-29.
+
+Evidence:
+`docs/testing/results/2026-09-29_G6A_V0_6_2_PART1_PASS.md`
+
+Key proof:
+- baseline images=8, videos=0, recordings=1;
+- exactly one capture after ARMED;
+- passive and active inventory both confirmed images=9;
+- post-capture catalog contained exactly one new safe JPG;
+- exactly one media GET returned HTTP 200;
+- Content-Length 882179 matched downloaded bytes 882179;
+- JPEG SOI/EOI validation passed;
+- persistent file committed as `2026-09-29/0001.jpg`;
+- persistent ledger gained exactly one entry;
+- diagnostic identity capsule committed;
+- committed exact-ID diagnostic token: `4c28b1090be7`;
+- no raw remote filename/path persisted/logged;
+- no glasses mutation/deletion.
+
+Known provenance defect:
+- the Part-1 report header incorrectly says `App version: 0.6.0`;
+- source inspection confirms this is a stale literal in the v0.6.2 Part-1 report path only;
+- v0.6.2-only diagnostic fields are present in the physical report;
+- do not reinstall before Part 2 because the current ledger/capsule state is required.
+
+Immediate next action:
+- force-stop/reopen the same installed app;
+- do not clear data or uninstall;
+- do not take another photo;
+- run **Verify restart dedup — NO DOWNLOAD**;
+- return the complete Part-2 report.
+
+G6B remains blocked.
