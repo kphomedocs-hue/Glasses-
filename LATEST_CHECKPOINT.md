@@ -867,3 +867,61 @@ Physical sequence:
 7. require persistent ledger match with zero media GETs.
 
 G6B remains blocked until this two-part physical test passes.
+
+
+## G6A v0.6.1 physical restart result — IDENTITY MISMATCH
+
+Physical restart verification reached the intended read-only boundary but did not find the committed opaque identity in the current catalog.
+
+Observed:
+- ledger committed entries at verification start: 1;
+- inventory: images=8, videos=0, recordings=1;
+- catalog: 9 safe entries (.jpg=8, .opus=1);
+- current JPG entries checked: 8;
+- exact opaque ledger matches: 0;
+- inventory queries: 1;
+- P2P enter writes: 1;
+- catalog GET requests: 1;
+- media-file GET requests: 0;
+- transfer exit: 1;
+- no glasses mutation/deletion.
+
+Evidence:
+`docs/testing/results/2026-09-29_G6A_V0_6_1_RESTART_DEDUP_MISMATCH.md`
+
+Source inspection confirms Part 1 and restart verification both hash the exact catalog entry using the same SHA-256 implementation. The mismatch therefore requires a bounded identity-stability diagnostic rather than loosening dedup safety.
+
+**G6A remains NOT PASSED. G6B remains blocked.**
+
+
+## G6A v0.6.2 identity-stability diagnostic — VERIFIED BUILD / PHYSICAL PENDING
+
+v0.6.2 preserves the G5.7/G6A transport boundary and adds privacy-safe diagnostics to distinguish exact identity stability from directory/path, case-only, or larger remote-identity changes.
+
+Diagnostic capsule stores only:
+- SHA-256 of exact remote identity;
+- SHA-256 of basename only;
+- SHA-256 of lowercase identity;
+- character length;
+- path-component count.
+
+No raw remote filename/path text is stored. Restart verification still permits **zero media-file GETs**.
+
+Verified:
+- APK: `releases/v0.6.2/K_G1_G6A_Identity_Diagnostic_v0_6_2.apk`
+- APK SHA-256: `da04ca568d6260eb2f168a3ca6222788beb769217dad24cd63114c0e75f4a27e`
+- source/build commit: `2107c445c85b71cff82c0e57a8eecc39277a5d33`
+- build run: `36466571422` — PASS
+- archive commit: `d84028deed2ceb22d101ab0b13b5d2e192926e9d`
+- bounded-scope safety audit / Android compile / lint / APK signature / artifact upload: PASS
+
+Physical procedure:
+1. fresh v0.6.2 install;
+2. Part 1: baseline → arm → exactly one photo → one persistent JPG import;
+3. copy Part-1 report;
+4. force-stop/reopen without clearing data or uninstalling;
+5. take no new photo;
+6. run **Verify restart dedup — NO DOWNLOAD**;
+7. return the full diagnostic report.
+
+G6B remains blocked until the v0.6.2 physical result is understood and G6A restart dedup passes safely.
