@@ -843,3 +843,27 @@ Evidence:
 **G5 is now physically complete.**
 
 G6 automatic sync is now unblocked for design. Do not add glasses-side deletion/mutation.
+
+
+## G6A v0.6.1 verified physical candidate
+
+v0.6.1 supersedes v0.6.0 for physical G6A testing.
+
+Verified:
+- APK: `releases/v0.6.1/K_G1_G6A_Persistent_Import_v0_6_1.apk`
+- APK SHA-256: `ed0d36f32cb1c547a67a45f3dd5f7ea918c62d9ba5ea42310b2fc7cdfe34d94a`
+- source/build commit: `20833db86c4a627786fc4b6fb611f215036d7309`
+- build run: `36461373394` — PASS
+- archive commit: `a44d94aee0f05c42b57e0f51fbfd2bcbb0a36e85`
+- safety audit / compile / lint / APK signature: PASS
+
+Physical sequence:
+1. fresh v0.6.1 install;
+2. one persistent JPG import using the proven G5.7 path;
+3. copy report;
+4. force-stop and reopen without clearing data/uninstalling;
+5. do not take another photo;
+6. run **Verify restart dedup — NO DOWNLOAD**;
+7. require persistent ledger match with zero media GETs.
+
+G6B remains blocked until this two-part physical test passes.

@@ -577,3 +577,17 @@ Required:
 - no glasses mutation.
 
 G6B and later remain blocked until G6A physical PASS.
+
+
+### G6A v0.6.1 verified candidate
+
+Preferred physical candidate for G6A.
+
+- APK SHA-256: `ed0d36f32cb1c547a67a45f3dd5f7ea918c62d9ba5ea42310b2fc7cdfe34d94a`
+- source/build commit: `20833db86c4a627786fc4b6fb611f215036d7309`
+- build run: `36461373394` — PASS
+- archive commit: `a44d94aee0f05c42b57e0f51fbfd2bcbb0a36e85`
+
+Part 1 proves one persistent JPG import. Part 2 proves restart persistence/dedup by matching the current catalog against the opaque ledger with zero media redownloads.
+
+G6B remains blocked pending physical PASS.
