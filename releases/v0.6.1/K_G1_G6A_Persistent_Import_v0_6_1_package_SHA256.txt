@@ -1,0 +1,1 @@
+5fe79c8c395181d558b01e391b8b346d6e29d5a0fc85d4b6d50e5cf1bd725030  releases/v0.6.1/K_G1_G6A_Persistent_Import_v0_6_1_package.zip
