@@ -26,7 +26,7 @@ grep -Fq 'importLedger.contains(opaqueId)' "$JAVA" || { echo "FAIL: persistent d
 grep -Fq 'importCoordinator.importNewJpg' "$JAVA" || { echo "FAIL: coordinator integration missing"; fail=1; }
 grep -Fq 'IdentityDiagnosticStore.derive(candidate)' "$JAVA" || { echo "FAIL: diagnostic identity capture missing"; fail=1; }
 grep -Fq 'identityDiagnosticStore.commit(candidate)' "$JAVA" || { echo "FAIL: diagnostic capsule commit missing"; fail=1; }
-grep -Fq 'Diagnostic capsule contains remote filename/path text: NO' "$JAVA" || { echo "FAIL: diagnostic privacy marker missing"; fail=1; }
+grep -Fq 'Diagnostic capsules contain remote filename/path text: NO' "$JAVA" || { echo "FAIL: diagnostic privacy marker missing"; fail=1; }
 grep -Fq 'substring(0,12)' "$DIAG" || { echo "FAIL: diagnostic token truncation missing"; fail=1; }
 grep -Fq 'OpaqueIdentity.sha256(remoteIdentity)' "$DIAG" || { echo "FAIL: diagnostic exact hash missing"; fail=1; }
 grep -Fq 'OpaqueIdentity.sha256(basename)' "$DIAG" || { echo "FAIL: diagnostic basename hash missing"; fail=1; }
