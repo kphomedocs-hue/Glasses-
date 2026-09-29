@@ -1,0 +1,14 @@
+# K G1 G6A Retention Diagnostic v0.6.3 — Verified Repository Build
+- Canonical build commit: ed0b86d9d50308026ceb917502974b27a1ae91ac
+- Canonical build run: 36585423574
+- bounded-scope safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Package ID: com.parkarsite.g6aimport63
+- G5.7 transport boundary preserved
+- one new JPG maximum in import mode
+- saved baseline JPG identity set + saved new-item identity are opaque SHA-256 only
+- restart verification media GETs: zero
+- no raw remote filename/path text persisted
+- no glasses mutation/deletion
