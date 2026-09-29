@@ -63,3 +63,5 @@ G6B remains blocked until this result is understood.
 - no background service;
 - no raw remote filename/path persistence or logging;
 - no glasses deletion/mutation.
+
+Build note: v0.6.3 safety audit checks the plural diagnostic privacy marker used by the report.
