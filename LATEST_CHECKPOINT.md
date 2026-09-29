@@ -1053,3 +1053,40 @@ Physical sequence:
 10. return the complete Part-2 report.
 
 **G6B remains blocked until the v0.6.3 retention classification is physically reviewed.**
+
+
+## G6A v0.6.3 physical Part 1 — AMBIGUOUS +2 VISIBILITY ABORT
+
+Physical v0.6.3 baseline:
+- images=8, videos=0, recordings=1;
+- catalog=9 safe entries (.jpg=8, .opus=1);
+- Phase A completed and transfer mode exited.
+
+After ARMED and the intended single user capture, the first usable passive `0x73/0x01` inventory reported:
+- images=10;
+- videos=0;
+- recordings=1.
+
+This is a +2 image change, so the exact +1 gate correctly failed closed:
+`G6A RESULT: FAILED — Ambiguous inventory change during visibility watch; P2P remains blocked.`
+
+No Phase-B P2P/catalog/media transfer occurred, no persistent import occurred, and no retention capsule was committed.
+
+Evidence:
+`docs/testing/results/2026-09-29_G6A_V0_6_3_PART1_AMBIGUOUS_PLUS2.md`
+
+Interpretation:
+- the report does not prove two shutter captures;
+- it proves only that reported inventory changed 8→10 by the first usable post-arm event;
+- together with the prior 9→8 cross-session reversion, remote inventory/catalog stability itself is now unresolved.
+
+Next diagnostic should be **no-capture catalog stability**, not another import attempt:
+1. snapshot A inventory + catalog;
+2. exit transfer;
+3. no photo / glasses untouched;
+4. bounded quiet interval and reconnect;
+5. snapshot B inventory + catalog;
+6. compare full opaque JPG identity sets;
+7. zero media-file GETs.
+
+**G6A remains open. G6B remains blocked.**
