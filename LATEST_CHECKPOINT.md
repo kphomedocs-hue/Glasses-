@@ -999,3 +999,57 @@ Gate status:
 - **G6A remains open; G6B remains blocked.**
 
 Next diagnostic must persist an opaque hash set of the entire pre-capture baseline catalog plus the new-item opaque identity, then compare the restart catalog against both with zero media GETs. No raw remote filename/path logging and no glasses deletion/mutation.
+
+
+## G6A v0.6.3 remote-retention diagnostic — VERIFIED PHYSICAL CANDIDATE
+
+Purpose: resolve the v0.6.2 cross-session finding where Part 1 ended at 9 JPG / 10 total catalog entries but restart verification returned to 8 JPG / 9 total entries.
+
+v0.6.3 persists only privacy-safe diagnostic identities after the one allowed Part-1 import:
+- SHA-256 identities of every pre-capture baseline JPG entry;
+- SHA-256 identity of the one newly discovered JPG;
+- existing secondary identity diagnostics retained;
+- no raw remote filename/path text.
+
+Restart verification remains read-only:
+- one media-count query;
+- one P2P lifecycle;
+- one catalog GET;
+- zero media-file GETs;
+- no glasses deletion/mutation.
+
+It classifies the current JPG identity set as:
+1. exact saved pre-capture baseline reversion / new item absent;
+2. stable baseline plus new item;
+3. new item present but catalog membership changed;
+4. new item absent and catalog membership also changed.
+
+Verified:
+- APK: `releases/v0.6.3/K_G1_G6A_Retention_Diagnostic_v0_6_3.apk`
+- APK SHA-256: `5585bbc9d58082ee1c178f622236c76cafb68b456bcaaf2ed7e1a3fb2fa4bef1`
+- canonical source/build commit: `203cb1b43ccc7ee4020154ec088c8ec337f577a5`
+- canonical build run: `36585496838`
+- archive commit: `c1a19c14f8b24f84449d3ff1b2b2b476beac7ed6`
+- bounded-scope safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- artifact archive/upload: PASS
+
+Build-history note:
+- the first v0.6.3 attempt was stopped by the safety audit because the audit expected the singular report literal `Diagnostic capsule...` while the code intentionally emitted `Diagnostic capsules...`;
+- the assertion was corrected to the actual privacy marker and the complete verified build then passed.
+
+Physical sequence:
+1. fresh v0.6.3 install;
+2. Phase A baseline;
+3. arm and wait for ARMED;
+4. capture exactly one photo;
+5. allow exactly one persistent JPG import;
+6. copy Part-1 report;
+7. force-stop/reopen without clearing data or uninstalling;
+8. take no new photo;
+9. run **Verify restart dedup — NO DOWNLOAD**;
+10. return the complete Part-2 report.
+
+**G6B remains blocked until the v0.6.3 retention classification is physically reviewed.**
