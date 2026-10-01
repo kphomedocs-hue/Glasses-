@@ -1,1 +1,1 @@
-174388f5d3506341c09ce94cd75a232c4d2c3413f1bc9eb150f6890796b17a7a  releases/v0.6.4.1/K_G1_G6A_No_Capture_Stability_v0_6_4_1_package.zip
+2417a5c3bdf53accaecf0f723070e6a8016170d32a5c87163c98508faa8003c8  releases/v0.6.4.1/K_G1_G6A_No_Capture_Stability_v0_6_4_1_package.zip
