@@ -47,8 +47,10 @@ jobs:
           cd "$RUNNER_TEMP/g6a68"
           sha256sum K_G1_G6A_Persistent_Import_Restart_Receipt_v0_6_8.apk > K_G1_G6A_Persistent_Import_Restart_Receipt_v0_6_8_APK_SHA256.txt
           sha256sum K_G1_G6A_Persistent_Import_Restart_Receipt_v0_6_8_source_exact.zip > K_G1_G6A_Persistent_Import_Restart_Receipt_v0_6_8_source_SHA256.txt
+      - name: Archive immutable exact-build bundle
+        run: bash tools/archive_verified_build_v0.6.8.sh
       - uses: actions/upload-artifact@v4
         with:
           name: K_G1_G6A_Persistent_Import_Restart_Receipt_v0_6_8_${{ github.run_id }}
-          path: ${{ runner.temp }}/g6a68/**
+          path: releases/v0.6.8/builds/run-${{ github.run_id }}-attempt-${{ github.run_attempt }}/**
           if-no-files-found: error
