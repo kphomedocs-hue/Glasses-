@@ -1,1 +1,1 @@
-5b59c2b577edffe2c28e03fa9a47703f83f934997808a63aee4e1084eb310438  releases/v0.6.4/K_G1_G6A_No_Capture_Stability_v0_6_4.apk
+7ad38e645204ad910c73213fbd6257d12473af5d4229bbf590e5990ebe633e90  releases/v0.6.4/K_G1_G6A_No_Capture_Stability_v0_6_4.apk
