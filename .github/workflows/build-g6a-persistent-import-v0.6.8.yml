@@ -5,6 +5,8 @@ on:
     paths:
       - "source/v0.6.8/**"
       - ".github/workflows/build-g6a-persistent-import-v0.6.8.yml"
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
