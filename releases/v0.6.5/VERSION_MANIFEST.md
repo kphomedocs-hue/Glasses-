@@ -22,16 +22,15 @@
 - exact source ZIP SHA-256: `40af18c38038f03ab2ec7745b3dd3efbf50f72757fff41f67d1e6d751efbf1e1`
 - CI/static status: verified
 - manual red-team review: PASS
-- physical status: pending one bounded single-capture retention run
-- promotion status: **AUTHORIZED FOR PHYSICAL TESTING ONLY**
+- physical status: **PHYSICAL PASS — exact +1 JPG persisted across verified reconnect with zero media downloads**
+- promotion status: completed diagnostic; do not reuse for a different question
 
 Manual review:
 `builds/run-36893102299-attempt-1/reviews/MANUAL_RED_TEAM_PREPROMOTION.md`
 
 ## Current rule
 
-Only run `36893102299-attempt-1` is authorized for the next v0.6.5 physical test.
+Physical report:
+`builds/run-36893102299-attempt-1/reports/2026-10-01_G6A_SINGLE_CAPTURE_RETENTION_PHYSICAL_PASS.md`
 
-A physical report belongs to this build only if its exported header contains the exact version, build commit, run ID, and attempt above.
-
-G6A remains open. G6B remains blocked.
+This exact build has completed its authorized diagnostic. It proves exact +1 capture/catalog membership and pre-download retention across a verified reconnect. G6A remains open and G6B remains blocked.
