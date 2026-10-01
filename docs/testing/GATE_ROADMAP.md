@@ -953,3 +953,42 @@ Gate interpretation:
 - G6B: **BLOCKED**.
 
 Next diagnostic: isolate a single physical capture with zero media-file GETs and test exact +1 catalog membership plus retention across a verified reconnect.
+
+
+## G6A v0.6.5 — SINGLE-CAPTURE CATALOG RETENTION / ZERO MEDIA GETS
+
+Current physical candidate:
+- run `36893102299`
+- attempt `1`
+- build commit `598e9aed94546bff2c9b018114932902aca67e05`
+- APK SHA-256 `985edbcc5a8a7b035cd50c71771c7a51b9f166c9d6a827972b2f4b13423c477f`
+- exact source SHA-256 `40af18c38038f03ab2ec7745b3dd3efbf50f72757fff41f67d1e6d751efbf1e1`
+- exact bundle `releases/v0.6.5/builds/run-36893102299-attempt-1/`
+
+Purpose:
+- baseline inventory/catalog;
+- verified exit + P2P-group absence;
+- fresh BLE capture watch;
+- exactly one physical photo after ARMED;
+- passive exact +1 required;
+- one active +1 confirmation;
+- one post-capture catalog GET requiring exactly one new JPG and no baseline loss;
+- verified exit + group absence;
+- fresh retention reconnect;
+- one inventory + one catalog GET;
+- require exact post-capture set retention;
+- zero media-file GETs throughout.
+
+Pre-physical checks:
+- v0.6.4.2 no-capture physical PASS incorporated;
+- safety audit PASS;
+- red-team static audit PASS;
+- compile/lint PASS;
+- signature verification PASS;
+- immutable archive PASS;
+- manual state-machine review PASS;
+- manual provenance review PASS.
+
+Earlier run `36893051068` is NOT PROMOTED; its archive push failed only because the later concurrent run had already advanced main.
+
+G6A remains open. G6B remains blocked pending the exact v0.6.5 physical report.
