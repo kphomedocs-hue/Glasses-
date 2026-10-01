@@ -888,3 +888,38 @@ Physical procedure:
 8. return the complete report.
 
 **G6A remains open. G6B remains blocked pending the v0.6.4.1 physical result.**
+
+
+## G6A v0.6.4.2 — RED-TEAM-CORRECTED NO-CAPTURE PHYSICAL CANDIDATE
+
+Only the following immutable exact build is authorized for the next physical test:
+
+- build run: `36811812916`
+- attempt: `1`
+- build commit: `e97bfc4ac66d6de49007296fdfff311df129801d`
+- APK SHA-256: `550d4935f17ed6250feda603a9d2963e79aaa716dd20ed59be00124e97f4ae99`
+- exact bundle: `releases/v0.6.4.2/builds/run-36811812916-attempt-1/`
+
+Pre-physical checks:
+- safety audit PASS;
+- red-team static audit PASS;
+- compile/lint PASS;
+- signature verification PASS;
+- immutable exact-build archive PASS;
+- manual state-machine review PASS;
+- manual provenance review PASS.
+
+Major corrections over v0.6.4/v0.6.4.1:
+- P2P-enter handoff requires both Android write callback and valid credential response;
+- generic exit-time `0x41` is ignored for exit proof;
+- post-exit confirmation requires matching `0x73/0x01` inventory after exit write callback;
+- centralized bounded abort/exit/P2P cleanup;
+- case-sensitive exact BLE-reported peer match;
+- no per-file hash tokens exported;
+- BOM/whitespace catalog normalization rejected;
+- full BLE/catalog media parity required;
+- exact build commit/run/attempt embedded in report.
+
+Earlier v0.6.4.2 runs `36811380575` and `36811594297` are preserved but NOT PROMOTED.
+
+G6A remains open. G6B remains blocked until the exact run-36811812916 physical report is reviewed.
