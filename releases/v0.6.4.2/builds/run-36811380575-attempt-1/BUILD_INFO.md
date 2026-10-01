@@ -1,0 +1,20 @@
+# K G1 G6A No-Capture Catalog Stability v0.6.4.2 — Exact Build
+- Build commit: 342ae660640a73211c4479c273372341ebe0d725
+- Build run: 36811380575
+- Build attempt: 1
+- Package ID: com.parkarsite.g6astability642
+- versionCode: 1
+- APK SHA-256: 102302236dde6de57c4f9ec78f0bee016695fb0f600178f7ed6e43251bee80c7
+- Exact source ZIP SHA-256: 1110c49b8c915050c2a1132634e3fba53b5d232e28548e667f6f0b4fe3ad7394
+- Source archive command: git archive from exact GITHUB_SHA
+- Safety audit: PASS
+- Red-team static audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- media-file GET code paths: none
+- post-exit confirmation: matching 0x73/0x01 after exit write callback
+- exact case-sensitive BLE-reported P2P peer name only
+- no per-file identity/hash tokens in report
+- no raw remote filename/path persistence
+- no glasses mutation/deletion
