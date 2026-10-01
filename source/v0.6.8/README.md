@@ -20,3 +20,5 @@ Phase 2:
 - prove zero download and zero duplicate creation.
 
 Phase 2 is blocked in the same process that committed Phase 1.
+
+Build verification trigger: runtime source unchanged.
