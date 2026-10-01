@@ -1117,3 +1117,60 @@ Only the post-GET observation branch permits count mismatch without immediate fa
 Concurrent run `36898143517` is preserved but NOT PROMOTED.
 
 G6A remains open. G6B remains blocked pending the exact v0.6.7 physical report.
+
+
+## G6A v0.6.7 physical result — REMOTE CONSUMPTION SEMANTICS PROVEN
+
+Exact tested build:
+- run `36898159938`
+- attempt `1`
+- build commit `cb90f25b0bea9cfe308a1d79d9f4235c7f2b21fe`
+- APK SHA-256 `b152a20f049d8d33e514b177d3abcb8a01dad00677a046ea58a4a8e5de9dd7ab`
+
+Physical evidence:
+`releases/v0.6.7/builds/run-36898159938-attempt-1/reports/2026-10-01_G6A_V0_6_7_POST_GET_REMOTE_CONSUMPTION_PHYSICAL_PROOF.md`
+
+Result:
+- pre-GET state: 12 images / 12 JPG;
+- exactly one JPG GET validated;
+- immediate post-GET inventory: 11 images;
+- fresh reconnect: 11 images / 11 JPG;
+- all baseline JPG identities retained;
+- exact downloaded JPG identity absent;
+- no explicit delete/mutation command sent.
+
+Conclusion:
+**successful JPG GET consumes/removes that exact remote JPG on the tested AIMB-G1 path.**
+
+Known historical report defect:
+- runtime header printed `App version: 0.6.6`;
+- exact build commit/run/attempt uniquely attribute the run to v0.6.7.
+
+## G6A v0.6.8 — CURRENT TWO-PHASE PHYSICAL CANDIDATE
+
+Only authorized build:
+- run `36903742122`
+- attempt `1`
+- build commit `cf92a44563352ed339d8dd74a825483c7dba39e4`
+- APK SHA-256 `3f94a240030c10162c0025853846f6ea29860de2ed36874742cddbb2a61d4b27`
+- exact source ZIP SHA-256 `0dd1535b280d383e102a338eb2a9fc5b7106438bea3eb106e56808b9b6e12d54`
+- package `com.parkarsite.g6apersist68`
+- exact bundle `releases/v0.6.8/builds/run-36903742122-attempt-1/`
+
+Purpose:
+1. Phase 1 proves atomic persistent local JPG import + durable opaque receipt under consumptive GET semantics.
+2. Phase 2, after a real force-stop/reopen, proves receipt/local JPG persistence with zero network/BLE/P2P and zero duplicate import.
+
+Pre-physical gates:
+- safety PASS;
+- red-team static PASS;
+- compile/lint PASS;
+- signature PASS;
+- immutable archive PASS;
+- manual storage/state-machine review PASS.
+
+Phase 1 must pass before Phase 2. Phase 2 must use the same installed package/data; do not uninstall or clear app data.
+
+If both pass, proceed to G6A closure review.
+
+**G6A OPEN. G6B BLOCKED.**
