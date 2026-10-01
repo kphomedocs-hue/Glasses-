@@ -1,0 +1,21 @@
+# K G1 G6A Single-Capture Catalog Retention v0.6.5 — Exact Build
+- Build commit: 598e9aed94546bff2c9b018114932902aca67e05
+- Build run: 36893102299
+- Build attempt: 1
+- Package ID: com.parkarsite.g6acapture65
+- versionCode: 1
+- APK SHA-256: 985edbcc5a8a7b035cd50c71771c7a51b9f166c9d6a827972b2f4b13423c477f
+- Exact source ZIP SHA-256: 40af18c38038f03ab2ec7745b3dd3efbf50f72757fff41f67d1e6d751efbf1e1
+- Source archive: git archive from exact GITHUB_SHA
+- Safety audit: PASS
+- Red-team static audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Capture action issued by app: none
+- Passive capture gate: exact +1 only
+- Catalog snapshots: baseline + post-capture + retention
+- Media-file GET code paths: none
+- Exact peer: case-sensitive BLE-reported P2P name
+- No raw remote filename/path persistence
+- No glasses mutation/deletion
