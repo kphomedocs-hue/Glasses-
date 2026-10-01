@@ -3,7 +3,10 @@ set -euo pipefail
 : "${RUNNER_TEMP:?}"; : "${GITHUB_WORKSPACE:?}"; : "${GITHUB_SHA:?}"; : "${GITHUB_RUN_ID:?}"
 cd "$GITHUB_WORKSPACE"
 git pull --rebase origin main
-REL="releases/v0.6.3"; rm -rf "$REL"; mkdir -p "$REL"
+REL="releases/v0.6.3"
+mkdir -p "$REL/reports"
+# Preserve VERSION_MANIFEST.md and reports/. Refresh top-level build artifacts only.
+find "$REL" -maxdepth 1 -type f ! -name 'VERSION_MANIFEST.md' -delete
 python3 - <<'PY'
 from pathlib import Path
 import subprocess, zipfile
