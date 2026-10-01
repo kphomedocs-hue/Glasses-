@@ -23,16 +23,17 @@
 - exact source ZIP SHA-256: `f3ab19b2bdcd390319f3ee7e4659742cc3406417304fb7f29dbc2166ea164092`
 - CI/static status: verified
 - manual red-team review: PASS
-- physical status: pending one bounded post-GET transition-observer run
-- promotion status: **AUTHORIZED FOR PHYSICAL TESTING ONLY**
+- physical status: **PHYSICAL COMPLETE — successful GET persistently consumed the exact downloaded JPG from remote inventory/catalog**
+- promotion status: diagnostic completed; do not rerun unchanged
 
 Manual review:
 `builds/run-36898159938-attempt-1/reviews/MANUAL_RED_TEAM_PREPROMOTION.md`
 
 ## Current rule
 
-Only run `36898159938-attempt-1` is authorized for the v0.6.7 physical test.
+Physical evidence:
+`builds/run-36898159938-attempt-1/reports/2026-10-01_G6A_V0_6_7_POST_GET_REMOTE_CONSUMPTION_PHYSICAL_PROOF.md`
 
-The report must identify exact version, build commit, run ID and attempt above.
+Known report-header defect: the exact v0.6.7 source hard-coded `App version: 0.6.6`; exact build commit/run/attempt still uniquely attribute the physical run.
 
-G6A remains open. G6B remains blocked.
+The diagnostic established that successful GET consumes the exact downloaded JPG from the glasses-side inventory/catalog. G6A remains open. G6B remains blocked.
