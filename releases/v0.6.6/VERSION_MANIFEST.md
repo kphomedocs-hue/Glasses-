@@ -27,16 +27,17 @@ Review:
 - exact source ZIP SHA-256: `c07333baa71377d0fc8b7c8bd5b7f661946fdfef949883585c332269cd347674`
 - CI/static status: verified
 - manual red-team review: PASS
-- physical status: pending one bounded single-JPG GET retention run
-- promotion status: **AUTHORIZED FOR PHYSICAL TESTING ONLY**
+- physical status: **REPRODUCED PHYSICAL OBSERVATION — post-GET 0x73/0x01 inventory mismatched the pre-GET snapshot; operator reports same outcome twice**
+- promotion status: completed diagnostic; do not rerun without changing the observation logic
 
 Manual review:
 `builds/run-36895589975-attempt-1/reviews/MANUAL_RED_TEAM_PREPROMOTION.md`
 
 ## Current rule
 
-Only run `36895589975-attempt-1` is authorized for the next v0.6.6 physical test.
+Evidence:
+`builds/run-36895589975-attempt-1/reports/2026-10-01_G6A_V0_6_6_POST_GET_INVENTORY_MISMATCH_REPRODUCED.md`
 
-The physical report must identify exact version, build commit, build run, and attempt.
+The exact v0.6.6 diagnostic has completed its useful role. Do not rerun it again: it stops at the reproducible post-GET inventory mismatch before observing the new stable catalog state.
 
 G6A remains open. G6B remains blocked.
