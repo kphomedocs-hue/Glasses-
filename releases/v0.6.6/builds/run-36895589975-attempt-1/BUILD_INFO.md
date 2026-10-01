@@ -1,0 +1,20 @@
+# K G1 G6A Single-JPG GET Retention v0.6.6 — Exact Build
+- Build commit: 1ea64b26f311e6b2f18be536e1548766dabe8aa9
+- Build run: 36895589975
+- Build attempt: 1
+- Package ID: com.parkarsite.g6aget66
+- versionCode: 1
+- APK SHA-256: 29920782f16e5ef5785ef62d835622b3dbff0cb1b53f0f5848306f13cf76343d
+- Exact source ZIP SHA-256: c07333baa71377d0fc8b7c8bd5b7f661946fdfef949883585c332269cd347674
+- Source archive: git archive from exact GITHUB_SHA
+- Safety audit: PASS
+- Red-team static audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- media GETs: exactly one
+- media cap: 33554432 bytes
+- JPEG SOI/EOI validation: required
+- temporary app-cache file cleanup: required
+- persistent import/ledger: disabled
+- no glasses mutation/deletion
