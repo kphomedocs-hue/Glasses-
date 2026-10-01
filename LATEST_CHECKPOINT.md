@@ -512,3 +512,45 @@ Successful bounded totals remain:
 Persistent import/ledger remains disabled.
 
 **G6A remains OPEN. G6B remains BLOCKED.**
+
+
+## v0.6.7 physical result — POST-GET REMOTE CONSUMPTION PROVEN
+
+Exact tested build:
+- run `36898159938`
+- attempt `1`
+- build commit `cb90f25b0bea9cfe308a1d79d9f4235c7f2b21fe`
+- APK SHA-256 `b152a20f049d8d33e514b177d3abcb8a01dad00677a046ea58a4a8e5de9dd7ab`
+
+Known report-header defect:
+- report says `App version: 0.6.6`;
+- exact v0.6.7 source at the tested commit contains that stale hard-coded line;
+- build commit/run/attempt still uniquely identify the physical APK.
+
+Observed:
+- baseline: 11 images / 11 JPG / 1 OPUS;
+- one capture: exact +1 to 12 images / 12 JPG;
+- fresh pre-GET reconnect retained the 12-JPG state;
+- exactly one JPG GET completed: HTTP 200, 599645 bytes, JPEG SOI/EOI PASS;
+- immediate post-GET inventory changed 12 → 11 images;
+- fresh reconnect remained at 11 images;
+- fresh catalog contained 11 JPG + 1 OPUS;
+- all 11 baseline JPG identities remained;
+- the exact downloaded new JPG identity was absent;
+- no persistent import or ledger was used.
+
+Evidence:
+`releases/v0.6.7/builds/run-36898159938-attempt-1/reports/2026-10-01_G6A_V0_6_7_POST_GET_REMOTE_CONSUMPTION_PHYSICAL_PROOF.md`
+
+### Revised G6A transfer model
+
+A successful JPG GET on this AIMB-G1 path consumes/removes that exact transferred JPG from the remote inventory/catalog.
+
+Therefore restart-safe dedup must not require the transferred remote identity to still exist after a successful import.
+
+Next:
+- persist the transferred JPG atomically to the local numbered archive;
+- commit a durable local transfer receipt only after the local file is durable;
+- then perform a restart test proving the local file and receipt survive and no duplicate import/redownload occurs.
+
+**G6A remains OPEN. G6B remains BLOCKED.**
