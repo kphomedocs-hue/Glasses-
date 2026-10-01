@@ -778,7 +778,7 @@ Next diagnostic should be **no-capture catalog stability**, not another import a
 **G6A remains open. G6B remains blocked.**
 
 
-## G6A v0.6.4 no-capture catalog-stability diagnostic — VERIFIED PHYSICAL CANDIDATE
+## G6A v0.6.4 no-capture catalog-stability diagnostic — HISTORICAL / SUPERSEDED
 
 Purpose: isolate whether AIMB-G1 inventory/catalog changes when no photo is taken and no media file is downloaded.
 
@@ -850,7 +850,7 @@ Therefore:
 - `releases/v0.6.4/K_G1_G6A_No_Capture_Stability_v0_6_4.apk` is retained for provenance but **MUST NOT be used**.
 - v0.6.4 is **SUPERSEDED**.
 
-## G6A v0.6.4.1 corrected no-capture stability diagnostic — VERIFIED PHYSICAL CANDIDATE
+## G6A v0.6.4.1 corrected no-capture stability diagnostic — HISTORICAL / RED-TEAM BLOCKED
 
 Corrections:
 - BLE image count must equal catalog JPG count in both snapshots for PASS;

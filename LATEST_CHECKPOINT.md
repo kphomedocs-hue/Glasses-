@@ -195,6 +195,21 @@ Important runtime corrections:
 - report embeds build commit/run/attempt;
 - zero media-file GET path.
 
+## Last physical report incorporation recheck
+
+The v0.6.4 physical report generated `2026-10-01T08:41:51+0530` was re-read against the v0.6.4.2 source.
+
+Result: **materially incorporated**.
+
+- Its useful 10→10 / identity-set-stable observation is retained as diagnostic evidence, not promoted to gate proof.
+- v0.6.4.2 repeats the same bounded no-capture question because v0.6.4's exit/cleanup/provenance were not trustworthy enough for gate use.
+- v0.6.4.2 adds full BLE/catalog media parity, verified group cleanup, stricter catalog identity handling, exact build provenance, dual-condition enter handoff, and stronger post-exit evidence.
+- The observed count of 10 JPG is deliberately NOT hard-coded.
+- The earlier 8→10 transition remains unresolved and is not explained by the old 30-second stable window.
+
+Detailed incorporation review:
+`releases/v0.6.4.2/reviews/2026-10-01_LAST_PHYSICAL_REPORT_INCORPORATION_RECHECK.md`
+
 ## Next physical action
 
 Use **only** the exact run `36811812916-attempt-1` APK.
