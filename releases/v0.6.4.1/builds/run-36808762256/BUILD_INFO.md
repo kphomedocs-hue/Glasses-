@@ -1,0 +1,18 @@
+# K G1 G6A No-Capture Catalog Stability v0.6.4.1 — Verified Repository Build
+- Canonical build commit: fc97196fcce224e785cd9a86bed47c0c00b14f54
+- Canonical build run: 36808762256
+- corrected bounded-scope safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Package ID: com.parkarsite.g6astability64
+- versionCode: 2
+- cross-channel BLE image/catalog JPG parity required for PASS
+- exit write callback + valid 0x41 response required before cleanup
+- P2P group absence verified after one removeGroup request
+- bounded cleanup callback
+- minimum 30000 ms quiet interval with monotonic evidence
+- exact final operation totals required for PASS
+- media-file GET code paths: none
+- no raw remote filename/path persistence
+- no glasses mutation/deletion

@@ -1,0 +1,14 @@
+# K G1 G6A Identity Diagnostic v0.6.2 — Verified Repository Build
+- Canonical build commit: 2107c445c85b71cff82c0e57a8eecc39277a5d33
+- Canonical build run: 36466571422
+- G6A diagnostic safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Package ID: com.parkarsite.g6aimport62
+- G5.7 transport boundary preserved
+- one new JPG maximum in import mode
+- read-only restart identity diagnostic + dedup verification
+- verification media GETs: zero
+- diagnostic capsule stores hashes/shape only; no remote filename/path text
+- no glasses mutation/deletion
