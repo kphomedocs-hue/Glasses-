@@ -1,0 +1,1224 @@
+# LATEST CHECKPOINT
+
+## Project
+K Site Capture / AIMB-G1 glasses integration
+
+## Authoritative repository state
+
+The repository now separates:
+- frozen Discovery v0.1 release/source,
+- preserved Site Capture v0.4 media-engine source,
+- protocol evidence,
+- physical-test gates,
+- modular future architecture,
+- artifact/provenance manifest.
+
+Primary navigation:
+- `README.md`
+- `PROJECT_MANIFEST.md`
+- `docs/architecture/ARCHITECTURE.md`
+- `docs/architecture/MIGRATION_PLAN.md`
+- `docs/protocol/AIMB_G1_PROTOCOL.md`
+- `docs/testing/PHYSICAL_TEST_GATE.md`
+- `archive/site-capture/v0.4/`
+
+## Frozen physical-test baseline
+**K G1 Discovery v0.1**
+
+Status: software recovery complete; G1 physical read-only GATT confirmation **PASS**.
+
+### Verified artifacts
+- Repository APK: `releases/v0.1/K_G1_Discovery_v0_1.apk`
+- APK SHA-256: `c32758f898b91041bc7e13a272096d2629836e4465542ee00c1fbd9764e7479a`
+- Frozen source ZIP SHA-256: `84fb1b957290abdf2464a97b35b81f2d1e8e976ce9c067ecaf571c8c19f22c68`
+- Repository package ZIP SHA-256: `e6b23d5d0eaed6a07112f7f14343e011299bf706fe0e98f447a74d24f92c827a`
+- Earlier first-build debug APK hash retained for provenance: `ab37790ad13028aa6e8f1e3d16b957c72f8038df0638e8e852b31488d9fc762a`
+
+### Build gates passed
+- exact source-integrity verification
+- read-only safety audit
+- Android compilation
+- Android Lint: 0 errors
+- APK signature verification
+
+## Preserved legacy media engine
+
+**K Site Capture v0.4** is archived in expanded browsable form under `archive/site-capture/v0.4/`.
+
+Important reusable components:
+- `G1Transport`
+- `FakeAimbG1Transport`
+- `RemoteMedia`
+- `ProbeRunner`
+- `NumberingPolicy`
+- `FileMediaArchive`
+- `FileImportLedger`
+- protocol framing/CRC reference
+- core self-test suite
+- historical diagnostic tools
+
+Original v0.4 ZIP SHA-256:
+`2843b69ac743986d76a8c1d6821e88fc4978e10517a972184b4e32920b621a01`
+
+Earlier v0.1–v0.3 hashes are recorded in `PROJECT_MANIFEST.md`.
+
+## Confirmed Cyan evidence
+
+Analysed app:
+- package: `com.aitowe.aitoglasses`
+- version: `1.0.2.18_20260811`
+- export SHA-256: `1328b3c025f43c06b2a0674d4c17890ec4b76cb6487196a84aa27b2335c2fc49`
+
+Recovered BLE family:
+- Service: `de5bf728-d711-4e47-af26-65e3012a5dc7`
+- Notify: `de5bf729-d711-4e47-af26-65e3012a5dc7`
+- Write: `de5bf72a-d711-4e47-af26-65e3012a5dc7`
+
+Recovered framing:
+- magic: `BC`
+- glasses-control command ID: `41`
+- length: little-endian
+- CRC: CRC-16/MODBUS over payload, little-endian
+
+Recovered media payloads:
+- P2P-associated: `02 01 04 01`
+- AP-associated: `02 01 04 02`
+
+Confirmed local media-path evidence:
+- `media.config`
+- Wi-Fi P2P/AP support
+- local glasses IP/name/password fields
+- local HTTP download
+- `/files/`
+- OPUS support
+- local `glass_album` metadata table
+
+See `docs/protocol/AIMB_G1_PROTOCOL.md` for evidence levels and limitations.
+
+## Architecture rule
+
+Do not merge the legacy v0.4 transport into Discovery v0.1.
+
+After physical confirmation, migrate proven v0.4 responsibilities into separate modules:
+- protocol
+- device-ble
+- device-network
+- media-transfer
+- media-storage
+- sync-ledger
+- diagnostics
+
+See `docs/architecture/MIGRATION_PLAN.md`.
+
+## v0.1 safety boundary
+
+Allowed:
+- BLE scan
+- connect
+- discover GATT services/characteristics
+- read selected standard Device Information fields
+- disconnect
+- generate/share report
+
+Forbidden:
+- proprietary BLE characteristic writes
+- descriptor writes/notification subscription
+- Wi-Fi/network access
+- media-transfer commands
+- reset/restart/OTA/firmware operations
+
+## Next action
+
+G0 through G4B3 are physically complete.
+
+**Current physical candidate: G5 capture-visibility v0.5.5.**
+
+Why this diagnostic is next:
+- G5 v0.5.0 and G5.2 both stopped safely because the newly captured JPG did not appear in the immediate BLE inventory or catalog delta.
+- Before another media-download attempt, we need to determine when the capture becomes visible to the glasses inventory.
+- v0.5.5 keeps one continuous BLE connection, performs one baseline `0x41 / 02 04` query, arms a bounded 60-second passive watch before the user captures exactly one photo, then performs one final `0x41 / 02 04` query.
+- It has no P2P, Wi-Fi, HTTP, catalog access, media GET, file write/delete, AP mode or `02 03`.
+
+Verified v0.5.5:
+- APK: `releases/v0.5.5/K_G1_Capture_Visibility_Probe_v0_5_5.apk`
+- APK SHA-256: `d6ee69fe4929719de31410f35a2e5f27c281598eec75163a10142c4367a8f55a`
+- canonical source/build commit: `2aec1fc118291506fb4a0da338f82f88f51f103b`
+- build run: `35450379889` — PASS
+- archive commit: `da9600289372f8d2385e8f3629f28ade7415f64d`
+- source Repository Hygiene: `35450379856` — PASS
+- safety audit / compile / lint / APK signature: PASS
+- package ID: `com.parkarsite.g1capturevisibilityprobe55`
+
+v0.5.5 supersedes v0.5.4 before physical use. The only runtime delta from v0.5.4 is corrected exported report metadata: v0.5.4 printed `App version: 0.5.3`; v0.5.5 correctly prints `App version: 0.5.5`.
+
+Immediate action: run v0.5.5 once, arm the watch before taking exactly one disposable photo, wait for the bounded final recheck, and return the complete sanitized report. Stop before any further G5 media-download attempt or G6 work.
+
+This file remains authoritative for resuming the project.
+
+
+## Software recovery verification
+
+- Cold Recovery Gate run `35387241734`: PASS
+- Hardened Cold Recovery run `35387536088` (expanded source == frozen ZIP): PASS
+- Core Module Regression run `35387408775`: PASS
+- Expanded Core Module Regression run `35387812463`: PASS
+- Frozen v0.1 reference branch: `frozen/discovery-v0.1-readonly`
+- Detailed record: `docs/testing/results/2026-09-19_SOFTWARE_RECOVERY_GATE.md`
+
+This confirms GitHub is sufficient to recover and rebuild the current project without the previous chat/workspace.
+
+
+## Additional pure-core readiness
+
+Diagnostics redaction and sync-ledger core models are now covered by CI without introducing Android, BLE, Wi-Fi or HTTP dependencies into those modules.
+
+- Diagnostics sanitizer: PASS
+- Sync-ledger state model: PASS
+- Expanded core regression run: `35387812463`
+
+
+## G1 report and repository hygiene readiness
+
+Pre-hardware report handling is complete:
+
+- Discovery Report Validation run `35389022993`: PASS
+- Repository Hygiene run `35389022968`: PASS
+- Report sanitizer: `tools/validate_g1_report.py`
+- Physical result template: `docs/testing/results/TEMPLATE_G1_DISCOVERY_REPORT.md`
+- Public data rules: `docs/security/PUBLIC_REPO_DATA_RULES.md`
+- Tracked G1 physical-test issue: #1
+
+The repository now rejects/sanitizes reports containing MAC addresses, passwords or serial data and blocks accidental third-party Cyan packages, packet captures, raw media and oversized files from normal tracked content.
+
+No further protocol implementation should be added before the physical G1 report is reviewed.
+
+
+## G1 retry checkpoint — K G1 Discovery v0.1.1
+
+Two physical read-only scans using frozen v0.1 returned:
+- AIMB-G1 not found during the 12-second scan.
+
+Android separately confirms the paired glasses are present and exposes the device name in the `AIMB-G1_<suffix>` form. No full Bluetooth address or device-specific suffix is recorded in this public repository.
+
+Code review found v0.1 required an exact `AIMB-G1` name match. The frozen v0.1 release and `frozen/discovery-v0.1-readonly` branch remain unchanged.
+
+v0.1.1 changes only the target-name matcher:
+- exact `AIMB-G1`: accepted,
+- `AIMB-G1_*`: accepted,
+- no proprietary BLE writes,
+- no descriptor writes / notification subscription,
+- no Wi-Fi/P2P/AP,
+- no HTTP/media transfer,
+- no reset/restart/OTA.
+
+Verified v0.1.1 release:
+- Repository APK: `releases/v0.1.1/K_G1_Discovery_v0_1_1.apk`
+- APK SHA-256: `bdb73a04c2650fefbcd433a13674a32c18dd94a07a2c8ef16a90a8980d3f0358`
+- Source ZIP SHA-256: `0e2949500cfdc6d04f161164b2324cf811ec852f540a15b59684a3da9ec10d05`
+- Package ZIP SHA-256: `d7ae14fa0b42c063e7d857ecb119cff25b60a8192249b2835f9e2e5f140031b0`
+- Canonical APK build run: `35393397232`
+- Latest full verification run: `35393800836`
+- Android compile: PASS
+- Android Lint: PASS
+- Read-only safety audit: PASS
+- APK signature verification: PASS
+
+Next action: install v0.1.1 and repeat G1 read-only discovery without changing pairing, reset, Wi-Fi or firmware state.
+
+
+## G1 diagnostic checkpoint — K G1 Discovery v0.1.2
+
+Purpose: resolve the remaining ambiguity after the first read-only v0.1 scans did not identify the glasses.
+
+v0.1.2 is a diagnostic candidate, not a protocol-control release. It adds:
+- 30-second low-latency BLE observation,
+- sanitized AIMB-G1-family/Cyan-service candidate detection,
+- aggregate scan health metrics,
+- bonded-device type inspection,
+- direct LE GATT fallback only when one and only one bonded AIMB-G1-family device is identified,
+- 30-second GATT connection/service-discovery timeout.
+
+Safety remains read-only:
+- no proprietary characteristic writes,
+- no descriptor writes,
+- no notification subscription,
+- no pairing/unpairing/reset,
+- no Wi-Fi/P2P/AP,
+- no HTTP/media transfer,
+- no OTA/firmware command.
+
+Verified artifacts:
+- APK SHA-256: `dc08b915581468f2d0d33fb317ca06b05e301b233cb0ced234edf7f0bc282297`
+- source ZIP SHA-256: `de89fd0dd15d48c51e1f080158b426f455699187a0f42f28686cf957850f3271`
+- package ZIP SHA-256: `d7ddedc782ced77fda0f8b0a18237101a4124c3762a359888b20de017329a667`
+- canonical build commit: `f048418960255e1fa292be60da4012c2613eca98`
+- build/verification run: `35395830630`
+- diagnostic scope verification: PASS
+- read-only safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+
+The v0.1 frozen branch and v0.1/v0.1.1 source/release trees remain unchanged.
+
+
+## G1 physical result — PASS
+
+Physical test date: 2026-09-19
+
+- K G1 Discovery v0.1.2 connected through the uniquely identified bonded-device LE fallback.
+- BLE scan callbacks during the 30-second observation window: 0.
+- Physical Cyan service `de5bf728-d711-4e47-af26-65e3012a5dc7`: PRESENT.
+- Physical notify characteristic `de5bf729-d711-4e47-af26-65e3012a5dc7`: PRESENT / NOTIFY.
+- Physical write characteristic `de5bf72a-d711-4e47-af26-65e3012a5dc7`: PRESENT / WRITE + WRITE_NO_RESPONSE.
+- Hardware revision read: `AM01SPG1_V1.4`.
+- Firmware revision read returned Android GATT status `133`; retained as an anomaly, not a G1 blocker.
+- Sanitized evidence: `docs/testing/results/2026-09-19_G1_PHYSICAL_DISCOVERY_PASS.md`.
+- G1 conclusion: **PASS**.
+- Next gate: G2 notification/response-channel confirmation only; no proprietary control write yet.
+
+
+## G2 notification-only probe — verified build ready
+
+**K G1 Response Probe v0.2** is the current physical-test candidate for G2.
+
+Verified repository artifacts:
+- APK: `releases/v0.2/K_G1_Response_Probe_v0_2.apk`
+- APK SHA-256: `86b9738ac909577b173264be233242c17c9715be5bae183fffa6c9d497174ff2`
+- Source ZIP SHA-256: `86fa0f9f72171cb90c4edbc04d1a2db2b2c40c19c976978ea08a63c399700d39`
+- Package ZIP SHA-256: `b4d2fe59d87866dd993454ff58b53d18bf605891c74d2c9ddce1e9f40af18924`
+- Canonical build commit: `e4ef4667ae0db5b9be1e449abe571f988f5064c9`
+- Build/verification run: `35413378362`
+- G2 notification-only scope verification: PASS
+- G2 safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+
+Safety boundary:
+- may enable notifications only on `de5bf729-d711-4e47-af26-65e3012a5dc7`,
+- may write only the standard CCCD enable-notification value required for that subscription,
+- contains no proprietary characteristic-write API,
+- contains no `de5bf72a-...` control-write UUID,
+- contains no initialization/media command,
+- contains no Wi-Fi/network/reset/OTA behavior.
+
+Next physical action: install v0.2, force-stop Cyan Glasses, leave AIMB-G1 paired, run the 30-second notification-only probe, and return the complete report before any control write is considered.
+
+
+## G2 physical result — notification path PASS
+
+Physical test date: 2026-09-19
+
+K G1 Response Probe v0.2 successfully:
+- connected to exactly one bonded AIMB-G1-family device over LE,
+- found the physically confirmed Cyan service and notify characteristic,
+- enabled local notifications,
+- wrote only the standard CCCD enable-notification value,
+- observed three spontaneous notifications in 30 seconds,
+- sent no proprietary characteristic write.
+
+Observed frames:
+- `BC 73 03 00 52 31 05 47 00`
+- `BC 73 08 00 01 07 01 01 00 00 00 01 00 01`
+- `BC 73 03 00 53 A1 05 46 00`
+
+All three frames validate against the known Cyan length + CRC-16/MODBUS envelope.
+
+Sanitized evidence:
+`docs/testing/results/2026-09-19_G2_NOTIFICATION_ONLY_PASS.md`
+
+G2 response-channel confirmation: **PASS**.
+
+Important: the semantic meaning of command `0x73` and its payloads is still pending. This result confirms passive response-channel traffic; it does not authorize a proprietary control write or media-mode command.
+
+Next action: decode `0x73` / initialization semantics before G3.
+
+
+## G2B strategy checkpoint — passive first
+
+Decision recorded 2026-09-19:
+
+The next step is **not** a control-write experiment.
+
+The preferred evidence path is:
+- targeted Cyan parser tracing,
+- plus a passive event-correlation diagnostic if needed.
+
+Planned correlator:
+- uses the already confirmed bonded-device LE connection path,
+- subscribes only to `de5bf729-d711-4e47-af26-65e3012a5dc7`,
+- writes only the standard CCCD required for notification subscription,
+- timestamps valid incoming frames,
+- provides explicit user event markers,
+- computes length/CRC validation and groups repeated payloads,
+- produces a sanitized report,
+- contains no proprietary characteristic-write API and no Cyan control-write UUID.
+
+Do not advance to G3 until G2B evidence is reviewed.
+
+
+## G2B exact Cyan trace — PASS
+
+Exact package traced:
+- Cyan Glasses `1.0.2.18_20260811`
+- split export SHA-256 `1328b3c025f43c06b2a0674d4c17890ec4b76cb6487196a84aa27b2335c2fc49`
+- extracted `base.apk` SHA-256 `1e700628d76fa4fa84047632e2ccce3673f1a01966fbf8c583985568f3aaaf64`
+
+Key findings:
+- command `0x73` is Cyan's asynchronous device-data reporting channel;
+- event `0x01` is a media inventory/count/config report;
+- physical `0x01` decodes as image=1, video=0, record=1, configFileType=1; its optional AP-only flag is absent because the physical frame is one byte shorter than the current parser schema;
+- event `0x05` is a battery/charging-family report; the physical charging flag is 0 in both observed frames;
+- after service discovery, Cyan enables notifications and queues `syncTime(0x40)` first, then device info/settings;
+- Cyan does not wait on or inspect the time-sync callback before continuing, so time sync is normal initialization but not proven to be a media-mode handshake gate.
+
+G2B conclusion: **PASS**.
+
+Passive Event Correlator: retained as fallback, not required before G2C.
+
+
+## G2C verified build ready — K G1 Init Probe v0.2.1
+
+Verified repository artifacts:
+- APK: `releases/v0.2.1/K_G1_Init_Probe_v0_2_1.apk`
+- APK SHA-256: `7c0ce5d859e79c6ee2ed05316f5f5db736919912802fbbab040ce612ea368e5c`
+- Source ZIP: `releases/v0.2.1/K_G1_Init_Probe_v0_2_1_source_v1.zip`
+- Source SHA-256: `d14e3e56586a45616c335f6e0d85ac93131bbe7754dd4e422b2661c98c915761`
+- Package ZIP: `releases/v0.2.1/K_G1_Init_Probe_v0_2_1_package.zip`
+- Package SHA-256: `5c8d2bfaf042cfcb9d54f8fe5804396087e1bc18b84658f851b92fb38fd1e7c8`
+- Canonical build commit: `7666393a08e8093ae81524a701f65c80717e2191`
+- Archive commit: `92d017ba3ff43ce1ba8fa2831d79306632e7d390`
+- Build/verification run: `35416416013`
+- G2C single-command scope verification: PASS
+- G2C safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+
+Physical-test boundary:
+- notification subscription on the confirmed Cyan response characteristic,
+- exactly one proprietary characteristic-write attempt,
+- the only implemented proprietary command is dynamically generated Cyan-equivalent `0x40` time sync,
+- no retry,
+- no `0x41` media/control command,
+- no Wi-Fi/P2P/AP,
+- no HTTP/media transfer,
+- no reset/restart/OTA/firmware operation,
+- no arbitrary command input.
+
+Next action: run the verified v0.2.1 APK once and return the complete G2C report. Do not proceed to media mode afterward.
+
+
+## G2C physical result — PASS
+
+Physical test date: 2026-09-19
+
+K G1 Init Probe v0.2.1:
+- subscribed successfully to the confirmed Cyan response path,
+- sent exactly one dynamically generated Cyan-equivalent `0x40` time-sync command,
+- Android characteristic-write start: SUCCESS,
+- Android characteristic-write callback: SUCCESS,
+- received a valid `0x40` response frame `BC 40 01 00 BF 40 00`,
+- sent no retry and no second proprietary write,
+- sent no `0x41` command.
+
+Sanitized evidence:
+`docs/testing/results/2026-09-19_G2C_TIME_SYNC_PASS.md`
+
+G2C conclusion: **PASS**.
+
+Next gate has been narrowed for safety:
+**G3 — one media-inventory/count query using command `0x41`, payload `02 04`.**
+
+This query is present in the exact Cyan app and does not intentionally activate Wi-Fi/P2P/AP or perform media transfer.
+
+P2P/AP media-mode payloads remain blocked until G3 is reviewed.
+
+
+## G3 verified build ready — K G1 Media Count Probe v0.3
+
+Verified repository artifacts:
+- APK: `releases/v0.3/K_G1_Media_Count_Probe_v0_3.apk`
+- APK SHA-256: `31191dc90dac56e9aced7db5a6f6b4c65b969f10ec6d673199ee94c6a2f204e9`
+- Source ZIP: `releases/v0.3/K_G1_Media_Count_Probe_v0_3_source_v1.zip`
+- Source SHA-256: `bb5f5e523bcd456a2c88462741c64dd88f0498c956f749bafb35e4832b7dab03`
+- Package ZIP: `releases/v0.3/K_G1_Media_Count_Probe_v0_3_package.zip`
+- Package SHA-256: `0c016518b7fa7efd3cc4b071c1632c8ac48a6e4f0cbe01f5e082297bfb60fb03`
+- Canonical build commit: `d51d92c68b3d94585dc49f03675813d30c5e8dfc`
+- Archive commit: `648ba6944931c212d7ad176573753210314a90fc`
+- Build/verification run: `35420261264`
+- G3 single-query scope verification: PASS
+- G3 safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+
+Physical-test boundary:
+- confirmed notification subscription,
+- exactly one proprietary characteristic-write attempt,
+- the only implemented payload is command `0x41` with payload `02 04`,
+- full query frame: `BC 41 02 00 01 13 02 04`,
+- no retry,
+- no P2P/AP media-mode payload,
+- no Wi-Fi/P2P/AP,
+- no HTTP/media transfer,
+- no file mutation,
+- no reset/restart/OTA/firmware behavior,
+- no arbitrary command input.
+
+The APK records raw framed responses and does not guess media-count field offsets.
+
+Next action: run v0.3 once and return the complete G3 report. Do not proceed to media mode afterward.
+
+
+## G3 physical result — PASS
+
+Physical test date: 2026-09-19
+
+K G1 Media Count Probe v0.3 sent exactly one `0x41 / 02 04` media inventory query and received a valid dataType-4 response.
+
+Decoded from the exact Cyan parser:
+- images: 1
+- videos: 0
+- recordings: 1
+- configFileType: 1
+- onlySupportApImport: false
+- one final response byte is not consumed by Cyan's dataType-4 parser branch.
+
+Sanitized evidence:
+`docs/testing/results/2026-09-19_G3_MEDIA_COUNT_PASS.md`
+
+Exact Cyan routing logic therefore selects **P2P**, not AP, on this Android device.
+
+Exact Cyan payloads independently verified:
+- enter P2P transfer mode: `02 01 04 01`
+- enter AP transfer mode: `02 01 04 02`
+- exit transfer mode after download completion: `02 01 09`
+
+G3 conclusion: **PASS**.
+
+Next gate: **G3B transfer-mode lifecycle only** — enter P2P once, observe, exit once, observe, disconnect. No phone-side Wi-Fi/P2P or HTTP code yet.
+
+
+## G3B verified build ready — K G1 P2P Lifecycle Probe v0.3.1
+
+Verified repository artifacts:
+- APK: `releases/v0.3.1/K_G1_P2P_Lifecycle_Probe_v0_3_1.apk`
+- APK SHA-256: `1578b6540596625825c16a95da64f72f46ee29aaad47c866bb9025a3389dce7c`
+- Source ZIP: `releases/v0.3.1/K_G1_P2P_Lifecycle_Probe_v0_3_1_source_v1.zip`
+- Source SHA-256: `3e0d3f3b3f37eb50df2298dfb8111d0fedfd9de92f29c635bf52e1d0666a8c35`
+- Package ZIP: `releases/v0.3.1/K_G1_P2P_Lifecycle_Probe_v0_3_1_package.zip`
+- Package SHA-256: `2af95704d4b50cec143765d07f6a880f992c1f3d5daef00e9607f654f2c1cd96`
+- Canonical build commit: `c8201c87c9582a2b80814748c114aa33db0318b8`
+- Archive commit: `9db1287981ece7e48d4903d53cf8f52af259d52e`
+- Build/verification run: `35421429624`
+- G3B bounded lifecycle scope verification: PASS
+- G3B safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+
+Physical-test boundary:
+- exact Cyan P2P enter payload `02 01 04 01` once,
+- BLE-only observation,
+- exact Cyan exit-transfer payload `02 01 09` once,
+- BLE-only observation,
+- maximum two proprietary writes,
+- no retry loop,
+- no AP-mode payload,
+- no Android Wi-Fi/P2P/network APIs,
+- no HTTP/media transfer,
+- no file mutation,
+- no reset/restart/OTA/firmware behavior,
+- no arbitrary command input.
+
+Next action: run v0.3.1 once and return the complete G3B report.
+
+
+## G3B physical result — PASS
+
+Physical test date: 2026-09-19.
+
+The verified v0.3.1 lifecycle probe:
+- entered P2P transfer mode with `0x41 / 02 01 04 01`,
+- received a CRC-valid `0x41` response carrying a 20-byte SSID and 9-byte password,
+- did not publish or persist those credential values,
+- observed two valid `0x73 / 0x0B` events during enter mode,
+- exited with `0x41 / 02 01 09`,
+- received a valid exit response,
+- then observed the normal media-inventory `0x73 / 0x01` event,
+- used exactly two proprietary writes and no retry.
+
+Evidence:
+`docs/testing/results/2026-09-19_G3B_P2P_LIFECYCLE_PASS.md`
+
+G3B conclusion: **PASS**.
+
+Next gate: **G4A — phone-side Wi-Fi Direct discovery/association only**. No HTTP or media listing yet.
+
+
+## G4A physical result — PASS
+
+Physical test date: 2026-09-19.
+
+K G1 P2P Association Probe v0.4.0:
+- entered P2P transfer mode successfully,
+- parsed the returned transfer credentials only in memory,
+- discovered exactly one P2P peer and matched it by the exact BLE-reported name,
+- sent a Wi-Fi Direct connect request successfully,
+- formed a P2P group,
+- confirmed the phone is group owner at `192.168.49.1`,
+- performed zero HTTP/socket/media operations,
+- exited transfer mode successfully.
+
+`removeGroup` returned Android Wi-Fi Direct reason 2 (BUSY); recorded as a non-blocking cleanup anomaly.
+
+Evidence:
+`docs/testing/results/2026-09-19_G4A_P2P_ASSOCIATION_PASS.md`
+
+G4A conclusion: **PASS**.
+
+Next: **G4A2 passive `0x73 / 0x08` P2P-IP notification capture only**.
+
+
+## G4A2 verified build ready — v0.4.1
+
+- App: K G1 P2P IP Notify Probe v0.4.1
+- APK: `releases/v0.4.1/K_G1_P2P_IP_Notify_Probe_v0_4_1.apk`
+- APK SHA-256: `3c9104c34fbf06fb06631a09c67cac9eab3e2a626078abcc14401cf09a2cddf3`
+- Source ZIP SHA-256: `1888a096f0312c1e7f513f24fce5b5667f5e6dfaccdb532c4f1a1c11070a2a1c`
+- Package ZIP SHA-256: `45aedb093424797a1d9764016e63b83f3a312e79a4921d31d400f75e93b77360`
+- Canonical source/build commit: `a1eafae6da7202b0af32ff8ee3fc017422608a4b`
+- Verified build run: `35429585616`
+- Archive commit: `1291b782451b12c0bb35436c30f0b660c09b2667`
+- G4A2 safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Repository Hygiene on source commit: PASS
+- Internet permission: ABSENT
+- HTTP/socket/media access: ABSENT
+- `0x41 / 02 03` P2P-IP query: ABSENT
+- Proprietary writes: P2P enter once + transfer exit once only
+- Peer selection: exact BLE-reported P2P name only
+- `0x73` reporting: event IDs only; IPv4 only for event `0x08`
+
+Physical G4A2 result is still pending. Do not start G4B until the glasses-side IP is physically resolved.
+
+
+## G5.2 pre-physical recheck result
+
+Second review found two non-protocol defects in v0.5.1 before physical use:
+- failure cleanup could leave Stage=DOWNLOAD while re-enabling the Run button;
+- media-count response could trigger P2P enter before Android's characteristic-write callback had been observed.
+
+v0.5.2 fixes both without changing the network/protocol boundary.
+
+Verified v0.5.2:
+- APK SHA-256: `14fa9447ee938d20c35c935f5665bbcd72f0edb61b33f1e266d96aacb18bfe7a`
+- source ZIP SHA-256: `d04bc3382eee299d94ecfe2a012a2b9cb50423391f50482e03ac47d5958f9aae`
+- package ZIP SHA-256: `bf338e8358ffaa35a4d613ab13c45ed9ef643fa077764f8e5b2e35fa13f1306e`
+- source/build commit: `17e0a33c9d7490b57fc2f3d6f468f1c6be94d2c0`
+- build run: `35436808167` — PASS
+- archive commit: `7b2c41fe5121d19b585d0ab993329de15bc0414b`
+- package ID: `com.parkarsite.g1singlephotoprobe52`
+
+G5.2 now waits for BOTH:
+1. successful Android BLE write callback for `02 04`;
+2. valid `02 04` response frame;
+before sending P2P enter.
+
+Any completed failure now resets to BASELINE and restores the Start button.
+
+All previous G5.1 safety limits remain unchanged. G6 stays blocked.
+
+
+## G5.2 physical result — safe no-delta stop
+
+Physical G5.2:
+- Phase A `02 04`: images=2, videos=0, recordings=1;
+- Phase A catalog: 3 safe entries / 67 bytes / `.jpg=2, .opus=1`;
+- user confirmed exactly one disposable JPG capture;
+- Phase B `02 04`: images=2, videos=0, recordings=1;
+- inventory deltas: 0 / 0 / 0;
+- Phase B catalog: unchanged 3 safe entries / 67 bytes;
+- new catalog entries: 0;
+- media GETs: 0;
+- transfer exit: successful.
+
+This localizes the current issue upstream of catalog download: the newly captured image was not visible to either the BLE inventory query or `media.config` immediately afterward.
+
+Version-label note: v0.5.2 source/package/versionName are correct, but one report literal printed `App version: 0.5.1`. Cosmetic only.
+
+Evidence:
+- `docs/testing/results/2026-09-19_G5_V0_5_2_SAFE_NO_DELTA.md`
+
+Next gate: BLE-only capture visibility. Keep notifications connected while transfer mode is off, capture one photo, observe sanitized `0x73` events, then perform one bounded `02 04` recheck. No Wi-Fi Direct or HTTP.
+
+
+## G5 capture-visibility verified candidate — v0.5.3
+
+Purpose: isolate when one physical photo becomes visible to the glasses inventory before another download attempt.
+
+Verified build:
+- APK: `releases/v0.5.3/K_G1_Capture_Visibility_Probe_v0_5_3.apk`
+- APK SHA-256: `36c508e98cfb2ba26d54ad54b0b7716fcbdbede0ed6a724ed0a4964a9bbacdc1`
+- Source ZIP SHA-256: `2239168ddbd1e9bb020cef8600b9d55eeda1d887851a538b35d054b9b84ace43`
+- Package ZIP SHA-256: `a97980367d0c6ce4bd7ac5ccdb7ec612cb2f8a4d9cd70c9b04be6177fbd8c1e6`
+- Source/build commit: `245c9d944e1b2eed10494ad2e8d5fe4d7810c5f9`
+- Build run: `35438040193` — PASS
+- Archive commit: `45892085a8024aec032131c7c093e1c7e2b75b0d`
+- Package ID: `com.parkarsite.g1capturevisibilityprobe`
+- BLE-only safety audit / compile / lint / APK signature: PASS
+
+Physical boundary:
+- one continuous BLE connection;
+- one baseline `0x41 / 02 04` query;
+- user captures exactly one photo while transfer mode remains off;
+- passive sanitized `0x73` observation;
+- 60-second bounded post-capture watch;
+- one final `0x41 / 02 04` query;
+- disconnect.
+
+Absent:
+- INTERNET permission;
+- Wi-Fi/P2P;
+- HTTP/URL/socket;
+- media.config/media-file access;
+- file writes/deletes;
+- AP mode / `02 03` / reset/restart/OTA;
+- raw-frame logging.
+
+Immediate next action: run v0.5.3 once and return the complete sanitized report. G6 remains blocked.
+
+
+## Detailed pre-physical recheck — v0.5.4
+
+A full source/runtime review found one diagnostic-quality weakness in v0.5.3: the user was told to capture the photo before arming the 60-second observation window. BLE notifications were already active, so this was not unsafe, but it made capture-attribution less precise.
+
+v0.5.4 fixes only the measurement timing:
+- baseline `02 04` completes;
+- user explicitly arms the 60-second watch;
+- armed-window counters reset;
+- user captures exactly one photo during the armed window;
+- only armed-window `0x73` / `0x01` events contribute to capture-visibility evidence;
+- one final `02 04` recheck closes the gate.
+
+Verified v0.5.4:
+- APK SHA-256: `5f508ba014db4f8cfd803e2573419b95672d95d58fc6f4f7319c729c8013426a`
+- Source ZIP SHA-256: `f474098f126257dcf9fb5d379afd6ff1b7adbd4fa2b4290483227e6ff7914971`
+- Package ZIP SHA-256: `ccc3b8fca6627c6640d57023b5d054c7d28ec77889c779e4aee4d878ffe57450`
+- Source/build commit: `86b2ac3d642947f1d02b5b1e91e0488a8ec9c687`
+- Build run: `35440385274` — PASS
+- Archive commit: `4881adff06b31e134ace69b515cabca9a1ce8468`
+- Package ID: `com.parkarsite.g1capturevisibilityprobe54`
+- Safety audit / compile / lint / signature / artifact upload: PASS
+- source Repository Hygiene: `35440385257` — PASS
+
+Network/protocol scope is unchanged from v0.5.3: BLE only, exactly two maximum `0x41 / 02 04` writes, no P2P/Wi-Fi/HTTP/media access.
+
+
+## G5 capture-visibility verified candidate — v0.5.5
+
+v0.5.5 supersedes v0.5.4 before physical use.
+
+The only runtime change from v0.5.4 is report provenance:
+- v0.5.4's UI/package metadata was 0.5.4 but its exported report literal still said `App version: 0.5.3`;
+- v0.5.5 correctly reports `App version: 0.5.5`.
+
+Verified artifacts:
+- APK: `releases/v0.5.5/K_G1_Capture_Visibility_Probe_v0_5_5.apk`
+- APK SHA-256: `d6ee69fe4929719de31410f35a2e5f27c281598eec75163a10142c4367a8f55a`
+- canonical source/build commit: `2aec1fc118291506fb4a0da338f82f88f51f103b`
+- build run: `35450379889` — PASS
+- archive commit: `da9600289372f8d2385e8f3629f28ade7415f64d`
+- source Repository Hygiene: `35450379856` — PASS
+- safety audit / compile / lint / APK signature: PASS
+
+Protocol/network boundary is unchanged:
+- BLE only;
+- `0x41 / 02 04` only;
+- maximum two proprietary writes;
+- continuous BLE connection across the physical capture;
+- 60-second armed watch begins before capture;
+- no P2P/Wi-Fi/HTTP/media access;
+- no raw-frame logging;
+- no file write/delete.
+
+Physical test is now the only next step.
+
+
+## G5 capture visibility physical result — PASS
+
+Physical v0.5.5 resolved the upstream visibility question.
+
+Baseline:
+- images=5, videos=0, recordings=1.
+
+During the armed 60-second BLE-only window after exactly one photo:
+- passive `0x73 / 0x01` reported images=6;
+- observed event IDs were `0x01` and `0x05`.
+
+Final `0x41 / 02 04` recheck:
+- images=6, videos=0, recordings=1;
+- image delta=+1;
+- write callback and response both successful.
+
+No P2P/Wi-Fi/HTTP/media operation occurred.
+
+Evidence:
+`docs/testing/results/2026-09-19_G5_CAPTURE_VISIBILITY_V0_5_5_PASS.md`
+
+Conclusion: **PASS — one physical capture becomes visible asynchronously and is confirmed by both passive and active BLE inventory paths.**
+
+Next: design a visibility-gated one-file G5 transfer. Do not advance to G6.
+
+
+## G5 visibility-gated v0.5.6 verified candidate
+
+v0.5.6 combines the physically proven v0.5.5 capture-visibility gate with the bounded v0.5.2 single-file transfer path.
+
+Verified:
+- APK: `releases/v0.5.6/K_G1_Disposable_Photo_Probe_v0_5_6.apk`
+- APK SHA-256: `cc997c3d196cb59875707aeaadfa2c96c0be1d0cd9e7951d0703155f93566c9c`
+- source/build commit: `cee088d1f7eae87ea3ab125c330414a3af33ca14`
+- build run: `35461427615` — PASS
+- archive commit: `0dcdaa3e11f9bf8fcdeea021fc8ca452253a4323`
+- source Repository Hygiene: PASS
+- safety audit / compile / lint / APK signature: PASS
+
+Phase B rule:
+- arm the BLE visibility watch before taking the photo;
+- block P2P until exactly +1 image is confirmed with video/recording unchanged;
+- only then enter P2P, fetch one catalog, require exactly one new safe relative JPG, and permit one media GET maximum.
+
+G6 remains blocked until the v0.5.6 physical report is reviewed.
+
+
+## G5 diagnostic-hardened v0.5.7 verified candidate
+
+v0.5.7 supersedes v0.5.6 before physical use.
+
+Verified:
+- APK: `releases/v0.5.7/K_G1_Disposable_Photo_Probe_v0_5_7.apk`
+- APK SHA-256: `63a43f06175f9a591db72570a78a0f977841c836b77fb834648546b52a8092b3`
+- source/build commit: `594dbd906c34778c0276d5d4385431f0a94d2d6b`
+- build run: `35462487457` — PASS
+- archive commit: `20a7dfc0f6baa8447360c0946d61da5dc0e0cf96`
+- safety audit / compile / lint / APK signature: PASS
+
+Diagnostic-only improvements over v0.5.6:
+- monotonic stage timing;
+- explicit ARMED / PHOTO VISIBLE / P2P / catalog / media validation milestones;
+- separate HTTP 200, Content-Length, size-cap, JPEG SOI/EOI reporting;
+- app-private temporary JPG deleted after validation;
+- Phase-B single-run lock;
+- foreground integrity guard;
+- no extra protocol/network commands and no catalog polling.
+
+Immediate next action: run v0.5.7 once and return the complete sanitized report. G6 remains blocked.
+
+
+## G5.7 physical result — PASS
+
+Physical v0.5.7 completed the full bounded G5 path successfully.
+
+Key proof:
+- Phase A inventory: images=6, videos=0, recordings=1.
+- Phase A catalog: 7 safe entries (.jpg=6, .opus=1).
+- After exactly one captured photo, passive `0x73/0x01` reported images=7 after 2850 ms.
+- One active `0x41 / 02 04` confirmed exactly +1 image after 3080 ms.
+- Phase-B P2P was entered only after the visibility gate passed.
+- Phase-B catalog: 8 safe entries, full baseline retained, exactly one new safe JPG.
+- Exactly one media GET returned HTTP 200 and 844806 bytes.
+- Content-Length matched exactly.
+- JPEG SOI/EOI checks passed.
+- App-private temporary file cleanup passed.
+- No glasses mutation/deletion occurred.
+
+Evidence:
+`docs/testing/results/2026-09-20_G5_7_SINGLE_JPG_DOWNLOAD_PASS.md`
+
+**G5 is now physically complete.**
+
+G6 automatic sync is now unblocked for design. Do not add glasses-side deletion/mutation.
+
+
+## G6A v0.6.1 verified physical candidate
+
+v0.6.1 supersedes v0.6.0 for physical G6A testing.
+
+Verified:
+- APK: `releases/v0.6.1/K_G1_G6A_Persistent_Import_v0_6_1.apk`
+- APK SHA-256: `ed0d36f32cb1c547a67a45f3dd5f7ea918c62d9ba5ea42310b2fc7cdfe34d94a`
+- source/build commit: `20833db86c4a627786fc4b6fb611f215036d7309`
+- build run: `36461373394` — PASS
+- archive commit: `a44d94aee0f05c42b57e0f51fbfd2bcbb0a36e85`
+- safety audit / compile / lint / APK signature: PASS
+
+Physical sequence:
+1. fresh v0.6.1 install;
+2. one persistent JPG import using the proven G5.7 path;
+3. copy report;
+4. force-stop and reopen without clearing data/uninstalling;
+5. do not take another photo;
+6. run **Verify restart dedup — NO DOWNLOAD**;
+7. require persistent ledger match with zero media GETs.
+
+G6B remains blocked until this two-part physical test passes.
+
+
+## G6A v0.6.1 physical restart result — IDENTITY MISMATCH
+
+Physical restart verification reached the intended read-only boundary but did not find the committed opaque identity in the current catalog.
+
+Observed:
+- ledger committed entries at verification start: 1;
+- inventory: images=8, videos=0, recordings=1;
+- catalog: 9 safe entries (.jpg=8, .opus=1);
+- current JPG entries checked: 8;
+- exact opaque ledger matches: 0;
+- inventory queries: 1;
+- P2P enter writes: 1;
+- catalog GET requests: 1;
+- media-file GET requests: 0;
+- transfer exit: 1;
+- no glasses mutation/deletion.
+
+Evidence:
+`docs/testing/results/2026-09-29_G6A_V0_6_1_RESTART_DEDUP_MISMATCH.md`
+
+Source inspection confirms Part 1 and restart verification both hash the exact catalog entry using the same SHA-256 implementation. The mismatch therefore requires a bounded identity-stability diagnostic rather than loosening dedup safety.
+
+**G6A remains NOT PASSED. G6B remains blocked.**
+
+
+## G6A v0.6.2 identity-stability diagnostic — VERIFIED BUILD / PHYSICAL PENDING
+
+v0.6.2 preserves the G5.7/G6A transport boundary and adds privacy-safe diagnostics to distinguish exact identity stability from directory/path, case-only, or larger remote-identity changes.
+
+Diagnostic capsule stores only:
+- SHA-256 of exact remote identity;
+- SHA-256 of basename only;
+- SHA-256 of lowercase identity;
+- character length;
+- path-component count.
+
+No raw remote filename/path text is stored. Restart verification still permits **zero media-file GETs**.
+
+Verified:
+- APK: `releases/v0.6.2/K_G1_G6A_Identity_Diagnostic_v0_6_2.apk`
+- APK SHA-256: `da04ca568d6260eb2f168a3ca6222788beb769217dad24cd63114c0e75f4a27e`
+- source/build commit: `2107c445c85b71cff82c0e57a8eecc39277a5d33`
+- build run: `36466571422` — PASS
+- archive commit: `d84028deed2ceb22d101ab0b13b5d2e192926e9d`
+- bounded-scope safety audit / Android compile / lint / APK signature / artifact upload: PASS
+
+Physical procedure:
+1. fresh v0.6.2 install;
+2. Part 1: baseline → arm → exactly one photo → one persistent JPG import;
+3. copy Part-1 report;
+4. force-stop/reopen without clearing data or uninstalling;
+5. take no new photo;
+6. run **Verify restart dedup — NO DOWNLOAD**;
+7. return the full diagnostic report.
+
+G6B remains blocked until the v0.6.2 physical result is understood and G6A restart dedup passes safely.
+
+
+## G6A v0.6.2 physical Part 1 — PASS
+
+Physical Part 1 completed successfully on 2026-09-29.
+
+Evidence:
+`docs/testing/results/2026-09-29_G6A_V0_6_2_PART1_PASS.md`
+
+Key proof:
+- baseline images=8, videos=0, recordings=1;
+- exactly one capture after ARMED;
+- passive and active inventory both confirmed images=9;
+- post-capture catalog contained exactly one new safe JPG;
+- exactly one media GET returned HTTP 200;
+- Content-Length 882179 matched downloaded bytes 882179;
+- JPEG SOI/EOI validation passed;
+- persistent file committed as `2026-09-29/0001.jpg`;
+- persistent ledger gained exactly one entry;
+- diagnostic identity capsule committed;
+- committed exact-ID diagnostic token: `4c28b1090be7`;
+- no raw remote filename/path persisted/logged;
+- no glasses mutation/deletion.
+
+Known provenance defect:
+- the Part-1 report header incorrectly says `App version: 0.6.0`;
+- source inspection confirms this is a stale literal in the v0.6.2 Part-1 report path only;
+- v0.6.2-only diagnostic fields are present in the physical report;
+- do not reinstall before Part 2 because the current ledger/capsule state is required.
+
+Immediate next action:
+- force-stop/reopen the same installed app;
+- do not clear data or uninstall;
+- do not take another photo;
+- run **Verify restart dedup — NO DOWNLOAD**;
+- return the complete Part-2 report.
+
+G6B remains blocked.
+
+
+## G6A v0.6.2 physical Part 2 — RESTART CATALOG REVERSION / DEDUP MISMATCH
+
+Part 2 was run on the same v0.6.2 installation after the successful Part-1 import.
+
+Observed after force-stop/reopen:
+- ledger committed entries at verification start: 1;
+- inventory: images=8, videos=0, recordings=1;
+- catalog: 9 safe entries (.jpg=8, .opus=1);
+- exact opaque ledger matches: 0;
+- committed exact-ID token: `4c28b1090be7`;
+- basename-derived matches: 0;
+- lowercase-exact matches: 0;
+- identity-shape matches: 8;
+- media-file GET requests: 0;
+- catalog GET requests: 1;
+- no glasses mutation/deletion command.
+
+Critical cross-session fact:
+- Part-1 baseline: 8 JPG / 9 total catalog entries;
+- Part-1 post-capture/import: 9 JPG / 10 total entries;
+- Part-2 restart: 8 JPG / 9 total entries.
+
+The remote catalog therefore reverted exactly to the pre-capture count. The committed item's exact/basename/lowercase identity is absent. v0.6.2 cannot distinguish whether the new transferred JPG disappeared, or another JPG disappeared while the new identity changed. The `Identity-shape matches: 8` result is non-discriminating and must not be treated as proof of a rename.
+
+Evidence:
+`docs/testing/results/2026-09-29_G6A_V0_6_2_PART2_CATALOG_REVERSION.md`
+
+Gate status:
+- persistent local import: physically proven;
+- restart-safe remote-identity dedup: NOT proven;
+- remote post-transfer retention semantics: unresolved;
+- **G6A remains open; G6B remains blocked.**
+
+Next diagnostic must persist an opaque hash set of the entire pre-capture baseline catalog plus the new-item opaque identity, then compare the restart catalog against both with zero media GETs. No raw remote filename/path logging and no glasses deletion/mutation.
+
+
+## G6A v0.6.3 remote-retention diagnostic — VERIFIED PHYSICAL CANDIDATE
+
+Purpose: resolve the v0.6.2 cross-session finding where Part 1 ended at 9 JPG / 10 total catalog entries but restart verification returned to 8 JPG / 9 total entries.
+
+v0.6.3 persists only privacy-safe diagnostic identities after the one allowed Part-1 import:
+- SHA-256 identities of every pre-capture baseline JPG entry;
+- SHA-256 identity of the one newly discovered JPG;
+- existing secondary identity diagnostics retained;
+- no raw remote filename/path text.
+
+Restart verification remains read-only:
+- one media-count query;
+- one P2P lifecycle;
+- one catalog GET;
+- zero media-file GETs;
+- no glasses deletion/mutation.
+
+It classifies the current JPG identity set as:
+1. exact saved pre-capture baseline reversion / new item absent;
+2. stable baseline plus new item;
+3. new item present but catalog membership changed;
+4. new item absent and catalog membership also changed.
+
+Verified:
+- APK: `releases/v0.6.3/K_G1_G6A_Retention_Diagnostic_v0_6_3.apk`
+- APK SHA-256: `5585bbc9d58082ee1c178f622236c76cafb68b456bcaaf2ed7e1a3fb2fa4bef1`
+- canonical source/build commit: `203cb1b43ccc7ee4020154ec088c8ec337f577a5`
+- canonical build run: `36585496838`
+- archive commit: `c1a19c14f8b24f84449d3ff1b2b2b476beac7ed6`
+- bounded-scope safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- artifact archive/upload: PASS
+
+Build-history note:
+- the first v0.6.3 attempt was stopped by the safety audit because the audit expected the singular report literal `Diagnostic capsule...` while the code intentionally emitted `Diagnostic capsules...`;
+- the assertion was corrected to the actual privacy marker and the complete verified build then passed.
+
+Physical sequence:
+1. fresh v0.6.3 install;
+2. Phase A baseline;
+3. arm and wait for ARMED;
+4. capture exactly one photo;
+5. allow exactly one persistent JPG import;
+6. copy Part-1 report;
+7. force-stop/reopen without clearing data or uninstalling;
+8. take no new photo;
+9. run **Verify restart dedup — NO DOWNLOAD**;
+10. return the complete Part-2 report.
+
+**G6B remains blocked until the v0.6.3 retention classification is physically reviewed.**
+
+
+## G6A v0.6.3 physical Part 1 — AMBIGUOUS +2 VISIBILITY ABORT
+
+Physical v0.6.3 baseline:
+- images=8, videos=0, recordings=1;
+- catalog=9 safe entries (.jpg=8, .opus=1);
+- Phase A completed and transfer mode exited.
+
+After ARMED and the intended single user capture, the first usable passive `0x73/0x01` inventory reported:
+- images=10;
+- videos=0;
+- recordings=1.
+
+This is a +2 image change, so the exact +1 gate correctly failed closed:
+`G6A RESULT: FAILED — Ambiguous inventory change during visibility watch; P2P remains blocked.`
+
+No Phase-B P2P/catalog/media transfer occurred, no persistent import occurred, and no retention capsule was committed.
+
+Evidence:
+`docs/testing/results/2026-09-29_G6A_V0_6_3_PART1_AMBIGUOUS_PLUS2.md`
+
+Interpretation:
+- the report does not prove two shutter captures;
+- it proves only that reported inventory changed 8→10 by the first usable post-arm event;
+- together with the prior 9→8 cross-session reversion, remote inventory/catalog stability itself is now unresolved.
+
+Next diagnostic should be **no-capture catalog stability**, not another import attempt:
+1. snapshot A inventory + catalog;
+2. exit transfer;
+3. no photo / glasses untouched;
+4. bounded quiet interval and reconnect;
+5. snapshot B inventory + catalog;
+6. compare full opaque JPG identity sets;
+7. zero media-file GETs.
+
+**G6A remains open. G6B remains blocked.**
+
+
+## G6A v0.6.4 no-capture catalog-stability diagnostic — VERIFIED PHYSICAL CANDIDATE
+
+Purpose: isolate whether AIMB-G1 inventory/catalog changes when no photo is taken and no media file is downloaded.
+
+The build performs exactly two read-only snapshots in one foreground run:
+1. Snapshot A: one inventory query + one P2P lifecycle + one catalog GET.
+2. Exit transfer mode and remove P2P group.
+3. Fixed 30000 ms quiet interval.
+4. User must keep glasses untouched and take no photo.
+5. Snapshot B: fresh BLE reconnect + one inventory query + one P2P lifecycle + one catalog GET.
+6. Compare inventory counts and opaque SHA-256 identity sets for all safe catalog entries and JPG entries.
+7. Exit transfer mode.
+
+Hard boundary:
+- exactly two inventory queries total;
+- exactly two P2P enters total;
+- exactly two catalog GETs total;
+- media-file GET code paths: NONE;
+- no filesystem import/archive/ledger writes;
+- no raw remote filename/path persistence/logging;
+- only truncated opaque hash tokens are reported;
+- no glasses mutation/deletion.
+
+Verified:
+- APK: `releases/v0.6.4/K_G1_G6A_No_Capture_Stability_v0_6_4.apk`
+- APK SHA-256: `5b59c2b577edffe2c28e03fa9a47703f83f934997808a63aee4e1084eb310438`
+- canonical source/build commit: `a6dc537c37906ed353ccaa23e152933989bdcd59`
+- canonical build run: `36806675980` — PASS
+- archive commit: `cc1106567cf3db143c704c3a5391b0b44b6623d4`
+- bounded-scope safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- artifact archive/upload: PASS
+
+Physical procedure:
+1. install v0.6.4 fresh;
+2. force-stop Cyan Glasses;
+3. open v0.6.4;
+4. tap **Start no-capture stability test**;
+5. do not touch the glasses and do not take any photo;
+6. keep the app in the foreground through Snapshot A, the 30-second quiet interval, and Snapshot B;
+7. copy and return the complete report.
+
+Interpretation:
+- STABLE means counts and opaque catalog identity sets remained identical without capture;
+- COUNTS STABLE BUT IDENTITIES CHANGED isolates identity churn;
+- INVENTORY/CATALOG MEMBERSHIP CHANGED isolates spontaneous membership/count churn.
+
+**G6A remains open. G6B remains blocked pending the physical v0.6.4 report.**
+
+
+## v0.6.4 logic recheck — SUPERSEDED BY v0.6.4.1
+
+A post-build logic audit found that the original v0.6.4 APK could produce an invalid stability PASS in edge cases and should not be used for physical promotion.
+
+Issues found:
+1. **Missing cross-channel parity gate.**
+   v0.6.4 compared Snapshot A vs Snapshot B, but did not require BLE image count to equal catalog JPG count inside each snapshot. A repeated mismatch such as BLE=10 / catalog JPG=8 in both snapshots could therefore be classified as stable.
+2. **Transfer exit was assumed after a delay.**
+   v0.6.4 did not require both the exit BLE write callback and the valid 0x41 exit response before continuing.
+3. **P2P cleanup was not proven.**
+   `removeGroup` failure was treated as nonfatal without verifying that the group was actually absent, weakening the claim that Snapshot B was a fresh session.
+4. **Cleanup callback had no bound.**
+   A missing callback could hang the run.
+5. **Final PASS did not independently enforce exact operation totals.**
+6. Report wording said no photo was "taken" even though the app can only prove that it issued no capture action.
+
+Therefore:
+- `releases/v0.6.4/K_G1_G6A_No_Capture_Stability_v0_6_4.apk` is retained for provenance but **MUST NOT be used**.
+- v0.6.4 is **SUPERSEDED**.
+
+## G6A v0.6.4.1 corrected no-capture stability diagnostic — VERIFIED PHYSICAL CANDIDATE
+
+Corrections:
+- BLE image count must equal catalog JPG count in both snapshots for PASS;
+- exit write callback + valid 0x41 response are both required;
+- one `removeGroup` request is followed by one read-only group-state check; a remaining group fails closed;
+- cleanup callback is bounded;
+- requested 30000 ms quiet interval is verified with monotonic elapsed time;
+- exact final totals are required: 2 inventory queries, 2 P2P enters, 2 exits, 2 catalog GETs, 2 total HTTP GETs, 0 media GETs;
+- report states only that the app issued no capture action and instructed the user not to take a photo.
+
+Verified build:
+- APK: `releases/v0.6.4.1/K_G1_G6A_No_Capture_Stability_v0_6_4_1.apk`
+- APK SHA-256: `5726e2075e212e5cadbd7b60925c31057cc6f39ea23d6163f3ab60fca6051c21`
+- package ID: `com.parkarsite.g6astability64`
+- versionCode: 2
+- source/build commit: `fc97196fcce224e785cd9a86bed47c0c00b14f54`
+- build run: `36808762256` — PASS
+- archive commit: `f1a8bb4b29376cc3e595b51c8eaf4538e85ec85e`
+- corrected bounded-scope safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- media-file GET code paths: NONE
+- no raw remote filename/path persistence
+- no glasses mutation/deletion
+
+Physical procedure:
+1. install/update to v0.6.4.1;
+2. force-stop Cyan Glasses;
+3. keep AIMB-G1 paired;
+4. open v0.6.4.1;
+5. tap **Start no-capture stability test**;
+6. do not touch the glasses and do not take a photo;
+7. keep the app foregrounded through both snapshots and the quiet interval;
+8. return the complete report.
+
+**G6A remains open. G6B remains blocked pending the v0.6.4.1 physical result.**
+
+
+## Repository evidence layout rule — VERSION-LOCAL BUILD + REPORT BUNDLES
+
+From this checkpoint onward, every APK version must keep its build artifacts and physical reports together under its own release folder.
+
+Canonical pattern:
+- `source/vX.Y.Z/` — source for that version
+- `releases/vX.Y.Z/` — APK/build evidence bundle
+- `releases/vX.Y.Z/VERSION_MANIFEST.md` — version provenance/status
+- `releases/vX.Y.Z/reports/` — physical reports generated by that exact APK
+
+The chronological `docs/testing/results/` area may retain mirror/index copies, but the version-local report copy is the primary evidence bundle.
+
+Historical report copies have been backfilled for v0.6.1, v0.6.2, and v0.6.3. v0.6.0 has a version-local reports folder but no ambiguous evidence was attached without firm provenance. v0.6.4 and v0.6.4.1 have their own version-local report folders ready for physical evidence.
+
+All v0.6.x archive scripts were changed to preserve `VERSION_MANIFEST.md` and `reports/` on rebuild, so a rebuild cannot erase physical evidence.
+
+Policy:
+`docs/testing/VERSION_EVIDENCE_LAYOUT.md`
