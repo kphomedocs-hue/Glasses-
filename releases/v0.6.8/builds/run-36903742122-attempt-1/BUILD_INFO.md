@@ -1,0 +1,18 @@
+# K G1 G6A Persistent Import + Restart Receipt v0.6.8 — Exact Build
+- Build commit: cf92a44563352ed339d8dd74a825483c7dba39e4
+- Build run: 36903742122
+- Build attempt: 1
+- Package ID: com.parkarsite.g6apersist68
+- versionCode: 1
+- APK SHA-256: 3f94a240030c10162c0025853846f6ea29860de2ed36874742cddbb2a61d4b27
+- Exact source ZIP SHA-256: 0dd1535b280d383e102a338eb2a9fc5b7106438bea3eb106e56808b9b6e12d54
+- Safety audit: PASS
+- Red-team static audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- persistent local import: .part + fsync + JPEG validation + final commit
+- durable opaque receipt: required
+- consumptive GET remote verification: required
+- restart verification: local-only / zero-download
+- no explicit glasses mutation/deletion
