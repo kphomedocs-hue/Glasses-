@@ -149,7 +149,7 @@ v0.6.4.2 was built and red-teamed in three immutable attempts.
 - run `36811594297`: NOT PROMOTED — manual state-machine review found P2P discovery could begin before enter write-callback confirmation.
 - run `36811812916`: CI/static gates PASS and manual state-machine/provenance red-team PASS.
 
-## Current physical candidate
+## Historical v0.6.4.2 physical candidate — completed
 
 **v0.6.4.2 — exact immutable build run `36811812916`, attempt `1`.**
 
@@ -336,5 +336,64 @@ Hard limits should remain:
 - no glasses mutation/deletion;
 - no raw remote filename/path persistence;
 - immutable exact build provenance.
+
+**G6A remains OPEN. G6B remains BLOCKED.**
+
+
+## v0.6.6 engineering result
+
+Purpose: isolate whether **one GET of the exact new JPG** changes remote catalog retention semantics.
+
+Build history:
+- run `36895263627`: CI/static/archive PASS, but manual review found a PRE-GET post-cleanup failure dead-end; NOT PROMOTED.
+- run `36895589975`: dead-end fixed; CI/static/archive PASS; manual state-machine/provenance red-team PASS.
+
+## CURRENT PHYSICAL CANDIDATE — v0.6.6
+
+Only this exact build is authorized:
+
+- run: `36895589975`
+- attempt: `1`
+- build commit: `1ea64b26f311e6b2f18be536e1548766dabe8aa9`
+- APK SHA-256: `29920782f16e5ef5785ef62d835622b3dbff0cb1b53f0f5848306f13cf76343d`
+- exact source ZIP SHA-256: `c07333baa71377d0fc8b7c8bd5b7f661946fdfef949883585c332269cd347674`
+- package: `com.parkarsite.g6aget66`
+
+Exact bundle:
+`releases/v0.6.6/builds/run-36895589975-attempt-1/`
+
+Manual red-team:
+`releases/v0.6.6/builds/run-36895589975-attempt-1/reviews/MANUAL_RED_TEAM_PREPROMOTION.md`
+
+## v0.6.6 physical sequence
+
+1. Fresh-install exact v0.6.6.
+2. Force-stop Cyan Glasses.
+3. Keep AIMB-G1 paired.
+4. Start the test.
+5. Do not take a photo until the app explicitly says ARMED.
+6. Take exactly one photo.
+7. Do not take another photo.
+8. The app will prove exact +1 post-capture membership and pre-GET retention.
+9. Only then it will GET the exact new JPG once.
+10. It validates HTTP/JPEG/size, deletes the temporary cache file, and performs verified exit + group cleanup.
+11. It reconnects and checks whether the remote catalog is unchanged after GET.
+12. Return the complete report.
+
+Required report header:
+- App version: `0.6.6`
+- Build commit: `1ea64b26f311e6b2f18be536e1548766dabe8aa9`
+- Build run: `36895589975`
+- Build attempt: `1`
+
+Successful bounded totals:
+- media-count queries: 4
+- P2P enter writes: 4
+- transfer-exit writes: 4
+- catalog GET requests: 4
+- media-file GET requests: 1
+- total HTTP GET requests: 5
+
+The single media GET is the only new experimental variable. Persistent import and ledger remain disabled.
 
 **G6A remains OPEN. G6B remains BLOCKED.**
