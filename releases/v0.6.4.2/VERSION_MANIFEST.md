@@ -19,3 +19,11 @@
 - promotion status: NOT PROMOTED
 
 A corrected immutable rebuild is required after the archive generator fix.
+
+### run-36811594297-attempt-1
+- exact bundle: `builds/run-36811594297-attempt-1/`
+- build commit: `6703eb4ab76032e60af927110bae54c47b9fa574`
+- APK SHA-256: `3f00ebb6d7dfdd47b8b6a068c2efb4adedd5f937c0e0b7aed9065013849a4ea8`
+- exact source ZIP SHA-256: `f13ad2c146818ac81acdb0f205e6267aa64af7c3d5141506a018ca5f20ef9bfd`
+- CI/static status: verified
+- physical status: not yet run
