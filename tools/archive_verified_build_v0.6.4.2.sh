@@ -110,16 +110,10 @@ if [ ! -f "$MANIFEST" ]; then
 EOF
 fi
 
-cat >> "$MANIFEST" <<EOF
-
-### run-$GITHUB_RUN_ID-attempt-$GITHUB_RUN_ATTEMPT
-- exact bundle: `builds/run-$GITHUB_RUN_ID-attempt-$GITHUB_RUN_ATTEMPT/`
-- build commit: `$GITHUB_SHA`
-- APK SHA-256: `$APK_SHA`
-- exact source ZIP SHA-256: `$SRC_SHA`
-- CI/static status: verified
-- physical status: not yet run
-EOF
+printf '\n### run-%s-attempt-%s\n- exact bundle: `builds/run-%s-attempt-%s/`\n- build commit: `%s`\n- APK SHA-256: `%s`\n- exact source ZIP SHA-256: `%s`\n- CI/static status: verified\n- physical status: not yet run\n' \
+  "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" \
+  "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" \
+  "$GITHUB_SHA" "$APK_SHA" "$SRC_SHA" >> "$MANIFEST"
 
 git config user.name "github-actions[bot]"
 git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
