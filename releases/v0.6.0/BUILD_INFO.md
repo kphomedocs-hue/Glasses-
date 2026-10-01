@@ -1,6 +1,6 @@
 # K G1 G6A Persistent Import v0.6.0 — Verified Repository Build
-- Canonical build commit: bfa03548766be47bfba6d4773042c82f9783fdf3
-- Canonical build run: 36214661413
+- Canonical build commit: af4f353a57226e0f9b18d5776fad24dca106d289
+- Canonical build run: 36809221645
 - G6A safety audit: PASS
 - Android compile: PASS
 - Android Lint: PASS
