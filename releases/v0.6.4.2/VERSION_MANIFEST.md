@@ -34,14 +34,15 @@
 - exact source ZIP SHA-256: `5a353681d94957025b6c9c9e4db2c4699ea16e36713cc562caec80fac73b567d`
 - CI/static status: verified
 - manual red-team review: PASS
-- physical status: pending one bounded no-capture run
-- promotion status: **AUTHORIZED FOR PHYSICAL TESTING ONLY**
+- physical status: **PHYSICAL PASS — short-window no-capture stability**
+- promotion status: completed diagnostic; do not reuse for a different question
 
 Manual review:
 `builds/run-36811812916-attempt-1/reviews/MANUAL_RED_TEAM_PREPROMOTION.md`
 
 ## Current rule
 
-Only run `36811812916-attempt-1` is authorized for the next physical test. A report belongs to this build only if its exported header contains the exact build commit, run ID, and attempt above.
+Physical report:
+`builds/run-36811812916-attempt-1/reports/2026-10-01_G6A_NO_CAPTURE_STABILITY_PHYSICAL_PASS.md`
 
-G6A remains open. G6B remains blocked.
+This exact build has completed its authorized diagnostic. It proves bounded no-capture stability only. G6A remains open and G6B remains blocked.
