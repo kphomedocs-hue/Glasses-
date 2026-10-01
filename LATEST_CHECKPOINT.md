@@ -210,31 +210,74 @@ Result: **materially incorporated**.
 Detailed incorporation review:
 `releases/v0.6.4.2/reviews/2026-10-01_LAST_PHYSICAL_REPORT_INCORPORATION_RECHECK.md`
 
-## Next physical action
+## v0.6.4.2 physical result — PASS
 
-Use **only** the exact run `36811812916-attempt-1` APK.
+Exact authorized build:
+- run `36811812916`;
+- attempt `1`;
+- build commit `e97bfc4ac66d6de49007296fdfff311df129801d`;
+- APK SHA-256 `550d4935f17ed6250feda603a9d2963e79aaa716dd20ed59be00124e97f4ae99`.
 
-1. Fresh-install v0.6.4.2. It uses a new package ID and may coexist with earlier diagnostics.
-2. Force-stop Cyan Glasses.
-3. Keep AIMB-G1 paired.
-4. Open v0.6.4.2.
-5. Tap **Start no-capture stability test**.
-6. Do not touch the glasses and do not take any photo.
-7. Keep the app foregrounded through both snapshots.
-8. Return the complete report.
+Physical result generated:
+`2026-10-01T21:51:54+0530`
 
-The report must begin with:
-- App version: `0.6.4.2`;
-- Build commit: `e97bfc4ac66d6de49007296fdfff311df129801d`;
-- Build run: `36811812916`;
-- Build attempt: `1`.
-
-Expected successful bounded totals:
-- media-count queries: 2;
-- P2P enter writes: 2;
-- transfer-exit writes: 2;
-- catalog GET requests: 2;
+Observed:
+- Snapshot A inventory: 10 images / 0 videos / 1 recording;
+- Snapshot A catalog: 10 JPG / 0 MP4 / 1 OPUS;
+- Snapshot B inventory: 10 images / 0 videos / 1 recording;
+- Snapshot B catalog: 10 JPG / 0 MP4 / 1 OPUS;
+- all 10 JPG identities retained;
+- all 11 safe catalog identities retained;
+- no missing or unexpected identities;
+- full BLE/catalog media parity true in both snapshots;
+- enter write/credential handshake complete in both snapshots;
+- post-exit matching `0x73/0x01` confirmation complete in both snapshots;
+- P2P group absence verified after both snapshots;
+- actual monotonic quiet interval: 30030 ms;
+- exact operation totals: true;
 - media-file GET requests: 0;
-- total HTTP GET requests: 2.
+- glasses mutation/deletion: 0.
 
-This authorizes one bounded physical diagnostic only. **G6A remains open. G6B remains blocked.**
+Evidence:
+`releases/v0.6.4.2/builds/run-36811812916-attempt-1/reports/2026-10-01_G6A_NO_CAPTURE_STABILITY_PHYSICAL_PASS.md`
+
+Interpretation:
+- **short-window no-capture inventory/catalog stability: PASS**;
+- continuous spontaneous idle catalog churn was not observed;
+- this corroborates the earlier v0.6.4 10→10 observation with corrected exit/cleanup/provenance controls;
+- the earlier 8→10 transition remains unexplained;
+- overall G6A remains open.
+
+## Next engineering question
+
+The unresolved boundary is now **single-capture behavior**, not idle behavior.
+
+Next diagnostic should start from the current stable catalog, take exactly one photo, and determine—without downloading any media file—whether:
+1. BLE inventory changes by exactly +1;
+2. the refreshed catalog gains exactly one JPG;
+3. no baseline JPG disappears;
+4. the one-new-JPG membership persists through a verified exit and fresh reconnect.
+
+This isolates capture/catalog-retention semantics from media-download effects.
+
+Recommended next version: **v0.6.5 — single-capture catalog retention, zero media GETs**.
+
+Hard boundary should remain:
+- baseline inventory + catalog;
+- verified exit/group absence before capture;
+- exactly one intended physical capture;
+- bounded visibility confirmation;
+- one post-capture inventory confirmation;
+- one post-capture catalog GET;
+- verified exit/group absence;
+- fresh reconnect;
+- one retention inventory + catalog GET;
+- zero media-file GETs throughout;
+- no glasses mutation/deletion;
+- exact immutable build provenance.
+
+If the capture produces +2 again, stop and classify capture-side ambiguity.  
+If it produces +1 but the new JPG disappears after reconnect, classify remote retention instability without download.  
+If it produces +1 and persists, the earlier disappearance/reversion becomes more likely tied to the previous transfer/download/restart path rather than idle catalog behavior.
+
+**G6A remains open. G6B remains blocked.**
