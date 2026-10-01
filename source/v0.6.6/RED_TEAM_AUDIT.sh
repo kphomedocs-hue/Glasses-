@@ -30,6 +30,8 @@ require 'Persistent ledger updated: NO' "$JAVA" 'ledger prohibition missing'
 # Post-GET comparison.
 require 'stage==Stage.POST_GET_RETENTION' "$JAVA" 'post-GET stage missing'
 require 'postGetRetentionExact=exactRetention;' "$JAVA" 'post-GET exact comparison assignment missing'
+require 'failureReason="Pre-GET stage ended without proven retention and one validated media GET.";' "$JAVA" 'post-cleanup PRE-GET failure finalizer missing'
+forbid 'abortRun("Pre-GET stage ended without proven retention and one validated media GET.")' "$JAVA" 'PRE-GET cleanup fallback can dead-end in CLEANUP state'
 require 'Downloaded new JPG identity still present remotely:' "$JAVA" 'new JPG post-GET check missing'
 require 'allHashes.equals(postCaptureAllHashes)' "$JAVA" 'full catalog exact retention missing'
 require 'jpgHashes.equals(postCaptureJpgHashes)' "$JAVA" 'JPG exact retention missing'

@@ -1119,7 +1119,10 @@ public final class MainActivity extends Activity {
 
         if(stage==Stage.PRE_GET_RETENTION){
             if(!preGetRetentionExact||!mediaValidated||mediaGetCount!=1){
-                abortRun("Pre-GET stage ended without proven retention and one validated media GET.");return;
+                failurePending=true;
+                failureReason="Pre-GET stage ended without proven retention and one validated media GET.";
+                finishAfterCleanup();
+                return;
             }
             cleanupRuntime(false);phase=Phase.COMPLETE;
             append("");append("ONE JPG GET COMPLETE");
