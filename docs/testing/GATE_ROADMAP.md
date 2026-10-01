@@ -1062,3 +1062,32 @@ Successful totals:
 Earlier run `36895263627` is NOT PROMOTED because manual review found a post-cleanup failure dead-end. The corrected run `36895589975` closes that path and passes manual red-team review.
 
 G6A remains open. G6B remains blocked pending the exact v0.6.6 physical report.
+
+
+## G6A v0.6.6 physical result — REPRODUCED POST-GET INVENTORY MISMATCH
+
+Exact tested build:
+- run `36895589975`
+- attempt `1`
+- build commit `1ea64b26f311e6b2f18be536e1548766dabe8aa9`
+- APK SHA-256 `29920782f16e5ef5785ef62d835622b3dbff0cb1b53f0f5848306f13cf76343d`
+
+Evidence:
+`releases/v0.6.6/builds/run-36895589975-attempt-1/reports/2026-10-01_G6A_V0_6_6_POST_GET_INVENTORY_MISMATCH_REPRODUCED.md`
+
+Result:
+- exact +1 capture path passed again;
+- pre-GET retention remained exact;
+- exactly one JPG GET completed and validated;
+- temp file deleted;
+- no persistent import/ledger;
+- first valid post-exit inventory after GET did not match pre-GET snapshot;
+- group absence was verified;
+- diagnostic stopped before post-GET fresh catalog read;
+- operator reports same outcome in two runs.
+
+Do not classify this as catalog deletion yet.
+
+Next: v0.6.7 should observe/log the changed post-GET inventory and continue through verified cleanup to a fresh inventory + catalog read.
+
+G6A remains open. G6B remains blocked.
