@@ -1091,3 +1091,29 @@ Do not classify this as catalog deletion yet.
 Next: v0.6.7 should observe/log the changed post-GET inventory and continue through verified cleanup to a fresh inventory + catalog read.
 
 G6A remains open. G6B remains blocked.
+
+
+## G6A v0.6.7 — POST-GET INVENTORY TRANSITION OBSERVER
+
+Promoted exact build:
+- run `36898159938`
+- attempt `1`
+- build commit `cb90f25b0bea9cfe308a1d79d9f4235c7f2b21fe`
+- APK SHA-256 `b152a20f049d8d33e514b177d3abcb8a01dad00677a046ea58a4a8e5de9dd7ab`
+- exact source ZIP SHA-256 `f3ab19b2bdcd390319f3ee7e4659742cc3406417304fb7f29dbc2166ea164092`
+
+Purpose:
+- reproduce proven exact +1 capture and pre-GET retention;
+- perform exactly one validated JPG GET;
+- observe exact exit-time inventory counts even if changed;
+- verify P2P group absence;
+- fresh reconnect;
+- fresh active inventory;
+- fresh media.config;
+- classify stable post-GET remote state.
+
+Only the post-GET observation branch permits count mismatch without immediate failure. All earlier exit mismatches remain fail-closed.
+
+Concurrent run `36898143517` is preserved but NOT PROMOTED.
+
+G6A remains open. G6B remains blocked pending the exact v0.6.7 physical report.
