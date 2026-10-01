@@ -1,0 +1,15 @@
+# K G1 G6A No-Capture Catalog Stability v0.6.4 — Verified Repository Build
+- Canonical build commit: b2f4a286a6c91c865a0a82ca402d0dd4f65c7d74
+- Canonical build run: 36809242952
+- bounded-scope safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- Package ID: com.parkarsite.g6astability64
+- exactly two runtime inventory/catalog snapshots by state machine
+- fixed 30000 ms no-capture quiet interval
+- one catalog HTTP GET code path reused by both snapshots
+- media-file GET code paths: none
+- opaque SHA-256 catalog identities retained in memory only
+- no raw remote filename/path persistence
+- no glasses mutation/deletion
