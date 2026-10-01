@@ -1,6 +1,6 @@
 # K G1 G6A Retention Diagnostic v0.6.3 — Verified Repository Build
-- Canonical build commit: 203cb1b43ccc7ee4020154ec088c8ec337f577a5
-- Canonical build run: 36585496838
+- Canonical build commit: 2fd1626ef698bc4291b58035b14db3e53bb73b28
+- Canonical build run: 36809239553
 - bounded-scope safety audit: PASS
 - Android compile: PASS
 - Android Lint: PASS

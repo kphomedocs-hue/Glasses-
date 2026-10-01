@@ -1,1 +1,1 @@
-5585bbc9d58082ee1c178f622236c76cafb68b456bcaaf2ed7e1a3fb2fa4bef1  releases/v0.6.3/K_G1_G6A_Retention_Diagnostic_v0_6_3.apk
+85013b8f0a96baf8ac6f96e9df2b0bf9eb48e20f0fe866f36fe865fee123c86f  releases/v0.6.3/K_G1_G6A_Retention_Diagnostic_v0_6_3.apk
