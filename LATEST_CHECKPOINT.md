@@ -110,6 +110,37 @@ Physical reports are tied to exact build folders where applicable.
 
 Version-root APKs are no longer authoritative when multiple builds exist.
 
+## New physical observation — v0.6.4 no-capture run
+
+A physical v0.6.4 report generated `2026-10-01T08:41:51+0530` has been recorded as **diagnostic evidence only**.
+
+Observed:
+- Snapshot A BLE inventory: images=10, videos=0, recordings=1;
+- Snapshot A catalog: 10 JPG + 1 OPUS;
+- Snapshot B BLE inventory: images=10, videos=0, recordings=1;
+- Snapshot B catalog: 10 JPG + 1 OPUS;
+- all 10 JPG opaque identities unchanged;
+- all 11 safe catalog identities unchanged;
+- 2 inventory queries;
+- 2 P2P enters;
+- 2 transfer exits;
+- 2 catalog GETs;
+- 0 media GETs;
+- 0 glasses mutation/deletion.
+
+Interpretation:
+- during this specific 30-second no-capture interval, inventory and catalog were stable and internally consistent at 10 JPG;
+- this argues against continuous spontaneous churn during that interval;
+- it does **not** explain the earlier 8→10 transition;
+- it does **not** promote v0.6.4 to a valid gate build because v0.6.4 remains red-team-invalid.
+
+Exact APK provenance is unresolved because two v0.6.4 binaries existed under the same version string. Both exact builds are now preserved:
+- `releases/v0.6.4/builds/run-36806675980/` — APK SHA `5b59c2b5...`;
+- `releases/v0.6.4/builds/run-36809242952/` — APK SHA `7ad38e64...`.
+
+The v0.6.4 runtime source blob is identical in both build commits, but the physical report does not contain an APK hash, so it is stored at:
+`releases/v0.6.4/observations/2026-10-01_NO_CAPTURE_STABILITY_UNRESOLVED_BUILD.md`.
+
 ## Current physical candidate
 
 **NONE.**
