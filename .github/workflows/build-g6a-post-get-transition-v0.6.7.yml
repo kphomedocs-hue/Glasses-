@@ -1,0 +1,58 @@
+name: Build K G1 G6A Post-GET Transition Observer v0.6.7
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "source/v0.6.7/**"
+      - ".github/workflows/build-g6a-post-get-transition-v0.6.7.yml"
+      - "tools/archive_verified_build_v0.6.7.sh"
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Install Android SDK packages
+        run: |
+          set -euo pipefail
+          SDKMANAGER="/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0" "platform-tools"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.6.0"
+      - name: Safety audit
+        working-directory: source/v0.6.7
+        run: chmod +x SAFETY_AUDIT.sh RED_TEAM_AUDIT.sh && ./SAFETY_AUDIT.sh
+      - name: Red-team static audit
+        working-directory: source/v0.6.7
+        run: ./RED_TEAM_AUDIT.sh
+      - name: Compile and lint
+        working-directory: source/v0.6.7
+        run: gradle --no-daemon clean :app:assembleDebug :app:lintDebug
+      - name: Verify APK signature
+        working-directory: source/v0.6.7
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/g6a67"
+          cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/g6a67/K_G1_G6A_Post_GET_Transition_Observer_v0_6_7.apk"
+          cp app/build/reports/lint-results-debug.html "$RUNNER_TEMP/g6a67/lint-results-debug.html"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$RUNNER_TEMP/g6a67/K_G1_G6A_Post_GET_Transition_Observer_v0_6_7.apk"
+      - name: Archive immutable exact-build bundle
+        run: bash tools/archive_verified_build_v0.6.7.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: K_G1_G6A_Post_GET_Transition_Observer_v0_6_7_run_${{ github.run_id }}_attempt_${{ github.run_attempt }}
+          path: releases/v0.6.7/builds/run-${{ github.run_id }}-attempt-${{ github.run_attempt }}/**
+          if-no-files-found: error
