@@ -397,3 +397,69 @@ Successful bounded totals:
 The single media GET is the only new experimental variable. Persistent import and ledger remain disabled.
 
 **G6A remains OPEN. G6B remains BLOCKED.**
+
+
+## v0.6.6 physical result — REPRODUCED POST-GET INVENTORY TRANSITION
+
+Exact tested build:
+- run `36895589975`;
+- attempt `1`;
+- build commit `1ea64b26f311e6b2f18be536e1548766dabe8aa9`;
+- APK SHA-256 `29920782f16e5ef5785ef62d835622b3dbff0cb1b53f0f5848306f13cf76343d`.
+
+Supplied physical report generated:
+`2026-10-01T22:36:19+0530`
+
+Operator states the test was performed twice and the same stopping condition occurred. One complete raw report was supplied and parsed; the second repeat is recorded as operator-reported reproduction only.
+
+Observed in the supplied run:
+- baseline: 11 images / 11 JPG / 1 OPUS;
+- one intended capture produced exact +1;
+- post-capture: 12 images / 12 JPG / 1 OPUS;
+- no baseline identity loss;
+- pre-GET verified reconnect retained exact 12-JPG state;
+- exactly one new JPG selected from CURRENT catalog by opaque identity;
+- exactly one media GET;
+- HTTP 200;
+- 797965 declared bytes / 797965 downloaded bytes;
+- 32 MiB cap PASS;
+- JPEG SOI/EOI PASS;
+- temporary app-cache file deletion PASS;
+- no persistent import;
+- no ledger update;
+- exit write callback PASS;
+- valid post-exit `0x73/0x01` observed;
+- **post-exit inventory did not match the 12-image pre-GET snapshot**;
+- P2P group absence still verified;
+- run stopped before post-GET fresh reconnect/catalog observation.
+
+Evidence:
+`releases/v0.6.6/builds/run-36895589975-attempt-1/reports/2026-10-01_G6A_V0_6_6_POST_GET_INVENTORY_MISMATCH_REPRODUCED.md`
+
+Interpretation:
+- one media GET transport/JPEG validation: PASS;
+- a post-GET inventory transition is physically observed and operator-reported as reproduced;
+- this does **not yet prove** remote JPG deletion or catalog removal because the exact changed counts were not logged and the diagnostic stopped before the post-GET fresh catalog read;
+- v0.6.6 should not be rerun unchanged.
+
+## Next engineering question
+
+Recommended next diagnostic: **v0.6.7 — post-GET inventory transition observer**.
+
+Critical correction:
+- after the one validated media GET, the first valid `0x73/0x01` following the exit-write callback must be treated as an experimental observation, not required to equal the pre-GET snapshot;
+- log its exact image/video/recording/config counts;
+- still require successful exit write callback and verified P2P group absence;
+- then perform a fresh BLE inventory query and fresh catalog GET;
+- compare that stable post-GET state against the pre-GET state.
+
+This will distinguish:
+1. transient exit-time mismatch only;
+2. persistent image-count decrement;
+3. downloaded JPG actually absent from catalog;
+4. remote identity rewrite with same counts;
+5. another class of post-GET state transition.
+
+Do **not** reintroduce persistent import/ledger until this is resolved.
+
+**G6A remains OPEN. G6B remains BLOCKED.**
