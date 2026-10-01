@@ -463,3 +463,52 @@ This will distinguish:
 Do **not** reintroduce persistent import/ledger until this is resolved.
 
 **G6A remains OPEN. G6B remains BLOCKED.**
+
+
+## v0.6.7 engineering result
+
+Purpose: classify the reproduced post-GET inventory transition instead of aborting at the first changed exit-time inventory event.
+
+Two immutable CI builds were produced concurrently. Only the later exact run is promoted.
+
+## CURRENT PHYSICAL CANDIDATE — v0.6.7
+
+- run: `36898159938`
+- attempt: `1`
+- build commit: `cb90f25b0bea9cfe308a1d79d9f4235c7f2b21fe`
+- APK SHA-256: `b152a20f049d8d33e514b177d3abcb8a01dad00677a046ea58a4a8e5de9dd7ab`
+- exact source ZIP SHA-256: `f3ab19b2bdcd390319f3ee7e4659742cc3406417304fb7f29dbc2166ea164092`
+- package: `com.parkarsite.g6aobserver67`
+
+Exact bundle:
+`releases/v0.6.7/builds/run-36898159938-attempt-1/`
+
+Manual review:
+`releases/v0.6.7/builds/run-36898159938-attempt-1/reviews/MANUAL_RED_TEAM_PREPROMOTION.md`
+
+Critical runtime rule:
+- baseline/post-capture/non-post-GET exit inventory mismatches remain fatal;
+- only after one validated media GET, while still in the PRE_GET_RETENTION stage, a changed valid post-exit `0x73/0x01` is recorded as observation;
+- exact changed image/video/recording/config/AP-only values are reported;
+- exit write callback and P2P-group absence are still required;
+- a fresh BLE inventory query + fresh catalog GET then determine the stable post-GET state.
+
+Possible classifications:
+1. transient exit-time transition, exact state recovers;
+2. downloaded new JPG persistently absent;
+3. baseline JPG membership changed;
+4. persistent inventory/catalog count change;
+5. identity-set rewrite/change;
+6. no remote retention change.
+
+Successful bounded totals remain:
+- 4 media-count queries
+- 4 P2P enters
+- 4 transfer exits
+- 4 catalog GETs
+- 1 media-file GET
+- 5 total HTTP GETs
+
+Persistent import/ledger remains disabled.
+
+**G6A remains OPEN. G6B remains BLOCKED.**
