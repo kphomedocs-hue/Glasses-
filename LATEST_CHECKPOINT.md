@@ -1142,3 +1142,63 @@ Interpretation:
 - INVENTORY/CATALOG MEMBERSHIP CHANGED isolates spontaneous membership/count churn.
 
 **G6A remains open. G6B remains blocked pending the physical v0.6.4 report.**
+
+
+## v0.6.4 logic recheck — SUPERSEDED BY v0.6.4.1
+
+A post-build logic audit found that the original v0.6.4 APK could produce an invalid stability PASS in edge cases and should not be used for physical promotion.
+
+Issues found:
+1. **Missing cross-channel parity gate.**
+   v0.6.4 compared Snapshot A vs Snapshot B, but did not require BLE image count to equal catalog JPG count inside each snapshot. A repeated mismatch such as BLE=10 / catalog JPG=8 in both snapshots could therefore be classified as stable.
+2. **Transfer exit was assumed after a delay.**
+   v0.6.4 did not require both the exit BLE write callback and the valid 0x41 exit response before continuing.
+3. **P2P cleanup was not proven.**
+   `removeGroup` failure was treated as nonfatal without verifying that the group was actually absent, weakening the claim that Snapshot B was a fresh session.
+4. **Cleanup callback had no bound.**
+   A missing callback could hang the run.
+5. **Final PASS did not independently enforce exact operation totals.**
+6. Report wording said no photo was "taken" even though the app can only prove that it issued no capture action.
+
+Therefore:
+- `releases/v0.6.4/K_G1_G6A_No_Capture_Stability_v0_6_4.apk` is retained for provenance but **MUST NOT be used**.
+- v0.6.4 is **SUPERSEDED**.
+
+## G6A v0.6.4.1 corrected no-capture stability diagnostic — VERIFIED PHYSICAL CANDIDATE
+
+Corrections:
+- BLE image count must equal catalog JPG count in both snapshots for PASS;
+- exit write callback + valid 0x41 response are both required;
+- one `removeGroup` request is followed by one read-only group-state check; a remaining group fails closed;
+- cleanup callback is bounded;
+- requested 30000 ms quiet interval is verified with monotonic elapsed time;
+- exact final totals are required: 2 inventory queries, 2 P2P enters, 2 exits, 2 catalog GETs, 2 total HTTP GETs, 0 media GETs;
+- report states only that the app issued no capture action and instructed the user not to take a photo.
+
+Verified build:
+- APK: `releases/v0.6.4.1/K_G1_G6A_No_Capture_Stability_v0_6_4_1.apk`
+- APK SHA-256: `5726e2075e212e5cadbd7b60925c31057cc6f39ea23d6163f3ab60fca6051c21`
+- package ID: `com.parkarsite.g6astability64`
+- versionCode: 2
+- source/build commit: `fc97196fcce224e785cd9a86bed47c0c00b14f54`
+- build run: `36808762256` — PASS
+- archive commit: `f1a8bb4b29376cc3e595b51c8eaf4538e85ec85e`
+- corrected bounded-scope safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- media-file GET code paths: NONE
+- no raw remote filename/path persistence
+- no glasses mutation/deletion
+
+Physical procedure:
+1. install/update to v0.6.4.1;
+2. force-stop Cyan Glasses;
+3. keep AIMB-G1 paired;
+4. open v0.6.4.1;
+5. tap **Start no-capture stability test**;
+6. do not touch the glasses and do not take a photo;
+7. keep the app foregrounded through both snapshots and the quiet interval;
+8. return the complete report.
+
+**G6A remains open. G6B remains blocked pending the v0.6.4.1 physical result.**
