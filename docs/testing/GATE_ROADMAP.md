@@ -776,3 +776,55 @@ Next diagnostic should be **no-capture catalog stability**, not another import a
 7. zero media-file GETs.
 
 **G6A remains open. G6B remains blocked.**
+
+
+## G6A v0.6.4 no-capture catalog-stability diagnostic — VERIFIED PHYSICAL CANDIDATE
+
+Purpose: isolate whether AIMB-G1 inventory/catalog changes when no photo is taken and no media file is downloaded.
+
+The build performs exactly two read-only snapshots in one foreground run:
+1. Snapshot A: one inventory query + one P2P lifecycle + one catalog GET.
+2. Exit transfer mode and remove P2P group.
+3. Fixed 30000 ms quiet interval.
+4. User must keep glasses untouched and take no photo.
+5. Snapshot B: fresh BLE reconnect + one inventory query + one P2P lifecycle + one catalog GET.
+6. Compare inventory counts and opaque SHA-256 identity sets for all safe catalog entries and JPG entries.
+7. Exit transfer mode.
+
+Hard boundary:
+- exactly two inventory queries total;
+- exactly two P2P enters total;
+- exactly two catalog GETs total;
+- media-file GET code paths: NONE;
+- no filesystem import/archive/ledger writes;
+- no raw remote filename/path persistence/logging;
+- only truncated opaque hash tokens are reported;
+- no glasses mutation/deletion.
+
+Verified:
+- APK: `releases/v0.6.4/K_G1_G6A_No_Capture_Stability_v0_6_4.apk`
+- APK SHA-256: `5b59c2b577edffe2c28e03fa9a47703f83f934997808a63aee4e1084eb310438`
+- canonical source/build commit: `a6dc537c37906ed353ccaa23e152933989bdcd59`
+- canonical build run: `36806675980` — PASS
+- archive commit: `cc1106567cf3db143c704c3a5391b0b44b6623d4`
+- bounded-scope safety audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- artifact archive/upload: PASS
+
+Physical procedure:
+1. install v0.6.4 fresh;
+2. force-stop Cyan Glasses;
+3. open v0.6.4;
+4. tap **Start no-capture stability test**;
+5. do not touch the glasses and do not take any photo;
+6. keep the app in the foreground through Snapshot A, the 30-second quiet interval, and Snapshot B;
+7. copy and return the complete report.
+
+Interpretation:
+- STABLE means counts and opaque catalog identity sets remained identical without capture;
+- COUNTS STABLE BUT IDENTITIES CHANGED isolates identity churn;
+- INVENTORY/CATALOG MEMBERSHIP CHANGED isolates spontaneous membership/count churn.
+
+**G6A remains open. G6B remains blocked pending the physical v0.6.4 report.**
