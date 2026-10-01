@@ -554,3 +554,63 @@ Next:
 - then perform a restart test proving the local file and receipt survive and no duplicate import/redownload occurs.
 
 **G6A remains OPEN. G6B remains BLOCKED.**
+
+
+## v0.6.8 current physical candidate — persistent import + restart receipt
+
+Only authorized build:
+- version: `0.6.8`
+- run: `36903742122`
+- attempt: `1`
+- build commit: `cf92a44563352ed339d8dd74a825483c7dba39e4`
+- APK SHA-256: `3f94a240030c10162c0025853846f6ea29860de2ed36874742cddbb2a61d4b27`
+- exact source ZIP SHA-256: `0dd1535b280d383e102a338eb2a9fc5b7106438bea3eb106e56808b9b6e12d54`
+- package: `com.parkarsite.g6apersist68`
+
+Exact bundle:
+`releases/v0.6.8/builds/run-36903742122-attempt-1/`
+
+Pre-physical gates:
+- safety PASS;
+- red-team static PASS;
+- compile/lint PASS;
+- signature PASS;
+- immutable archive PASS;
+- manual storage/state-machine review PASS.
+
+### Phase 1
+
+Fresh-install this package. Force-stop Cyan Glasses. Start the persistent-import proof. Take exactly one photo only after ARMED.
+
+A successful Phase 1 must prove:
+- exact +1 capture;
+- exact pre-transfer retention;
+- exactly one persistent JPG import;
+- final app-private numbered JPG durable and JPEG-valid;
+- exactly one durable opaque receipt;
+- post-transfer remote catalog equals the original baseline exactly, proving only the transferred JPG was consumed;
+- exact network totals: 4 inventory / 4 P2P enter / 4 exit / 4 catalog GET / 1 media GET / 5 HTTP GET.
+
+Copy and preserve the complete Phase 1 report.
+
+### Phase 2 — real restart verification
+
+Only after Phase 1 PASS:
+1. do not uninstall the app;
+2. do not clear app data;
+3. force-stop the v0.6.8 app itself;
+4. reopen the same app;
+5. tap `Verify after app restart — ZERO DOWNLOAD`.
+
+Phase 2 is local-only and must prove:
+- exactly one durable receipt loaded from disk;
+- exactly one numbered local JPG exists;
+- byte count and JPEG validate after restart;
+- zero media GET;
+- zero HTTP GET;
+- zero BLE/P2P operations;
+- zero duplicate local file.
+
+If both physical reports pass under this exact build, G6A has the intended evidence needed for closure review.
+
+**G6A remains OPEN pending the two reports. G6B remains BLOCKED.**
