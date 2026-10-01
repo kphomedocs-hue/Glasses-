@@ -248,36 +248,78 @@ Interpretation:
 - the earlier 8→10 transition remains unexplained;
 - overall G6A remains open.
 
-## Next engineering question
+## v0.6.5 engineering result
 
-The unresolved boundary is now **single-capture behavior**, not idle behavior.
+Purpose: isolate exactly one physical capture and determine whether its one new JPG survives a verified reconnect **without any media download**.
 
-Next diagnostic should start from the current stable catalog, take exactly one photo, and determine—without downloading any media file—whether:
-1. BLE inventory changes by exactly +1;
-2. the refreshed catalog gains exactly one JPG;
-3. no baseline JPG disappears;
-4. the one-new-JPG membership persists through a verified exit and fresh reconnect.
+Two CI runs occurred:
+- run `36893051068`: code checks PASS, archive push failed due concurrent non-fast-forward race; NOT PROMOTED.
+- run `36893102299`: full CI/archive PASS and manual state-machine/provenance red-team PASS.
 
-This isolates capture/catalog-retention semantics from media-download effects.
+## Current physical candidate
 
-Recommended next version: **v0.6.5 — single-capture catalog retention, zero media GETs**.
+**v0.6.5 — exact immutable build run `36893102299`, attempt `1`.**
 
-Hard boundary should remain:
-- baseline inventory + catalog;
-- verified exit/group absence before capture;
-- exactly one intended physical capture;
-- bounded visibility confirmation;
-- one post-capture inventory confirmation;
-- one post-capture catalog GET;
-- verified exit/group absence;
-- fresh reconnect;
-- one retention inventory + catalog GET;
-- zero media-file GETs throughout;
-- no glasses mutation/deletion;
-- exact immutable build provenance.
+Exact bundle:
+`releases/v0.6.5/builds/run-36893102299-attempt-1/`
 
-If the capture produces +2 again, stop and classify capture-side ambiguity.  
-If it produces +1 but the new JPG disappears after reconnect, classify remote retention instability without download.  
-If it produces +1 and persists, the earlier disappearance/reversion becomes more likely tied to the previous transfer/download/restart path rather than idle catalog behavior.
+APK:
+`releases/v0.6.5/builds/run-36893102299-attempt-1/K_G1_G6A_Single_Capture_Retention_v0_6_5.apk`
+
+Build commit:
+`598e9aed94546bff2c9b018114932902aca67e05`
+
+APK SHA-256:
+`985edbcc5a8a7b035cd50c71771c7a51b9f166c9d6a827972b2f4b13423c477f`
+
+Exact source ZIP SHA-256:
+`40af18c38038f03ab2ec7745b3dd3efbf50f72757fff41f67d1e6d751efbf1e1`
+
+Package:
+`com.parkarsite.g6acapture65`
+
+Pre-physical gates:
+- v0.6.4.2 no-capture physical PASS incorporated;
+- safety audit PASS;
+- red-team static audit PASS;
+- compile/lint PASS;
+- APK signature verification PASS;
+- immutable exact-build archive PASS;
+- manual state-machine review PASS;
+- manual provenance review PASS.
+
+## v0.6.5 bounded physical sequence
+
+1. Fresh-install the exact candidate.
+2. Force-stop Cyan Glasses.
+3. Keep AIMB-G1 paired.
+4. Open v0.6.5 and start the test.
+5. **Do not take a photo yet.**
+6. App establishes baseline inventory/catalog, exits transfer, and verifies P2P group absence.
+7. App reconnects BLE and explicitly displays **ARMED — TAKE EXACTLY ONE PHOTO NOW**.
+8. Take **one photo only**.
+9. Do not take another photo for the remainder of the test.
+10. App must observe passive exact +1, actively confirm +1, read the post-capture catalog once, exit/clean up, then fresh-reconnect and perform the retention snapshot.
+11. Return the complete report.
+
+The report must identify:
+- App version: `0.6.5`;
+- Build commit: `598e9aed94546bff2c9b018114932902aca67e05`;
+- Build run: `36893102299`;
+- Build attempt: `1`.
+
+Successful full-run totals:
+- media-count queries: 3;
+- P2P enter writes: 3;
+- transfer-exit writes: 3;
+- catalog GET requests: 3;
+- media-file GET requests: 0;
+- total HTTP GET requests: 3.
+
+Interpretation:
+- +2/other passive change → stop before post-capture P2P;
+- exact +1 but catalog delta not exactly one JPG → capture/catalog anomaly;
+- exact +1 catalog but new JPG absent/changed after reconnect → remote retention instability independent of media download;
+- exact +1 catalog and exact retention → capture+reconnect path is stable without download, narrowing prior reversion toward transfer/download/restart effects.
 
 **G6A remains open. G6B remains blocked.**
