@@ -1028,3 +1028,37 @@ Gate interpretation:
 - G6B: BLOCKED.
 
 Next diagnostic should isolate exactly one media-file GET and then re-check remote retention before persistent import/ledger logic is reintroduced.
+
+
+## G6A v0.6.6 — SINGLE-JPG GET RETENTION PHYSICAL CANDIDATE
+
+Exact promoted build:
+- run `36895589975`
+- attempt `1`
+- build commit `1ea64b26f311e6b2f18be536e1548766dabe8aa9`
+- APK SHA-256 `29920782f16e5ef5785ef62d835622b3dbff0cb1b53f0f5848306f13cf76343d`
+- exact source SHA-256 `c07333baa71377d0fc8b7c8bd5b7f661946fdfef949883585c332269cd347674`
+- exact bundle `releases/v0.6.6/builds/run-36895589975-attempt-1/`
+
+Purpose:
+- reuse proven exact +1 capture/catalog path;
+- prove the new JPG survives a fresh pre-GET reconnect;
+- GET that exact JPG exactly once;
+- 32 MiB cap + HTTP 200 + Content-Length consistency + JPEG SOI/EOI;
+- temporary app-cache file only and required deletion;
+- no persistent import or ledger;
+- verified exit/group absence after GET;
+- fresh post-GET reconnect;
+- require exact full catalog/JPG-set retention for PASS.
+
+Successful totals:
+- 4 inventory queries;
+- 4 P2P enters;
+- 4 transfer exits;
+- 4 catalog GETs;
+- 1 media GET;
+- 5 total HTTP GETs.
+
+Earlier run `36895263627` is NOT PROMOTED because manual review found a post-cleanup failure dead-end. The corrected run `36895589975` closes that path and passes manual red-team review.
+
+G6A remains open. G6B remains blocked pending the exact v0.6.6 physical report.
