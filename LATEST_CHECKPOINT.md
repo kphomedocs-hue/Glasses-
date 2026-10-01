@@ -141,30 +141,85 @@ Exact APK provenance is unresolved because two v0.6.4 binaries existed under the
 The v0.6.4 runtime source blob is identical in both build commits, but the physical report does not contain an APK hash, so it is stored at:
 `releases/v0.6.4/observations/2026-10-01_NO_CAPTURE_STABILITY_UNRESOLVED_BUILD.md`.
 
+## v0.6.4.2 engineering result
+
+v0.6.4.2 was built and red-teamed in three immutable attempts.
+
+- run `36811380575`: NOT PROMOTED — manifest-generator quoting defect.
+- run `36811594297`: NOT PROMOTED — manual state-machine review found P2P discovery could begin before enter write-callback confirmation.
+- run `36811812916`: CI/static gates PASS and manual state-machine/provenance red-team PASS.
+
 ## Current physical candidate
 
-**NONE.**
+**v0.6.4.2 — exact immutable build run `36811812916`, attempt `1`.**
 
-Do not install v0.6.4 or v0.6.4.1 for the next physical test.
+Exact bundle:
+`releases/v0.6.4.2/builds/run-36811812916-attempt-1/`
 
-## Next engineering action
+APK:
+`releases/v0.6.4.2/builds/run-36811812916-attempt-1/K_G1_G6A_No_Capture_Stability_v0_6_4_2.apk`
 
-Create **v0.6.4.2** with:
-- exit-specific confirmation or a stronger evidence-backed post-exit condition;
-- centralized fail-safe transfer/P2P cleanup;
-- case-sensitive exact peer matching;
-- no per-file identity tokens in report;
-- rejection of leading/trailing-whitespace catalog lines;
-- immutable exact-build archive path;
-- source ZIP created from exact `GITHUB_SHA`;
-- build provenance that cannot be overwritten by same-version rebuilds.
+Build commit:
+`e97bfc4ac66d6de49007296fdfff311df129801d`
 
-Before physical use:
-1. static safety audit;
-2. compile/lint;
-3. APK signature verification;
-4. red-team state-machine recheck;
-5. immutable exact-build bundle verification;
-6. concise checkpoint update.
+APK SHA-256:
+`550d4935f17ed6250feda603a9d2963e79aaa716dd20ed59be00124e97f4ae99`
 
-**G6A remains open. G6B remains blocked.**
+Exact source ZIP SHA-256:
+`5a353681d94957025b6c9c9e4db2c4699ea16e36713cc562caec80fac73b567d`
+
+Package:
+`com.parkarsite.g6astability642`
+
+Pre-physical gates:
+- safety audit: PASS;
+- red-team static audit: PASS;
+- compile/lint: PASS;
+- APK signature verification: PASS;
+- immutable exact-build archive: PASS;
+- manual state-machine review: PASS;
+- manual provenance review: PASS.
+
+Manual review:
+`releases/v0.6.4.2/builds/run-36811812916-attempt-1/reviews/MANUAL_RED_TEAM_PREPROMOTION.md`
+
+Important runtime corrections:
+- P2P discovery waits for BOTH enter write callback and valid credential response;
+- generic exit-time `0x41` does not prove exit;
+- exit requires write callback followed by matching `0x73/0x01` inventory evidence;
+- bounded abort attempts one allow-listed exit when appropriate and verifies P2P-group absence;
+- peer matching is exact case-sensitive BLE-reported name;
+- catalog BOM/whitespace normalization is rejected;
+- per-file deterministic hash tokens are not reported;
+- image/video/recording counts must match JPG/MP4/OPUS catalog counts;
+- report embeds build commit/run/attempt;
+- zero media-file GET path.
+
+## Next physical action
+
+Use **only** the exact run `36811812916-attempt-1` APK.
+
+1. Fresh-install v0.6.4.2. It uses a new package ID and may coexist with earlier diagnostics.
+2. Force-stop Cyan Glasses.
+3. Keep AIMB-G1 paired.
+4. Open v0.6.4.2.
+5. Tap **Start no-capture stability test**.
+6. Do not touch the glasses and do not take any photo.
+7. Keep the app foregrounded through both snapshots.
+8. Return the complete report.
+
+The report must begin with:
+- App version: `0.6.4.2`;
+- Build commit: `e97bfc4ac66d6de49007296fdfff311df129801d`;
+- Build run: `36811812916`;
+- Build attempt: `1`.
+
+Expected successful bounded totals:
+- media-count queries: 2;
+- P2P enter writes: 2;
+- transfer-exit writes: 2;
+- catalog GET requests: 2;
+- media-file GET requests: 0;
+- total HTTP GET requests: 2.
+
+This authorizes one bounded physical diagnostic only. **G6A remains open. G6B remains blocked.**
