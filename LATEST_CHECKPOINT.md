@@ -614,3 +614,76 @@ Phase 2 is local-only and must prove:
 If both physical reports pass under this exact build, G6A has the intended evidence needed for closure review.
 
 **G6A remains OPEN pending the two reports. G6B remains BLOCKED.**
+
+
+## HANDOVER-PREP AUTHORITATIVE CURRENT STATE — 2026-10-02
+
+This section supersedes any older section titled "current physical candidate" above. Historical sections are retained for evidence only.
+
+### Latest physically proven transfer semantics
+
+v0.6.7 physically established:
+- one exact new JPG remains present before download;
+- exactly one successful GET validates the JPG;
+- immediate inventory changes by exactly -1 image;
+- fresh reconnect remains decremented;
+- all baseline JPG identities remain;
+- the exact downloaded JPG identity is absent from the fresh catalog.
+
+Therefore, on the tested AIMB-G1 path, **a successful JPG GET consumes/removes the exact transferred JPG from the glasses-side inventory/catalog**.
+
+Evidence:
+`releases/v0.6.7/builds/run-36898159938-attempt-1/reports/2026-10-01_G6A_V0_6_7_POST_GET_REMOTE_CONSUMPTION_PHYSICAL_PROOF.md`
+
+Known v0.6.7 reporting defect:
+- its runtime report printed `App version: 0.6.6`;
+- exact build commit/run/attempt and package provenance still uniquely identify the tested v0.6.7 APK;
+- do not rerun or rebuild v0.6.7 merely to correct this historical header.
+
+### Current and only authorized physical candidate
+
+**v0.6.8 — persistent local import + durable receipt + real restart/no-duplicate proof**
+
+- run: `36903742122`
+- attempt: `1`
+- build commit: `cf92a44563352ed339d8dd74a825483c7dba39e4`
+- APK SHA-256: `3f94a240030c10162c0025853846f6ea29860de2ed36874742cddbb2a61d4b27`
+- exact source ZIP SHA-256: `0dd1535b280d383e102a338eb2a9fc5b7106438bea3eb106e56808b9b6e12d54`
+- package: `com.parkarsite.g6apersist68`
+- exact bundle: `releases/v0.6.8/builds/run-36903742122-attempt-1/`
+
+Pre-physical gates:
+- safety: PASS;
+- red-team static: PASS;
+- compile/lint: PASS;
+- signature: PASS;
+- immutable archive: PASS;
+- manual storage/state-machine review: PASS.
+
+### Remaining G6A physical work
+
+**Phase 1 — persistent import under consumptive GET**
+- one physical photo only after ARMED;
+- exact +1 capture and pre-transfer retention;
+- one JPG GET/import only;
+- app-private `.part` + fsync;
+- JPEG validation;
+- final numbered local JPG commit;
+- durable opaque receipt committed only after local file durability;
+- remote catalog must return exactly to the original baseline after the transferred JPG is consumed;
+- exact network totals: 4 inventory / 4 enter / 4 exit / 4 catalog GET / 1 media GET / 5 HTTP GET.
+
+**Phase 2 — real restart verification**
+- do not uninstall or clear app data;
+- force-stop/reopen same v0.6.8 app;
+- run local-only restart verification;
+- exactly one durable receipt loads;
+- exactly one numbered local JPG exists;
+- bytes/JPEG revalidate;
+- zero HTTP, zero media GET, zero BLE/P2P operations;
+- zero duplicate local file.
+
+If both reports pass under the exact v0.6.8 build, proceed to G6A closure review. Do not mark G6A PASS before those reports are reviewed.
+
+**G6A: OPEN — current work is v0.6.8 two-phase physical proof.**
+**G6B: BLOCKED until G6A closure.**
