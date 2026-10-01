@@ -15,3 +15,11 @@
 - exact source ZIP SHA-256: `f3ab19b2bdcd390319f3ee7e4659742cc3406417304fb7f29dbc2166ea164092`
 - CI/static status: verified
 - physical status: not yet run
+
+### run-36898143517-attempt-1
+- exact bundle: `builds/run-36898143517-attempt-1/`
+- build commit: `10d289309a4567a47104dc05f0313831c12287bc`
+- APK SHA-256: `ac1023f283b80602badf117c08ba306a3b1dd74631efa8fccfa506d38b031856`
+- exact source ZIP SHA-256: `0cd8618aaf704a5834be0113d295fdc458cca2042c353f1e996e8da8368f544a`
+- CI/static status: verified
+- physical status: not yet run

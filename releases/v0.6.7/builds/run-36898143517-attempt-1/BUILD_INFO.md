@@ -1,0 +1,18 @@
+# K G1 G6A Post-GET Transition Observer v0.6.7 — Exact Build
+- Build commit: 10d289309a4567a47104dc05f0313831c12287bc
+- Build run: 36898143517
+- Build attempt: 1
+- Package ID: com.parkarsite.g6aobserver67
+- versionCode: 1
+- APK SHA-256: ac1023f283b80602badf117c08ba306a3b1dd74631efa8fccfa506d38b031856
+- Exact source ZIP SHA-256: 0cd8618aaf704a5834be0113d295fdc458cca2042c353f1e996e8da8368f544a
+- Safety audit: PASS
+- Red-team static audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- post-GET exit mismatch: observational only after one validated media GET
+- all earlier exit mismatches: fail-closed
+- post-GET fresh inventory + catalog read: required
+- persistent import/ledger: disabled
+- no glasses mutation/deletion
