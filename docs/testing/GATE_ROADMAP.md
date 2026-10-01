@@ -923,3 +923,33 @@ Major corrections over v0.6.4/v0.6.4.1:
 Earlier v0.6.4.2 runs `36811380575` and `36811594297` are preserved but NOT PROMOTED.
 
 G6A remains open. G6B remains blocked until the exact run-36811812916 physical report is reviewed.
+
+
+## G6A v0.6.4.2 physical result — PASS: SHORT-WINDOW NO-CAPTURE STABILITY
+
+Exact tested build:
+- run `36811812916`
+- attempt `1`
+- build commit `e97bfc4ac66d6de49007296fdfff311df129801d`
+- APK SHA-256 `550d4935f17ed6250feda603a9d2963e79aaa716dd20ed59be00124e97f4ae99`
+
+Physical report:
+`releases/v0.6.4.2/builds/run-36811812916-attempt-1/reports/2026-10-01_G6A_NO_CAPTURE_STABILITY_PHYSICAL_PASS.md`
+
+Result:
+- Snapshot A and B both reported 10 images / 0 videos / 1 recording;
+- catalogs both contained 10 JPG / 0 MP4 / 1 OPUS;
+- all opaque JPG and full-catalog identities remained unchanged;
+- full BLE/catalog parity held in both snapshots;
+- corrected enter and exit handshakes completed;
+- P2P group absence was verified after both snapshots;
+- quiet interval measured 30030 ms;
+- 2 inventory queries / 2 P2P enters / 2 exits / 2 catalog GETs / 0 media GETs;
+- no glasses mutation/deletion.
+
+Gate interpretation:
+- bounded no-capture stability: **PASS**;
+- overall G6A: **OPEN**;
+- G6B: **BLOCKED**.
+
+Next diagnostic: isolate a single physical capture with zero media-file GETs and test exact +1 catalog membership plus retention across a verified reconnect.
