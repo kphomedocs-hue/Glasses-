@@ -27,3 +27,11 @@ A corrected immutable rebuild is required after the archive generator fix.
 - exact source ZIP SHA-256: `f13ad2c146818ac81acdb0f205e6267aa64af7c3d5141506a018ca5f20ef9bfd`
 - CI/static status: verified
 - physical status: not yet run
+
+### run-36811812916-attempt-1
+- exact bundle: `builds/run-36811812916-attempt-1/`
+- build commit: `e97bfc4ac66d6de49007296fdfff311df129801d`
+- APK SHA-256: `550d4935f17ed6250feda603a9d2963e79aaa716dd20ed59be00124e97f4ae99`
+- exact source ZIP SHA-256: `5a353681d94957025b6c9c9e4db2c4699ea16e36713cc562caec80fac73b567d`
+- CI/static status: verified
+- physical status: not yet run
