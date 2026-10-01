@@ -32,7 +32,7 @@ require 'files==1&&ImportRecord.COMMITTED.equals(r.status())' "$JAVA" 'restart P
 require 'ZERO REDOWNLOAD; ZERO DUPLICATE' "$JAVA" 'restart result missing'
 
 require 'writeSynced(source,opaqueId);' "$ARCH" 'recovery sidecar missing'
-require 'moveCommitted(part,finalFile);' "$JARCH" 'final move missing'
+require 'moveCommitted(part,finalFile);' "$ARCH" 'final move missing'
 require 'ledger.commit(record);' "$ARCH" 'ledger commit after final move missing'
 require 'recoverCommittedSidecars(root);' "$LEDGER" 'crash-window receipt recovery missing'
 require 'records()' "$LEDGER" 'restart enumeration missing'
