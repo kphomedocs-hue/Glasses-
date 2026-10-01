@@ -992,3 +992,39 @@ Pre-physical checks:
 Earlier run `36893051068` is NOT PROMOTED; its archive push failed only because the later concurrent run had already advanced main.
 
 G6A remains open. G6B remains blocked pending the exact v0.6.5 physical report.
+
+
+## G6A v0.6.5 physical result — PASS: EXACT +1 PRE-DOWNLOAD RETENTION
+
+Exact tested build:
+- run `36893102299`
+- attempt `1`
+- build commit `598e9aed94546bff2c9b018114932902aca67e05`
+- APK SHA-256 `985edbcc5a8a7b035cd50c71771c7a51b9f166c9d6a827972b2f4b13423c477f`
+
+Physical report:
+`releases/v0.6.5/builds/run-36893102299-attempt-1/reports/2026-10-01_G6A_SINGLE_CAPTURE_RETENTION_PHYSICAL_PASS.md`
+
+Result:
+- baseline: 10 images / 10 JPG / 1 OPUS;
+- one physical capture produced passive exact +1 at 15091 ms;
+- active inventory confirmed 11 images;
+- post-capture catalog: 11 JPG + 1 OPUS;
+- all 10 baseline JPG identities retained;
+- exactly one new JPG identity;
+- no baseline safe identity disappeared;
+- verified exit and P2P-group absence;
+- fresh retention reconnect remained at 11 images / 11 JPG;
+- full safe and JPG identity sets retained exactly;
+- new JPG remained present;
+- zero media-file GETs;
+- exact bounded totals: 3 inventory / 3 enter / 3 exit / 3 catalog GET / 0 media GET.
+
+Gate interpretation:
+- no-capture stability: PASS;
+- exact +1 capture/catalog delta: PASS;
+- pre-download reconnect retention: PASS;
+- G6A overall: OPEN;
+- G6B: BLOCKED.
+
+Next diagnostic should isolate exactly one media-file GET and then re-check remote retention before persistent import/ledger logic is reintroduced.
