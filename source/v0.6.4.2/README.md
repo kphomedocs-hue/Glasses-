@@ -17,7 +17,7 @@ Test whether AIMB-G1 BLE inventory and the local `/files/media.config` catalog r
 - RT-09: any catalog line that differs from `line.trim()` is rejected; BOM-bearing catalogs are rejected rather than normalized.
 - RT-10: v0.6.4.2 uses a new package ID, `com.parkarsite.g6astability642`, so physical instructions use a fresh install and do not rely on unproven debug-signing upgrade continuity.
 
-Additional tightening:
+Additional tightening:\n- P2P discovery is blocked until both the enter-command Android write callback and the valid transfer-credential response have completed.
 - BLE/catalog parity covers JPG/images, MP4/videos, and OPUS/recordings in both snapshots.
 - exact operation totals remain mandatory for PASS.
 - P2P group absence is verified after each snapshot.

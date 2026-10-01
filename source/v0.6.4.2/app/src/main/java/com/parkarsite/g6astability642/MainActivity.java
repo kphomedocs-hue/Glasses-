@@ -70,7 +70,7 @@ public final class MainActivity extends Activity {
     private boolean reportFinished=true;
     private boolean runActive;
     private boolean countWriteAttempted,countWriteCallbackSucceeded,countResponseReceived;
-    private boolean enterWriteAttempted,enterWriteStarted,exitWriteAttempted,exitWriteCallbackSucceeded,postExitInventoryConfirmed;
+    private boolean enterWriteAttempted,enterWriteStarted,enterWriteCallbackSucceeded,enterCredentialResponseReceived,exitWriteAttempted,exitWriteCallbackSucceeded,postExitInventoryConfirmed;
     private boolean p2pGroupFormed,phoneIsGroupOwner,catalogGetAttempted,catalogDelayScheduled;
     private boolean failurePending,comparisonCompleted,stabilityExact,snapshotAFullMediaParity,cleanupCompletionHandled,destroyRequested;
     private String failureReason,glassesClientIp,expectedP2pName,credentialPassword,stabilityClassification;
@@ -194,7 +194,7 @@ public final class MainActivity extends Activity {
 
     private void resetCycleState(){
         countWriteAttempted=false;countWriteCallbackSucceeded=false;countResponseReceived=false;
-        enterWriteAttempted=false;enterWriteStarted=false;exitWriteAttempted=false;exitWriteCallbackSucceeded=false;postExitInventoryConfirmed=false;cleanupCompletionHandled=false;
+        enterWriteAttempted=false;enterWriteStarted=false;enterWriteCallbackSucceeded=false;enterCredentialResponseReceived=false;exitWriteAttempted=false;exitWriteCallbackSucceeded=false;postExitInventoryConfirmed=false;cleanupCompletionHandled=false;
         p2pGroupFormed=false;phoneIsGroupOwner=false;catalogGetAttempted=false;catalogDelayScheduled=false;
         failurePending=false;failureReason=null;glassesClientIp=null;expectedP2pName=null;credentialPassword=null;
         currentImageCount=currentVideoCount=currentRecordCount=currentConfigFileType=-1;
@@ -274,6 +274,11 @@ public final class MainActivity extends Activity {
                     return;
                 }
                 if(phase==Phase.COUNT_SENT){countWriteCallbackSucceeded=true;maybeAdvanceAfterMediaCount();}
+                else if(phase==Phase.ENTER_SENT){
+                    enterWriteCallbackSucceeded=true;
+                    append("P2P enter write callback: SUCCESS");
+                    maybeAdvanceAfterEnter();
+                }
                 else if(phase==Phase.EXIT_SENT){
                     exitWriteCallbackSucceeded=true;
                     append("Exit write callback: SUCCESS");
@@ -307,11 +312,22 @@ public final class MainActivity extends Activity {
     private void sendEnter(BluetoothGatt x){
         cancelTimeout();if(reportFinished||enterWriteAttempted)return;
         append("");append("ENTER P2P MODE");append("Command: 0x41 / 02 01 04 01");append("No retry policy: TRUE");
-        enterWriteAttempted=true;enterWriteCount++;phase=Phase.ENTER_SENT;
+        enterWriteAttempted=true;enterWriteStarted=false;enterWriteCallbackSucceeded=false;enterCredentialResponseReceived=false;enterWriteCount++;phase=Phase.ENTER_SENT;
         if(!writeFrame(x,frame41(ENTER_P2P))){abortRun("P2P enter write did not start.");return;}
         enterWriteStarted=true;
-        append("ENTER write start: SUCCESS");setStatus("Waiting for transfer credentials. NO PHOTO.");
-        schedule(()->abortRun("No valid transfer-credential response received."),10000);
+        append("ENTER write start: SUCCESS");setStatus("Waiting for enter write callback + transfer credentials. NO PHOTO.");
+        schedule(()->abortRun("P2P enter write/credential handshake did not complete."),10000);
+    }
+
+    private void maybeAdvanceAfterEnter(){
+        if(reportFinished||phase!=Phase.ENTER_SENT||!enterWriteCallbackSucceeded||!enterCredentialResponseReceived)return;
+        if(expectedP2pName==null||credentialPassword==null){
+            abortRun("P2P enter handshake completed without usable in-memory credentials.");
+            return;
+        }
+        cancelTimeout();
+        append("P2P enter write/credential handshake: COMPLETE");
+        startP2pDiscovery();
     }
 
     private void handleNotify(byte[] v){
@@ -332,11 +348,12 @@ public final class MainActivity extends Activity {
                     countResponseReceived=true;maybeAdvanceAfterMediaCount();
                 }
             }else if(cmd==0x41&&phase==Phase.ENTER_SENT&&parseTransferCredentials(data)){
-                cancelTimeout();append("Transfer credential response: VALID");
+                enterCredentialResponseReceived=true;
+                append("Transfer credential response: VALID");
                 append("SSID length: "+expectedP2pName.getBytes(StandardCharsets.UTF_8).length);
                 append("Password length: "+credentialPassword.getBytes(StandardCharsets.UTF_8).length);
                 append("SSID/password values: not logged");
-                startP2pDiscovery();
+                maybeAdvanceAfterEnter();
             }else if(cmd==0x73){
                 handle73Event(data);
             }else if(cmd==0x41&&phase==Phase.EXIT_SENT){

@@ -46,7 +46,7 @@ cat > "$STAGE/BUILD_INFO.md" <<EOF
 - Android compile: PASS
 - Android Lint: PASS
 - APK signature verification: PASS
-- media-file GET code paths: none
+- P2P enter handoff: Android write callback + valid credential response required\n- media-file GET code paths: none
 - post-exit confirmation: matching 0x73/0x01 after exit write callback
 - exact case-sensitive BLE-reported P2P peer name only
 - no per-file identity/hash tokens in report

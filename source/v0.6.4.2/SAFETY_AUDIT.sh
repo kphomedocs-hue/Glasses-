@@ -20,7 +20,7 @@ must 'Instruction: DO NOT TAKE ANY PHOTO during the entire run' "$JAVA" 'no-capt
 must 'Media-file GET allowed: 0' "$JAVA" 'zero media GET boundary'
 must 'Per-file identity/hash tokens in report: DISABLED' "$JAVA" 'no per-file token reporting'
 must 'd.deviceName.equals(expectedP2pName)' "$JAVA" 'case-sensitive exact peer'
-must 'Post-exit 0x73/0x01 confirmation: COMPLETE' "$JAVA" 'post-exit evidence'
+must 'P2P enter write/credential handshake: COMPLETE' "$JAVA" 'enter write/credential handshake'\nmust '!enterWriteCallbackSucceeded||!enterCredentialResponseReceived' "$JAVA" 'enter dual-condition gate'\nmust 'Post-exit 0x73/0x01 confirmation: COMPLETE' "$JAVA" 'post-exit evidence'
 must 'eventId==0x01&&phase==Phase.EXIT_SENT&&exitWriteCallbackSucceeded' "$JAVA" 'post-exit event gating'
 must 'Post-exit 0x41 frame observed: IGNORED for exit confirmation' "$JAVA" 'generic 0x41 ignored'
 must 'private void abortRun(String reason)' "$JAVA" 'central abort'

@@ -10,7 +10,7 @@ require 'Post-exit 0x41 frame observed: IGNORED for exit confirmation' "$JAVA" '
 require 'postExitInventoryConfirmed=true;' "$JAVA" 'post-exit inventory confirmation assignment missing'
 confirm_count="$(grep -Fo 'postExitInventoryConfirmed=true;' "$JAVA" | wc -l | tr -d ' ')"
 [[ "$confirm_count" == "1" ]] || { echo "FAIL: postExitInventoryConfirmed must be assigned true exactly once; found $confirm_count"; fail=1; }
-require 'private void abortRun(String reason)' "$JAVA" 'central abort missing'
+require 'P2P enter write/credential handshake: COMPLETE' "$JAVA" 'enter handshake completion marker missing'\nrequire '!enterWriteCallbackSucceeded||!enterCredentialResponseReceived' "$JAVA" 'enter handshake does not require both callback and credentials'\nrequire 'enterCredentialResponseReceived=true;' "$JAVA" 'credential response state missing'\nrequire 'private void abortRun(String reason)' "$JAVA" 'central abort missing'
 require 'if(enterWriteStarted&&!exitWriteAttempted&&gatt!=null&&writeChar!=null)' "$JAVA" 'abort-time single exit guard missing'
 require 'if(runActive&&!reportFinished&&!isChangingConfigurations())abortRun(' "$JAVA" 'onStop does not use central abort'
 require 'if(runActive&&!reportFinished)abortRun(' "$JAVA" 'onDestroy does not use central abort'
