@@ -248,78 +248,93 @@ Interpretation:
 - the earlier 8→10 transition remains unexplained;
 - overall G6A remains open.
 
-## v0.6.5 engineering result
+## v0.6.5 physical result — PASS
 
-Purpose: isolate exactly one physical capture and determine whether its one new JPG survives a verified reconnect **without any media download**.
+Exact tested build:
+- run `36893102299`;
+- attempt `1`;
+- build commit `598e9aed94546bff2c9b018114932902aca67e05`;
+- APK SHA-256 `985edbcc5a8a7b035cd50c71771c7a51b9f166c9d6a827972b2f4b13423c477f`.
 
-Two CI runs occurred:
-- run `36893051068`: code checks PASS, archive push failed due concurrent non-fast-forward race; NOT PROMOTED.
-- run `36893102299`: full CI/archive PASS and manual state-machine/provenance red-team PASS.
+Physical result generated:
+`2026-10-01T22:12:52+0530`
 
-## Current physical candidate
-
-**v0.6.5 — exact immutable build run `36893102299`, attempt `1`.**
-
-Exact bundle:
-`releases/v0.6.5/builds/run-36893102299-attempt-1/`
-
-APK:
-`releases/v0.6.5/builds/run-36893102299-attempt-1/K_G1_G6A_Single_Capture_Retention_v0_6_5.apk`
-
-Build commit:
-`598e9aed94546bff2c9b018114932902aca67e05`
-
-APK SHA-256:
-`985edbcc5a8a7b035cd50c71771c7a51b9f166c9d6a827972b2f4b13423c477f`
-
-Exact source ZIP SHA-256:
-`40af18c38038f03ab2ec7745b3dd3efbf50f72757fff41f67d1e6d751efbf1e1`
-
-Package:
-`com.parkarsite.g6acapture65`
-
-Pre-physical gates:
-- v0.6.4.2 no-capture physical PASS incorporated;
-- safety audit PASS;
-- red-team static audit PASS;
-- compile/lint PASS;
-- APK signature verification PASS;
-- immutable exact-build archive PASS;
-- manual state-machine review PASS;
-- manual provenance review PASS.
-
-## v0.6.5 bounded physical sequence
-
-1. Fresh-install the exact candidate.
-2. Force-stop Cyan Glasses.
-3. Keep AIMB-G1 paired.
-4. Open v0.6.5 and start the test.
-5. **Do not take a photo yet.**
-6. App establishes baseline inventory/catalog, exits transfer, and verifies P2P group absence.
-7. App reconnects BLE and explicitly displays **ARMED — TAKE EXACTLY ONE PHOTO NOW**.
-8. Take **one photo only**.
-9. Do not take another photo for the remainder of the test.
-10. App must observe passive exact +1, actively confirm +1, read the post-capture catalog once, exit/clean up, then fresh-reconnect and perform the retention snapshot.
-11. Return the complete report.
-
-The report must identify:
-- App version: `0.6.5`;
-- Build commit: `598e9aed94546bff2c9b018114932902aca67e05`;
-- Build run: `36893102299`;
-- Build attempt: `1`.
-
-Successful full-run totals:
-- media-count queries: 3;
-- P2P enter writes: 3;
-- transfer-exit writes: 3;
-- catalog GET requests: 3;
+Observed:
+- baseline BLE inventory: 10 images / 0 videos / 1 recording;
+- baseline catalog: 10 JPG / 0 MP4 / 1 OPUS;
+- baseline exit + group absence verified;
+- one intended physical capture;
+- first capture-watch inventory event: 11 images / 0 videos / 1 recording;
+- passive capture delta: EXACT +1;
+- active inventory independently confirmed 11 images;
+- post-capture catalog: 11 JPG / 0 MP4 / 1 OPUS;
+- all 10 baseline JPG identities retained;
+- exactly 1 new JPG identity;
+- all 11 baseline safe identities retained;
+- exactly 1 new safe identity;
+- post-capture exit + group absence verified;
+- retention reconnect inventory: 11 images / 0 videos / 1 recording;
+- retention catalog: 11 JPG / 0 MP4 / 1 OPUS;
+- full safe identity set retained exactly;
+- JPG identity set retained exactly;
+- new JPG identity still present;
+- baseline JPG identities missing after reconnect: 0;
 - media-file GET requests: 0;
-- total HTTP GET requests: 3.
+- exact operation totals: 3 inventory / 3 P2P enter / 3 exit / 3 catalog GET / 0 media GET.
+
+Evidence:
+`releases/v0.6.5/builds/run-36893102299-attempt-1/reports/2026-10-01_G6A_SINGLE_CAPTURE_RETENTION_PHYSICAL_PASS.md`
 
 Interpretation:
-- +2/other passive change → stop before post-capture P2P;
-- exact +1 but catalog delta not exactly one JPG → capture/catalog anomaly;
-- exact +1 catalog but new JPG absent/changed after reconnect → remote retention instability independent of media download;
-- exact +1 catalog and exact retention → capture+reconnect path is stable without download, narrowing prior reversion toward transfer/download/restart effects.
+- **single-capture exact +1 visibility: PASS**;
+- **post-capture exact +1 JPG catalog delta with no baseline loss: PASS**;
+- **capture-created JPG retention across verified reconnect before download: PASS**;
+- the earlier v0.6.3 8→10 ambiguity was not reproduced;
+- ordinary idle churn and simple capture+reconnect behavior no longer explain the earlier v0.6.2 post-transfer/restart reversion.
 
-**G6A remains open. G6B remains blocked.**
+## Current G6A evidence boundary
+
+Proven:
+1. short-window no-capture catalog stability;
+2. exact +1 physical capture visibility;
+3. exactly one new JPG with no baseline loss;
+4. new JPG retention across verified exit/group absence and fresh reconnect;
+5. all of the above with zero media downloads.
+
+Still unresolved:
+1. whether **one media-file GET** changes remote catalog retention semantics;
+2. whether local persistent import itself changes anything remotely;
+3. whether restart-safe dedup can be proven once transfer-side behavior is isolated.
+
+## Next engineering question
+
+The next diagnostic should isolate **the media GET itself** before reintroducing persistent import/ledger logic.
+
+Recommended next version: **v0.6.6 — single-JPG GET retention diagnostic**.
+
+Proposed bounded chain:
+1. establish a stable baseline and exact +1 capture using the now-proven v0.6.5 logic;
+2. prove the new JPG persists across a pre-download verified reconnect;
+3. perform exactly **one GET of that one new JPG**;
+4. validate JPEG bounds/SOI/EOI, but do not commit a persistent import ledger;
+5. verified transfer exit and P2P-group absence;
+6. fresh reconnect;
+7. one inventory + one catalog GET;
+8. determine whether the exact new JPG and all baseline identities remain remotely present.
+
+Interpretation:
+- if the new JPG disappears only after the media GET, the transfer itself is implicated;
+- if it survives the GET, the remaining suspect boundary moves to local persistent import/restart/dedup handling;
+- if catalog membership changes in another way, classify precisely and stop.
+
+Hard limits should remain:
+- exactly one new JPG selected from set delta;
+- exactly one media GET;
+- no redirects/Range/retry/resume;
+- 32 MiB media cap;
+- JPEG validation;
+- no glasses mutation/deletion;
+- no raw remote filename/path persistence;
+- immutable exact build provenance.
+
+**G6A remains OPEN. G6B remains BLOCKED.**
