@@ -687,3 +687,11 @@ If both reports pass under the exact v0.6.8 build, proceed to G6A closure review
 
 **G6A: OPEN — current work is v0.6.8 two-phase physical proof.**
 **G6B: BLOCKED until G6A closure.**
+
+
+## NEXT CHAT HANDOVER POINTER
+
+Authoritative resume file:
+`00_NEXT_CHAT_HANDOVER.md`
+
+For a new chat, read that file first, then verify latest GitHub `main`. It freezes the current v0.6.8 two-phase physical procedure, exact build provenance, proven consumptive-GET semantics, known nonblocking defects, and G6A/G6B status.
