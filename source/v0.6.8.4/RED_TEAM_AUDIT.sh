@@ -31,6 +31,7 @@ require 'SAME_V0_6_8_3_SHORT_STATUS_AFTER_0x40_INIT_ONLY' "$JAVA" 'same-status c
 require 'NORMAL_VALID_AFTER_0x40_INIT' "$JAVA" 'normal valid-after-init classification missing'
 require 'LATE_VALID_AFTER_0x40_INIT' "$JAVA" 'late valid-after-init classification missing'
 require 'MIXED_SHORT_OR_REJECTED_0x41_ACTIVITY' "$JAVA" 'mixed response classification missing'
+require 'previousShortStatus==0&&cmd41==shortOther' "$JAVA" 'prior-status mixture guard missing'
 require 'Post-exit 0x41 frame observed: IGNORED for exit confirmation; payload not classified/logged' "$JAVA" 'post-exit isolation missing'
 require 'Credential-capable notification payload bytes logged: NO' "$JAVA" 'credential-capable privacy summary missing'
 
