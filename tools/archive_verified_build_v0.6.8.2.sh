@@ -49,7 +49,7 @@ EOF2
 cat > "$STAGE/reports/README.md" <<EOF2
 # Physical reports for exact v0.6.8.2 build
 Only reports whose exported header matches:
-- App version: 0.6.8.1
+- App version: 0.6.8.2
 - Build commit: $GITHUB_SHA
 - Build run: $GITHUB_RUN_ID
 - Build attempt: $GITHUB_RUN_ATTEMPT
