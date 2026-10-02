@@ -4,7 +4,7 @@
 - Build role: bounded P2P credential-handshake diagnostic after three reproducible v0.6.8 baseline failures
 - Package ID: `com.parkarsite.g6acreddiag681`
 - Gate role: **DIAGNOSTIC ONLY**; cannot close G6A or unblock G6B
-- Physical status: **NO PHYSICAL CANDIDATE YET**
+- Physical status: **AUTHORIZED FOR ONE BOUNDED PHYSICAL DIAGNOSTIC RUN**
 - Authoritative artifacts will live under immutable `builds/run-<id>-attempt-<n>/` directories.
 
 ## Diagnostic question
@@ -24,3 +24,27 @@ The build must not contain Wi-Fi Direct, HTTP/catalog/media, capture, persistent
 - exact source ZIP SHA-256: `f3d65c6ca0bf2b8d815f5e98e62a8f8420730b350a41b6505e2072537cedd8c2`
 - CI/static status: verified
 - physical status: not yet run
+
+
+## Current authorized diagnostic candidate
+
+Only this exact build is authorized:
+- run: `36965814011`
+- attempt: `1`
+- build commit: `beceb27754f491fcae6a53433ad4dd4fcfadc22b`
+- package: `com.parkarsite.g6acreddiag681`
+- APK SHA-256: `01ba35d297c6d48dce31242185032d8d37ced39856419e827cc9c9013e4246dd`
+- exact source ZIP SHA-256: `f3d65c6ca0bf2b8d815f5e98e62a8f8420730b350a41b6505e2072537cedd8c2`
+- exact bundle: `builds/run-36965814011-attempt-1/`
+
+Manual red-team:
+`builds/run-36965814011-attempt-1/reviews/MANUAL_RED_TEAM_PREPROMOTION.md`
+
+Physical instruction:
+- force-stop Cyan Glasses;
+- keep AIMB-G1 powered and paired;
+- **do not take a photo**;
+- run the diagnostic once;
+- preserve the complete report.
+
+G6A remains OPEN. G6B remains BLOCKED.
