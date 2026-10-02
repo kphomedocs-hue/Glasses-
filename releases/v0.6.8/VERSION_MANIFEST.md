@@ -27,7 +27,7 @@
 - signature: PASS
 - immutable archive: PASS
 - manual pre-promotion review: PASS
-- physical status: pending two-phase v0.6.8 test
+- physical status: Phase 1 BLOCKED at baseline P2P credential handshake after three reproduced attempts on 2026-10-02
 
 Manual review:
 `builds/run-36903742122-attempt-1/reviews/MANUAL_RED_TEAM_PREPROMOTION.md`
@@ -53,3 +53,23 @@ Authoritative next-chat resume instructions:
 `/00_NEXT_CHAT_HANDOVER.md`
 
 The physical candidate remains exactly run `36903742122-attempt-1`; this pointer does not change source, APK, or physical authorization.
+
+
+## 2026-10-02 physical blocker update
+
+The exact authorized v0.6.8 build was attempted three times. All three reproduced:
+- successful GATT/notify setup;
+- successful media-count response at 11 images / 0 videos / 1 recording;
+- successful P2P-enter write start and write callback;
+- no accepted credential handshake inside the existing 10-second window;
+- zero catalog/media HTTP;
+- zero persistent import/receipt.
+
+Evidence:
+`builds/run-36903742122-attempt-1/reports/2026-10-02_G6A_V0_6_8_P2P_CREDENTIAL_HANDSHAKE_FAILURE_REPRODUCED_3X.md`
+
+Do not keep retrying v0.6.8 unchanged.
+
+Next authorized physical action is the separate diagnostic package v0.6.8.1, exact run `36965814011`, whose purpose is only to classify the credential-notification failure.
+
+G6A remains OPEN. G6B remains BLOCKED.
