@@ -4,7 +4,7 @@
 - Build role: bounded one-`0x40` initialization -> media-count -> P2P-enter credential diagnostic
 - Package ID: `com.parkarsite.g6ainitdiag684`
 - Gate role: **DIAGNOSTIC ONLY**; cannot close G6A or unblock G6B
-- Physical status: **AUTHORIZED FOR ONE BOUNDED PHYSICAL DIAGNOSTIC RUN**
+- Physical status: **PHYSICAL RUN COMPLETE — INITIALIZATION HYPOTHESIS NOT SUPPORTED**
 
 ## Question
 
@@ -29,7 +29,7 @@ No photo, Wi-Fi Direct, HTTP, catalog/media GET, persistent import, receipt, del
 - APK SHA-256: `73c01e539cd0dd6183def175a0a53cca9ed8c99c98c83e8d4e8b655638bf984d`
 - exact source ZIP SHA-256: `02dc3f8b07c713e535b43ac121fc39d642e6042a94649b3de16a89ca996be56a`
 - CI/static status: verified
-- physical status: not yet run
+- physical status: completed on 2026-10-02
 
 ### run-36973886568-attempt-1 — AUTHORIZED DIAGNOSTIC CANDIDATE
 - exact bundle: `builds/run-36973886568-attempt-1/`
@@ -69,5 +69,16 @@ Physical instruction:
 - do not take a photo;
 - run exactly once;
 - return the complete report.
+
+G6A remains OPEN. G6B remains BLOCKED.
+
+
+## Physical completion note
+
+The authorized run `36973886568` was executed on 2026-10-02.
+
+Result: the added one-command initialization step completed successfully, but the subsequent transfer-entry behavior remained unchanged from the preceding diagnostic. No transfer setup response was obtained during the bounded observation.
+
+Conclusion: the single initialization-step hypothesis is not supported by this physical run.
 
 G6A remains OPEN. G6B remains BLOCKED.
