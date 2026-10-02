@@ -148,7 +148,7 @@ public final class MainActivity extends Activity {
         if(finished)return; add("BLE characteristic write status: "+(s==BluetoothGatt.GATT_SUCCESS?"SUCCESS":s));
         if(s!=BluetoothGatt.GATT_SUCCESS){if(phase==Phase.EXIT_SENT){add("Exit write callback: FAILED");finishDiagnostic();}else fail("BLE write callback failed.");return;}
         if(phase==Phase.COUNT_SENT){countWriteCb=true;advanceCount();}
-        else if(phase==Phase.ENTER_SENT){enterWriteCb=true;enterCbAt=SystemClock.elapsedRealtime();add("P2P enter write callback: SUCCESS");advanceEnter();}
+        else if((phase==Phase.ENTER_SENT||phase==Phase.LATE_OBSERVE)&&enterWriteAttempted&&!enterWriteCb){enterWriteCb=true;enterCbAt=SystemClock.elapsedRealtime();add("P2P enter write callback: SUCCESS");if(phase==Phase.ENTER_SENT)advanceEnter();else if(normalValidCredential){cancel();sendExit();}}
         else if(phase==Phase.EXIT_SENT){exitWriteCb=true;add("Exit write callback: SUCCESS");add("Post-exit confirmation target: valid 0x73/0x01 inventory matching baseline");}
       });
     }
