@@ -30,3 +30,11 @@ No photo, Wi-Fi Direct, HTTP, catalog/media GET, persistent import, receipt, del
 - exact source ZIP SHA-256: `02dc3f8b07c713e535b43ac121fc39d642e6042a94649b3de16a89ca996be56a`
 - CI/static status: verified
 - physical status: not yet run
+
+### run-36973886568-attempt-1
+- exact bundle: `builds/run-36973886568-attempt-1/`
+- build commit: `506b3f311be7e2dd8a6cd5ce8f7bf36615f95e25`
+- APK SHA-256: `06184f7c634ccb940fa64989c035a03ed96cf43835d0c413aea3a43931fae7e1`
+- exact source ZIP SHA-256: `16a139b81cc05caadd2f05b93d74bea4b4be46ddc1e17f4c84af7c006f112789`
+- CI/static status: verified
+- physical status: not yet run
