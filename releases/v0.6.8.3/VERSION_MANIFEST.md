@@ -22,3 +22,11 @@ Privacy/report-integrity rules:
 - exact source ZIP SHA-256: `659bf61c8fd5381d009dc4da5b93ed5e77c5c95bb54a6ae86fc017f2fd5d3e0e`
 - CI/static status: verified
 - physical status: not yet run
+
+### run-36968598634-attempt-1
+- exact bundle: `builds/run-36968598634-attempt-1/`
+- build commit: `6f45982f862997149ccd1e395d3a52d62164ca48`
+- APK SHA-256: `23375cd95affcb24ac15f6f7079f57a048494de90aa18c3c76dbed746cea80dc`
+- exact source ZIP SHA-256: `98045bdad5ee12608dd9e2439ee7a375c5d64240c23bfe95ea8b3da394770433`
+- CI/static status: verified
+- physical status: not yet run
