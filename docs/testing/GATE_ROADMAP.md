@@ -1307,3 +1307,52 @@ Run `36967445804` is NOT PROMOTED.
 
 **G6A: OPEN.**
 **G6B: BLOCKED.**
+
+
+## CURRENT OVERRIDE — 2026-10-02 final red-team-cleared v0.6.8.3 diagnostic
+
+Second red-team review revoked v0.6.8.2 before physical use because:
+- post-EXIT short-frame classification could contaminate ENTER-observation counters;
+- final report wording inaccurately said no raw notification payload was logged even though safe <8-byte short payload logging was intentional.
+
+v0.6.8.3 corrects those issues and an additional mixed-short-response classification edge case.
+
+### Current and only authorized physical diagnostic build
+
+- version: `0.6.8.3`
+- run: `36968820818`
+- attempt: `1`
+- build commit: `e282da324e8a77d56b4e3cdb6ce0b97711bd22ae`
+- package: `com.parkarsite.g6acreddiag683`
+- APK SHA-256: `2def2dbb77b260d9d9773349df99c6affacc026e7a1d8fdd44882f2b71edb6ec`
+- exact source ZIP SHA-256: `1e179e4d488b7aaaec70aabf6ead252a244f3cd5cca06c0fa3bbcd47953c5003`
+
+Pre-physical verification:
+- artifact hash independently rechecked: PASS;
+- source ZIP hash independently rechecked: PASS;
+- bundled safety audit re-run on exact archived source: PASS;
+- bundled red-team audit re-run on exact archived source: PASS;
+- compile/lint/signature/immutable archive: PASS;
+- app DEX scan: no app-scope Wi-Fi Direct/HTTP/media-transfer references;
+- transport UUIDs/commands unchanged from v0.6.8.1;
+- post-EXIT 0x41 payload is not classified/logged;
+- credential-capable payload bytes are never logged;
+- mixed short-response activity has an explicit non-ONLY classification.
+
+Manual red-team:
+`releases/v0.6.8.3/builds/run-36968820818-attempt-1/reviews/MANUAL_RED_TEAM_PREPROMOTION.md`
+
+NOT PROMOTED / do not use:
+- v0.6.8.2 runs `36967445804`, `36967449098`;
+- v0.6.8.3 runs `36968350504`, `36968598634`.
+
+Next physical action:
+1. install exact v0.6.8.3;
+2. force-stop Cyan Glasses;
+3. keep AIMB-G1 powered and paired;
+4. do not take a photo;
+5. run once;
+6. return complete report.
+
+**G6A = OPEN.**
+**G6B = BLOCKED.**
