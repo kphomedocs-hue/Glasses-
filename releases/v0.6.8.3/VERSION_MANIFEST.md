@@ -14,3 +14,11 @@ Privacy/report-integrity rules:
 - post-EXIT `0x41` payloads are never classified or logged;
 - credential-capable payload bytes are never logged;
 - SSID/password values are never decoded/logged/persisted.
+
+### run-36968350504-attempt-1
+- exact bundle: `builds/run-36968350504-attempt-1/`
+- build commit: `a4e70723b55763a4679deba20feea0ce51938ae3`
+- APK SHA-256: `0e232c508f6d324573c9a16bb210636f7c6aa281a1d2da88ecc1452b8532bb82`
+- exact source ZIP SHA-256: `659bf61c8fd5381d009dc4da5b93ed5e77c5c95bb54a6ae86fc017f2fd5d3e0e`
+- CI/static status: verified
+- physical status: not yet run
