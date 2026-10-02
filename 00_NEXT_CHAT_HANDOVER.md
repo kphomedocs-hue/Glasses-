@@ -3,7 +3,7 @@
 Prepared: 2026-10-02
 Repository: `kphomedocs-hue/Glasses-`
 Durable authority: latest GitHub `main`
-Project state: **READY TO RESUME AT FINAL RED-TEAM-CLEARED v0.6.8.3 DIAGNOSTIC**
+Project state: **READY TO RESUME AT v0.6.8.4 ONE-0x40 INITIALIZATION DIAGNOSTIC**
 
 ---
 
@@ -542,6 +542,71 @@ Next bounded diagnostic question:
 test one already-proven `0x40` initialization write immediately before media-count + P2P ENTER, with no photo, Wi-Fi Direct, HTTP, catalog/media GET, import, or receipt logic.
 
 Do not resume v0.6.8 persistent-import Phase 1 until that diagnostic is reviewed.
+
+**G6A = OPEN.**
+**G6B = BLOCKED.**
+
+
+## CURRENT OVERRIDE — 2026-10-02 v0.6.8.4 one-0x40 initialization diagnostic
+
+v0.6.8.3 physically established:
+- media-count handshake PASS;
+- P2P-enter write + callback PASS;
+- one prompt valid short non-credential `0x41` response;
+- no credential-bearing frame within 10 s normal + 10 s passive late observation;
+- zero Wi-Fi Direct / HTTP / catalog / media / capture / import / receipt activity.
+
+Durable evidence:
+`releases/v0.6.8.3/builds/run-36968820818-attempt-1/reports/2026-10-02_G6A_V0_6_8_3_PHYSICAL_CLASSIFICATION.md`
+
+Relevant prior Cyan evidence:
+- exact Cyan static trace shows normal post-service-discovery initialization queues dynamic `0x40` time sync before later initialization/media operations;
+- G2C physically proved the Cyan-equivalent `0x40` builder and write path;
+- static trace does not establish `0x40` as a handshake gate, so this remains a bounded hypothesis test.
+
+### Current and only authorized next physical build
+
+v0.6.8.4 one-0x40 initialization credential diagnostic:
+- run `36973886568`;
+- attempt `1`;
+- build commit `506b3f311be7e2dd8a6cd5ce8f7bf36615f95e25`;
+- package `com.parkarsite.g6ainitdiag684`;
+- APK SHA-256 `06184f7c634ccb940fa64989c035a03ed96cf43835d0c413aea3a43931fae7e1`;
+- exact source ZIP SHA-256 `16a139b81cc05caadd2f05b93d74bea4b4be46ddc1e17f4c84af7c006f112789`.
+
+Sequence:
+1. subscribe;
+2. exactly one dynamic Cyan-equivalent `0x40` time-sync write;
+3. wait only for its BLE write callback;
+4. exactly one `0x41 / 02 04` media-count query;
+5. exactly one `0x41 / 02 01 04 01` P2P ENTER;
+6. bounded 10 s normal + 10 s passive late credential observation;
+7. exactly one `0x41 / 02 01 09` EXIT.
+
+Pre-physical verification:
+- safety audit PASS;
+- strengthened red-team static audit PASS;
+- compile/lint/signature PASS;
+- immutable archive PASS;
+- downloaded APK/source hashes independently rechecked;
+- bundled audits re-run from exact archived source: PASS;
+- `0x40` payload builder checked field-by-field against physically proven G2C: PASS;
+- transport UUIDs and media/ENTER/EXIT payloads unchanged from v0.6.8.3;
+- no app-source/app-package Wi-Fi Direct, HTTP, catalog/media, capture, import, receipt, or retry path.
+
+Manual review:
+`releases/v0.6.8.4/builds/run-36973886568-attempt-1/reviews/MANUAL_RED_TEAM_PREPROMOTION.md`
+
+NOT PROMOTED:
+- v0.6.8.4 run `36973860827`;
+- v0.6.8.4 run `36973982291`.
+
+Next physical action:
+- force-stop Cyan Glasses;
+- keep AIMB-G1 powered and paired;
+- do not take a photo;
+- run exact v0.6.8.4 once;
+- return the complete report.
 
 **G6A = OPEN.**
 **G6B = BLOCKED.**
