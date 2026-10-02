@@ -4,7 +4,7 @@
 - Build role: bounded P2P credential-handshake diagnostic after three reproducible v0.6.8 baseline failures
 - Package ID: `com.parkarsite.g6acreddiag681`
 - Gate role: **DIAGNOSTIC ONLY**; cannot close G6A or unblock G6B
-- Physical status: **AUTHORIZED FOR ONE BOUNDED PHYSICAL DIAGNOSTIC RUN**
+- Physical status: **PHYSICAL DIAGNOSTIC COMPLETE — SHORT 0x41 RESPONSE ONLY; NO CREDENTIAL FRAME WITHIN 20 s**
 - Authoritative artifacts will live under immutable `builds/run-<id>-attempt-<n>/` directories.
 
 ## Diagnostic question
@@ -46,5 +46,30 @@ Physical instruction:
 - **do not take a photo**;
 - run the diagnostic once;
 - preserve the complete report.
+
+G6A remains OPEN. G6B remains BLOCKED.
+
+
+## Physical result — 2026-10-02T10:29:19+0530
+
+Exact authorized build ran once.
+
+Result:
+- baseline inventory: 11 images / 0 videos / 1 recording;
+- P2P-enter write: SUCCESS;
+- enter write callback: SUCCESS at +88 ms;
+- one valid `0x41` notification at +72 ms;
+- that frame was `TOO_SHORT` to contain the credential structure;
+- no structurally valid credential frame in the original 10-second window;
+- no structurally valid credential frame in the additional 10-second passive window;
+- zero Android Wi-Fi Direct operations;
+- zero HTTP/catalog/media GET;
+- zero capture/import/receipt activity.
+
+Evidence:
+`builds/run-36965814011-attempt-1/reports/2026-10-02_G6A_V0_6_8_1_CREDENTIAL_DIAGNOSTIC_PHYSICAL_RESULT.md`
+
+Interpretation:
+A normal credential-bearing frame was not rejected for prefix/length/bounds reasons; it was not observed. The remaining ambiguity is the exact meaning of the short `0x41` response. The next diagnostic may expose only safe metadata from frames whose declared payload length is <8 bytes, which by the preserved credential parser cannot contain credential values.
 
 G6A remains OPEN. G6B remains BLOCKED.
