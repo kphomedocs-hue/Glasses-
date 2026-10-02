@@ -378,7 +378,7 @@ public final class MainActivity extends Activity {
       return "SHORT_ENTER_ECHO_SHAPE_ONLY — every observed 0x41 was the exact ENTER payload-shaped short response; no credential-bearing frame within 20 seconds";
     if(shortEnterPrefixStatus>0&&cmd41==shortEnterPrefixStatus&&shortEnterEcho==0&&shortOther==0&&rejectedLong==0)
       return "SHORT_ENTER_PREFIX_STATUS_ONLY — every observed 0x41 was a short ENTER-prefix-plus-status response; no credential-bearing frame within 20 seconds";
-    if(shortOther>0&&cmd41==shortOther&&shortEnterEcho==0&&shortEnterPrefixStatus==0&&rejectedLong==0)
+    if(shortOther>0&&previousShortStatus==0&&cmd41==shortOther&&shortEnterEcho==0&&shortEnterPrefixStatus==0&&rejectedLong==0)
       return "OTHER_SAFE_SHORT_0x41_ONLY — every observed 0x41 was another safe short response; no credential-bearing frame within 20 seconds";
     if(totalShort>0)return "MIXED_SHORT_OR_REJECTED_0x41_ACTIVITY — multiple short response shapes and/or longer rejected 0x41 activity observed; inspect counters/event lines";
     int r=rTooShort+rPayload+rPrefix+rNonpositive+rBounds;
