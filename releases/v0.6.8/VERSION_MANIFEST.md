@@ -45,3 +45,11 @@ belong to this physical candidate.
 Phase 1 must pass before Phase 2 is attempted. Phase 2 must use the same installed package/data after a real force-stop/reopen; do not uninstall or clear app data.
 
 G6A remains open until both reports are reviewed. G6B remains blocked.
+
+
+## Handover pointer
+
+Authoritative next-chat resume instructions:
+`/00_NEXT_CHAT_HANDOVER.md`
+
+The physical candidate remains exactly run `36903742122-attempt-1`; this pointer does not change source, APK, or physical authorization.
