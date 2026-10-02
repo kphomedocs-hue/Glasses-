@@ -988,3 +988,43 @@ Do not build another protocol variant yet. First perform a cold device-state rec
 If the transfer setup response returns after cold recovery, classify the blocker as transient device state. If behavior is unchanged, continue root-cause analysis before any new command/build.
 
 G6A remains OPEN. G6B remains BLOCKED.
+
+
+## CURRENT OVERRIDE — 2026-10-02 17:05 +0530 cold-recovery rerun hit GATT timeout
+
+Exact authorized v0.6.8.4 run `36973886568`, attempt 1, was retried after cold device recovery.
+
+Observed:
+- bonded devices total: 7;
+- exactly one AIMB-G1-family bonded match;
+- target identity resolved;
+- GATT did not reach CONNECTED within the 30-second bound;
+- diagnostic ended as `PRECONDITION_OR_TRANSPORT_FAILURE`.
+
+No protocol stage was reached:
+- 0x40 writes: 0;
+- media-count writes: 0;
+- P2P-enter writes: 0;
+- transfer-exit writes: 0;
+- Wi-Fi Direct / HTTP / catalog / media / capture operations: 0.
+
+Evidence:
+`releases/v0.6.8.4/builds/run-36973886568-attempt-1/reports/2026-10-02_G6A_V0_6_8_4_COLD_RECOVERY_GATT_TIMEOUT.md`
+
+Interpretation:
+this run does not retest the P2P credential blocker. It failed earlier at BLE transport establishment. The Android bonded record is present, but that does not prove the glasses were BLE-connectable/advertising during the attempt.
+
+Next action is transport recovery only, not a new build:
+1. force-stop Cyan Glasses and v0.6.8.4;
+2. turn phone Bluetooth OFF;
+3. fully power AIMB-G1 OFF;
+4. wait briefly;
+5. turn phone Bluetooth ON;
+6. power AIMB-G1 ON;
+7. wait for Bluetooth to settle before opening any app;
+8. do not unpair, clear app data, open Cyan, or take a photo;
+9. run the same exact v0.6.8.4 once.
+
+Because the failed rerun reached zero proprietary writes, one transport-precondition retry is authorized.
+
+G6A remains OPEN. G6B remains BLOCKED.
