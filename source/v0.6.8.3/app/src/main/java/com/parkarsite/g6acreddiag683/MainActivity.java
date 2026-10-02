@@ -314,9 +314,15 @@ public final class MainActivity extends Activity {
   String classification(){
     if(normalValidCredential)return "NORMAL_VALID — structurally valid credential frame accepted within original 10-second window";
     if(lateValidCredential)return "LATE_VALID — no accepted credential by 10 seconds; structurally valid credential frame arrived during bounded late window";
-    if(shortEnterEcho>0&&cmd41==shortEnterEcho)return "SHORT_ENTER_ECHO_SHAPE_ONLY — exact ENTER payload-shaped short 0x41 response observed; no credential-bearing frame within 20 seconds";
-    if(shortEnterPrefixStatus>0)return "SHORT_ENTER_PREFIX_STATUS_ONLY — short 0x41 response preserved ENTER prefix plus status bytes; no credential-bearing frame within 20 seconds";
-    if(shortOther>0)return "OTHER_SAFE_SHORT_0x41_ONLY — short 0x41 response observed; no credential-bearing frame within 20 seconds";
+    int totalShort=shortEnterEcho+shortEnterPrefixStatus+shortOther;
+    int rejectedLong=rPrefix+rNonpositive+rBounds;
+    if(shortEnterEcho>0&&cmd41==shortEnterEcho&&shortEnterPrefixStatus==0&&shortOther==0&&rejectedLong==0)
+      return "SHORT_ENTER_ECHO_SHAPE_ONLY — every observed 0x41 was the exact ENTER payload-shaped short response; no credential-bearing frame within 20 seconds";
+    if(shortEnterPrefixStatus>0&&cmd41==shortEnterPrefixStatus&&shortEnterEcho==0&&shortOther==0&&rejectedLong==0)
+      return "SHORT_ENTER_PREFIX_STATUS_ONLY — every observed 0x41 was a short ENTER-prefix-plus-status response; no credential-bearing frame within 20 seconds";
+    if(shortOther>0&&cmd41==shortOther&&shortEnterEcho==0&&shortEnterPrefixStatus==0&&rejectedLong==0)
+      return "OTHER_SAFE_SHORT_0x41_ONLY — every observed 0x41 was another safe short response; no credential-bearing frame within 20 seconds";
+    if(totalShort>0)return "MIXED_SHORT_OR_REJECTED_0x41_ACTIVITY — multiple short response shapes and/or longer rejected 0x41 activity observed; inspect counters/event lines";
     int r=rTooShort+rPayload+rPrefix+rNonpositive+rBounds;
     if(cmd41>0&&r>0)return "REJECTED_0x41_CANDIDATE_ACTIVITY — valid 0x41 frame activity occurred but none matched the credential structure";
     if(invalidFrames>0&&cmd41==0)return "INVALID_FRAME_ACTIVITY_ONLY — notification activity occurred but no valid 0x41 credential candidate was observed";
