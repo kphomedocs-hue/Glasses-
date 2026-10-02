@@ -1174,3 +1174,11 @@ Phase 1 must pass before Phase 2. Phase 2 must use the same installed package/da
 If both pass, proceed to G6A closure review.
 
 **G6A OPEN. G6B BLOCKED.**
+
+
+## HANDOVER POINTER — v0.6.8
+
+Authoritative next-chat resume file:
+`00_NEXT_CHAT_HANDOVER.md`
+
+It supersedes older "next" wording for operational resume purposes. Historical evidence sections remain valid.
