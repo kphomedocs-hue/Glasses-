@@ -22,3 +22,11 @@ Exactly:
 7. one `0x41 / 02 01 09` transfer-exit write.
 
 No photo, Wi-Fi Direct, HTTP, catalog/media GET, persistent import, receipt, delete/mutation, or retry loop.
+
+### run-36973860827-attempt-1
+- exact bundle: `builds/run-36973860827-attempt-1/`
+- build commit: `9773de8611d4762a127a3d09e9ff5521e0976451`
+- APK SHA-256: `73c01e539cd0dd6183def175a0a53cca9ed8c99c98c83e8d4e8b655638bf984d`
+- exact source ZIP SHA-256: `02dc3f8b07c713e535b43ac121fc39d642e6042a94649b3de16a89ca996be56a`
+- CI/static status: verified
+- physical status: not yet run
