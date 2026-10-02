@@ -4,7 +4,7 @@
 - Build role: corrected safe short-0x41 response classifier after second red-team review revoked v0.6.8.2 before physical use
 - Package ID: `com.parkarsite.g6acreddiag683`
 - Gate role: **DIAGNOSTIC ONLY**; cannot close G6A or unblock G6B
-- Physical status: **AUTHORIZED FOR ONE BOUNDED PHYSICAL DIAGNOSTIC RUN**
+- Physical status: **PHYSICAL DIAGNOSTIC COMPLETE — SHORT NON-CREDENTIAL 0x41 RESPONSE; NO CREDENTIAL FRAME WITHIN 20 s**
 
 Purpose: determine whether the short valid `0x41` response observed in v0.6.8.1 is exact ENTER-command-shaped, ENTER-prefix-plus-status, or another safe short response.
 
@@ -61,5 +61,33 @@ Physical instruction:
 - do not take a photo;
 - run once;
 - return the complete report.
+
+G6A remains OPEN. G6B remains BLOCKED.
+
+
+## Physical result — 2026-10-02T11:50:35+0530
+
+Exact authorized run `36968820818` completed.
+
+Observed:
+- baseline inventory 11 / 0 / 1;
+- media-count handshake PASS;
+- P2P-enter write + callback PASS;
+- one valid framed short `0x41` response about 100 ms after ENTER;
+- declared payload length 5 bytes;
+- final classification `OTHER_SAFE_SHORT_0x41_ONLY`;
+- no accepted credential frame in 10 s normal + 10 s passive late observation;
+- zero Wi-Fi Direct, HTTP, catalog/media GET, capture, import, or receipt activity;
+- exit write callback PASS;
+- no matching post-exit `0x73/0x01`.
+
+Evidence:
+`builds/run-36968820818-attempt-1/reports/2026-10-02_G6A_V0_6_8_3_PHYSICAL_CLASSIFICATION.md`
+
+Interpretation:
+the glasses respond promptly to ENTER but do not produce the expected credential-bearing frame. The semantic meaning of the short response remains unproven.
+
+Next bounded diagnostic question:
+does the already physically proven Cyan-equivalent `0x40` initialization/time-sync write, sent immediately before media-count + P2P ENTER, change the response behavior?
 
 G6A remains OPEN. G6B remains BLOCKED.
