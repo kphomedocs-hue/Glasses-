@@ -16,3 +16,11 @@ Distinguish among:
 4. credential accepted only during an additional 10-second passive late-observation window.
 
 The build must not contain Wi-Fi Direct, HTTP/catalog/media, capture, persistent-import, or receipt code.
+
+### run-36965814011-attempt-1
+- exact bundle: `builds/run-36965814011-attempt-1/`
+- build commit: `beceb27754f491fcae6a53433ad4dd4fcfadc22b`
+- APK SHA-256: `01ba35d297c6d48dce31242185032d8d37ced39856419e827cc9c9013e4246dd`
+- exact source ZIP SHA-256: `f3d65c6ca0bf2b8d815f5e98e62a8f8420730b350a41b6505e2072537cedd8c2`
+- CI/static status: verified
+- physical status: not yet run

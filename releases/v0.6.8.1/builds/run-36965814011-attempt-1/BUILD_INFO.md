@@ -1,0 +1,21 @@
+# K G1 G6A Credential Handshake Diagnostic v0.6.8.1 — Exact Build
+- Build commit: beceb27754f491fcae6a53433ad4dd4fcfadc22b
+- Build run: 36965814011
+- Build attempt: 1
+- Package ID: com.parkarsite.g6acreddiag681
+- versionCode: 1
+- APK SHA-256: 01ba35d297c6d48dce31242185032d8d37ced39856419e827cc9c9013e4246dd
+- Exact source ZIP SHA-256: f3d65c6ca0bf2b8d815f5e98e62a8f8420730b350a41b6505e2072537cedd8c2
+- Safety audit: PASS
+- Red-team static audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- physical capture code: NONE
+- Wi-Fi Direct code: NONE
+- HTTP/catalog/media code: NONE
+- persistent import/receipt code: NONE
+- credential values decoded/logged/persisted: NO
+- normal credential window: 10000 ms
+- passive late observation window: 10000 ms
+- diagnostic only: does not close G6A or unblock G6B
