@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - "source/v0.6.8.3/**"
-      - ".github/workflows/build-g6a-short-response-diagnostic-v0.6.8.3.yml"
+      - ".github/workflows/build-g6a-corrected-short-response-diagnostic-v0.6.8.3.yml"
       - "tools/archive_verified_build_v0.6.8.3.sh"
 permissions:
   contents: write
