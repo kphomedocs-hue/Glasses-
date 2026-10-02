@@ -511,3 +511,37 @@ Next physical action:
 
 **G6A = OPEN.**
 **G6B = BLOCKED.**
+
+
+## CURRENT OVERRIDE — 2026-10-02 v0.6.8.3 physical classification complete
+
+Exact v0.6.8.3 diagnostic run `36968820818`, attempt 1 completed physically.
+
+Result:
+- baseline inventory 11 images / 0 videos / 1 recording;
+- media-count handshake PASS;
+- P2P-enter write + callback PASS;
+- one valid framed short `0x41` response arrived about 100 ms after ENTER;
+- declared payload length 5 bytes;
+- classification `OTHER_SAFE_SHORT_0x41_ONLY`;
+- no accepted credential-bearing frame in original 10-second window;
+- no accepted credential-bearing frame in additional 10-second passive window;
+- exit write callback PASS;
+- no matching post-exit `0x73/0x01`;
+- zero Wi-Fi Direct / HTTP / catalog / media / capture / import / receipt activity.
+
+Evidence:
+`releases/v0.6.8.3/builds/run-36968820818-attempt-1/reports/2026-10-02_G6A_V0_6_8_3_PHYSICAL_CLASSIFICATION.md`
+
+Durable prior evidence relevant to the next hypothesis:
+- exact Cyan static trace shows normal post-service-discovery initialization queues dynamic `0x40` time sync first;
+- G2C physically proved the exact Cyan-equivalent one-command `0x40` time-sync path;
+- static trace does not establish `0x40` as a handshake gate, so initialization dependency is still only a hypothesis.
+
+Next bounded diagnostic question:
+test one already-proven `0x40` initialization write immediately before media-count + P2P ENTER, with no photo, Wi-Fi Direct, HTTP, catalog/media GET, import, or receipt logic.
+
+Do not resume v0.6.8 persistent-import Phase 1 until that diagnostic is reviewed.
+
+**G6A = OPEN.**
+**G6B = BLOCKED.**
