@@ -29,7 +29,7 @@ No photo, Wi-Fi Direct, HTTP, catalog/media GET, persistent import, receipt, del
 - APK SHA-256: `73c01e539cd0dd6183def175a0a53cca9ed8c99c98c83e8d4e8b655638bf984d`
 - exact source ZIP SHA-256: `02dc3f8b07c713e535b43ac121fc39d642e6042a94649b3de16a89ca996be56a`
 - CI/static status: verified
-- physical status: completed on 2026-10-02
+- physical status: not run
 
 ### run-36973886568-attempt-1 — AUTHORIZED DIAGNOSTIC CANDIDATE
 - exact bundle: `builds/run-36973886568-attempt-1/`
@@ -37,7 +37,7 @@ No photo, Wi-Fi Direct, HTTP, catalog/media GET, persistent import, receipt, del
 - APK SHA-256: `06184f7c634ccb940fa64989c035a03ed96cf43835d0c413aea3a43931fae7e1`
 - exact source ZIP SHA-256: `16a139b81cc05caadd2f05b93d74bea4b4be46ddc1e17f4c84af7c006f112789`
 - CI/static status: verified
-- physical status: not yet run
+- physical status: first physical run completed on 2026-10-02; one controlled cold-recovery rerun is authorized by the latest operational override
 
 ### run-36973982291-attempt-1 — NOT PROMOTED
 - exact bundle: `builds/run-36973982291-attempt-1/`
@@ -63,11 +63,13 @@ Manual red-team:
 
 The other v0.6.8.4 CI runs are not authorized for physical use.
 
-Physical instruction:
-- force-stop Cyan Glasses;
-- keep AIMB-G1 powered and paired;
-- do not take a photo;
-- run exactly once;
+Current physical instruction:
+- no uninstall is needed if v0.6.8.4 is the only K G1 test app installed;
+- force-stop Cyan Glasses and v0.6.8.4;
+- fully power-cycle AIMB-G1 and leave it off briefly;
+- power it back on and wait for Bluetooth to settle;
+- do not open Cyan, unpair, clear app data, or take a photo;
+- run the same exact v0.6.8.4 once after recovery;
 - return the complete report.
 
 G6A remains OPEN. G6B remains BLOCKED.
