@@ -3,7 +3,7 @@
 Prepared: 2026-10-02
 Repository: `kphomedocs-hue/Glasses-`
 Durable authority: latest GitHub `main`
-Project state: **READY TO RESUME AT v0.6.8 PHYSICAL TESTING**
+Project state: **READY TO RESUME AT v0.6.8.1 CREDENTIAL-HANDSHAKE DIAGNOSTIC**
 
 ---
 
@@ -353,3 +353,63 @@ GitHub remains the durable source of truth.
 ## 12. Recommended new-chat opening prompt
 
 `Resume my AIMB-G1 Smart Glasses / K Site Capture project from GitHub repo kphomedocs-hue/Glasses-. Read 00_NEXT_CHAT_HANDOVER.md first, verify latest main, and continue from the exact v0.6.8 two-phase physical test. Do not rely on chat memory over GitHub. Do not build v0.6.9 until the v0.6.8 Phase 1 and real restart Phase 2 reports are reviewed and G6A closure is decided.`
+
+
+---
+
+## 13. CURRENT OPERATIONAL OVERRIDE — v0.6.8.1 credential diagnostic
+
+This section supersedes Sections 6–10 for the **next immediate physical action**.
+
+The exact v0.6.8 persistent-import build was attempted three times on 2026-10-02 and reproduced the same baseline blocker before capture:
+- media inventory succeeded at 11 images / 0 videos / 1 recording;
+- P2P-enter BLE write started and its write callback succeeded;
+- the required transfer-credential handshake was not accepted inside the existing 10-second window;
+- zero catalog/media HTTP;
+- zero import/receipt;
+- no photo was taken for the test;
+- the third run reproduced the same blocker after a clean glasses power cycle.
+
+Durable evidence:
+`releases/v0.6.8/builds/run-36903742122-attempt-1/reports/2026-10-02_G6A_V0_6_8_P2P_CREDENTIAL_HANDSHAKE_FAILURE_REPRODUCED_3X.md`
+
+Do **not** keep retrying v0.6.8 unchanged.
+
+### Current and only authorized next physical build
+
+**v0.6.8.1 — bounded credential-handshake diagnostic**
+
+- run: `36965814011`
+- attempt: `1`
+- build commit: `beceb27754f491fcae6a53433ad4dd4fcfadc22b`
+- package: `com.parkarsite.g6acreddiag681`
+- APK SHA-256: `01ba35d297c6d48dce31242185032d8d37ced39856419e827cc9c9013e4246dd`
+- exact source ZIP SHA-256: `f3d65c6ca0bf2b8d815f5e98e62a8f8420730b350a41b6505e2072537cedd8c2`
+- exact bundle: `releases/v0.6.8.1/builds/run-36965814011-attempt-1/`
+
+All pre-physical gates PASS, including manual red-team:
+`releases/v0.6.8.1/builds/run-36965814011-attempt-1/reviews/MANUAL_RED_TEAM_PREPROMOTION.md`
+
+### Exact next physical action
+
+1. Install the exact v0.6.8.1 APK.
+2. Force-stop Cyan Glasses.
+3. Keep AIMB-G1 powered and paired.
+4. **Do not take any photo.**
+5. Open v0.6.8.1 and tap **Start credential diagnostic** once.
+6. Keep the app foregrounded until it finishes.
+7. Copy and return the complete report.
+
+The diagnostic performs no Android Wi-Fi Direct discovery/connection, no catalog or media HTTP, no media import, and no receipt/ledger writes.
+
+Possible classifications include:
+- `NORMAL_VALID`;
+- `LATE_VALID`;
+- `REJECTED_0x41_CANDIDATE_ACTIVITY`;
+- `INVALID_FRAME_ACTIVITY_ONLY`;
+- `NO_0x41_CREDENTIAL_CANDIDATE`.
+
+Do not resume the v0.6.8 persistent-import Phase 1 until this diagnostic report is reviewed.
+
+**G6A = OPEN.**
+**G6B = BLOCKED.**
