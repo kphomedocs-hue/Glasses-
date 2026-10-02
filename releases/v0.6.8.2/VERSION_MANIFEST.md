@@ -7,3 +7,11 @@
 - Physical status: **NO PHYSICAL CANDIDATE YET**
 
 Purpose: determine whether a valid short `0x41` response is exactly ENTER-command-shaped, ENTER-prefix-plus-status, or some other safe short response. Only payloads with declared length <8 bytes may be rendered as hex; under the preserved credential parser these are too short to contain credential values.
+
+### run-36967449098-attempt-1
+- exact bundle: `builds/run-36967449098-attempt-1/`
+- build commit: `863062eca47d857b1e74fe3f4662125d7f7e12d7`
+- APK SHA-256: `74c2141d8d42fc65a28515f7f3e779aa9d1f8101fbcf4ba802eade7d168df892`
+- exact source ZIP SHA-256: `40e2d49cbe6a62155202de113cbe43505728ff9ebe396e04fac842e625dbd3fe`
+- CI/static status: verified
+- physical status: not yet run
