@@ -54,3 +54,5 @@ jobs:
           name: K_G1_G6A_Corrected_Safe_Short_Response_Diagnostic_v0_6_8_3_${{ github.run_id }}
           path: releases/v0.6.8.3/builds/run-${{ github.run_id }}-attempt-${{ github.run_attempt }}/**
           if-no-files-found: error
+
+# red-team-recheck-trigger
