@@ -1,0 +1,23 @@
+# K G1 G6A 0x40 Initialization Credential Diagnostic v0.6.8.4 — Exact Build
+- Build commit: fe745397c862204ed8fabbbd234bdba16cc5c6db
+- Build run: 36973982291
+- Build attempt: 1
+- Package ID: com.parkarsite.g6ainitdiag684
+- versionCode: 1
+- APK SHA-256: 96648639e5ec515277887586c80b88da7de75cd22efa11666c6e4347e3eb335b
+- Exact source ZIP SHA-256: ab78706ba58947e96853b59e946cd980ee69e972863ff338ad3775955e4f0d1e
+- Safety audit: PASS
+- Red-team static audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- physical capture code: NONE
+- Wi-Fi Direct code: NONE
+- HTTP/catalog/media code: NONE
+- persistent import/receipt code: NONE
+- time-sync payload values logged/persisted: NO
+- credential values decoded/logged/persisted: NO
+- time-sync writes allowed: exactly one
+- normal credential window: 10000 ms
+- passive late observation window: 10000 ms
+- diagnostic only: does not close G6A or unblock G6B
