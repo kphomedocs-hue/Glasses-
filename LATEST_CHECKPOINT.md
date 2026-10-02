@@ -771,3 +771,52 @@ Physical scope:
 
 **G6A: OPEN — blocked pending v0.6.8.1 diagnostic classification.**
 **G6B: BLOCKED.**
+
+
+## CURRENT OVERRIDE — 2026-10-02 v0.6.8.2 safe short-response diagnostic
+
+v0.6.8.1 physical diagnostic completed at 2026-10-02T10:29:19+0530:
+- baseline inventory 11 / 0 / 1;
+- P2P-enter write and callback succeeded;
+- one valid `0x41` frame arrived at +72 ms;
+- that frame was too short for the credential structure;
+- no credential-bearing frame appeared in 10 s normal + 10 s passive late window;
+- zero Wi-Fi Direct, HTTP, catalog/media GET, capture, import, or receipt activity.
+
+Evidence:
+`releases/v0.6.8.1/builds/run-36965814011-attempt-1/reports/2026-10-02_G6A_V0_6_8_1_CREDENTIAL_DIAGNOSTIC_PHYSICAL_RESULT.md`
+
+### Current and only authorized next physical build
+
+v0.6.8.2 safe short-response diagnostic:
+- run `36967449098`;
+- attempt `1`;
+- build commit `863062eca47d857b1e74fe3f4662125d7f7e12d7`;
+- package `com.parkarsite.g6acreddiag682`;
+- APK SHA-256 `74c2141d8d42fc65a28515f7f3e779aa9d1f8101fbcf4ba802eade7d168df892`;
+- exact source ZIP SHA-256 `40e2d49cbe6a62155202de113cbe43505728ff9ebe396e04fac842e625dbd3fe`.
+
+Purpose: determine whether the safe short `0x41` response is exact ENTER-command-shaped, ENTER-prefix-plus-status, or some other payload shorter than 8 bytes. Payload hex is permitted only when declared payload length <8 bytes, which is below the preserved credential minimum structure and therefore cannot contain SSID/password value bytes.
+
+Pre-physical gates:
+- safety audit PASS;
+- red-team static PASS;
+- compile/lint PASS;
+- signature PASS;
+- immutable archive PASS;
+- manual red-team PASS.
+
+Manual review:
+`releases/v0.6.8.2/builds/run-36967449098-attempt-1/reviews/MANUAL_RED_TEAM_PREPROMOTION.md`
+
+Run once:
+1. force-stop Cyan Glasses;
+2. keep AIMB-G1 powered and paired;
+3. do not take a photo;
+4. run v0.6.8.2 once;
+5. return the complete report.
+
+Run `36967445804` is NOT PROMOTED.
+
+**G6A: OPEN.**
+**G6B: BLOCKED.**
