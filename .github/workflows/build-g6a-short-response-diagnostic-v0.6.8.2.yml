@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - "source/v0.6.8.2/**"
-      - ".github/workflows/build-g6a-credential-diagnostic-v0.6.8.2.yml"
+      - ".github/workflows/build-g6a-short-response-diagnostic-v0.6.8.2.yml"
       - "tools/archive_verified_build_v0.6.8.2.sh"
 permissions:
   contents: write
