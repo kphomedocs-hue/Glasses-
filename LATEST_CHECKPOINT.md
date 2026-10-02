@@ -695,3 +695,79 @@ Authoritative resume file:
 `00_NEXT_CHAT_HANDOVER.md`
 
 For a new chat, read that file first, then verify latest GitHub `main`. It freezes the current v0.6.8 two-phase physical procedure, exact build provenance, proven consumptive-GET semantics, known nonblocking defects, and G6A/G6B status.
+
+
+## CURRENT OVERRIDE — 2026-10-02 v0.6.8 credential-handshake blocker / v0.6.8.1 diagnostic
+
+This section supersedes older "current candidate" wording above.
+
+### v0.6.8 physical Phase 1 blocker — reproduced three times
+
+Exact v0.6.8 build:
+- run `36903742122`;
+- attempt `1`;
+- build commit `cf92a44563352ed339d8dd74a825483c7dba39e4`;
+- APK SHA-256 `3f94a240030c10162c0025853846f6ea29860de2ed36874742cddbb2a61d4b27`.
+
+Three supplied physical attempts at 09:53:08, 09:55:25, and 10:00:07 +0530 reproduced the same baseline failure:
+- Cyan GATT/notify subscription: PASS;
+- media-count query: PASS;
+- baseline inventory: 11 images / 0 videos / 1 recording;
+- P2P-enter write start: PASS;
+- P2P-enter write callback: PASS;
+- accepted transfer-credential handshake within the existing 10-second window: NOT OBSERVED;
+- zero catalog GET;
+- zero media GET;
+- zero HTTP;
+- no persistent import;
+- no durable receipt;
+- no capture-watch event;
+- abort exit write callback: PASS;
+- no matching post-exit `0x73/0x01`;
+- local Android P2P group absent after cleanup.
+
+Full reproduced evidence:
+`releases/v0.6.8/builds/run-36903742122-attempt-1/reports/2026-10-02_G6A_V0_6_8_P2P_CREDENTIAL_HANDSHAKE_FAILURE_REPRODUCED_3X.md`
+
+Therefore v0.6.8 Phase 1 is currently blocked before capture/catalog/import. Do not keep retrying it unchanged.
+
+### Current authorized diagnostic candidate — v0.6.8.1
+
+Purpose: distinguish whether the v0.6.8 blocker is:
+1. no valid `0x41` credential candidate;
+2. valid `0x41` activity rejected by the unchanged credential structure;
+3. a valid credential inside the original 10-second window;
+4. a valid credential arriving only during an additional bounded passive 10-second window.
+
+Only authorized diagnostic build:
+- run `36965814011`;
+- attempt `1`;
+- build commit `beceb27754f491fcae6a53433ad4dd4fcfadc22b`;
+- package `com.parkarsite.g6acreddiag681`;
+- APK SHA-256 `01ba35d297c6d48dce31242185032d8d37ced39856419e827cc9c9013e4246dd`;
+- exact source ZIP SHA-256 `f3d65c6ca0bf2b8d815f5e98e62a8f8420730b350a41b6505e2072537cedd8c2`.
+
+Pre-physical status:
+- safety audit PASS;
+- red-team static audit PASS;
+- compile/lint PASS;
+- signature PASS;
+- immutable archive PASS;
+- manual pre-promotion red-team PASS.
+
+Manual review:
+`releases/v0.6.8.1/builds/run-36965814011-attempt-1/reviews/MANUAL_RED_TEAM_PREPROMOTION.md`
+
+Physical scope:
+- DO NOT TAKE A PHOTO;
+- exactly one media-count write;
+- exactly one P2P-enter write;
+- original 10-second credential window;
+- one additional passive 10-second late-observation window only if needed;
+- exactly one allow-listed transfer-exit write;
+- zero Android Wi-Fi Direct API operations;
+- zero catalog/media HTTP;
+- zero persistent import/receipt.
+
+**G6A: OPEN — blocked pending v0.6.8.1 diagnostic classification.**
+**G6B: BLOCKED.**
