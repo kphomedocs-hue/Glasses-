@@ -968,3 +968,23 @@ Next physical action:
 
 **G6A = OPEN.**
 **G6B = BLOCKED.**
+
+
+## CURRENT OVERRIDE — 2026-10-02 v0.6.8.4 physical run completed
+
+Authorized v0.6.8.4 run `36973886568`, attempt 1, was executed physically.
+
+The added one-command initialization step completed successfully, but the subsequent transfer-entry behavior remained unchanged from the preceding diagnostic. No transfer setup response was obtained during the bounded observation.
+
+Conclusion: the simple missing-initialization hypothesis is not supported.
+
+Do not build another protocol variant yet. First perform a cold device-state recovery using the existing authorized diagnostic only:
+- force-stop Cyan Glasses and all K G1 test apps;
+- fully power the AIMB-G1 glasses off using the normal hardware method;
+- leave them off briefly, then power them back on;
+- do not unpair, clear app data, take a photo, or open the vendor transfer workflow;
+- rerun the same authorized v0.6.8.4 once after recovery.
+
+If the transfer setup response returns after cold recovery, classify the blocker as transient device state. If behavior is unchanged, continue root-cause analysis before any new command/build.
+
+G6A remains OPEN. G6B remains BLOCKED.
