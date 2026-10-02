@@ -1,0 +1,21 @@
+# K G1 G6A Safe Short Response Diagnostic v0.6.8.2 — Exact Build
+- Build commit: db8f8957056c5e537898a7af648852d9044a46a1
+- Build run: 36967445804
+- Build attempt: 1
+- Package ID: com.parkarsite.g6acreddiag682
+- versionCode: 1
+- APK SHA-256: 35e63365341a31cbb4f819514880fc9388d4b3192d7eac1400ad75ba1846bfc6
+- Exact source ZIP SHA-256: 9cc0aa6b0e03db7dfad48dab266f9d146ac704d3ac6b90855626d19bec42e138
+- Safety audit: PASS
+- Red-team static audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- physical capture code: NONE
+- Wi-Fi Direct code: NONE
+- HTTP/catalog/media code: NONE
+- persistent import/receipt code: NONE
+- credential values decoded/logged/persisted: NO
+- normal credential window: 10000 ms
+- passive late observation window: 10000 ms
+- diagnostic only: does not close G6A or unblock G6B

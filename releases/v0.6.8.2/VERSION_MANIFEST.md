@@ -15,3 +15,11 @@ Purpose: determine whether a valid short `0x41` response is exactly ENTER-comman
 - exact source ZIP SHA-256: `40e2d49cbe6a62155202de113cbe43505728ff9ebe396e04fac842e625dbd3fe`
 - CI/static status: verified
 - physical status: not yet run
+
+### run-36967445804-attempt-1
+- exact bundle: `builds/run-36967445804-attempt-1/`
+- build commit: `db8f8957056c5e537898a7af648852d9044a46a1`
+- APK SHA-256: `35e63365341a31cbb4f819514880fc9388d4b3192d7eac1400ad75ba1846bfc6`
+- exact source ZIP SHA-256: `9cc0aa6b0e03db7dfad48dab266f9d146ac704d3ac6b90855626d19bec42e138`
+- CI/static status: verified
+- physical status: not yet run
