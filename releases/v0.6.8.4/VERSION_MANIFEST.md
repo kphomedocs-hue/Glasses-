@@ -4,7 +4,7 @@
 - Build role: bounded one-`0x40` initialization -> media-count -> P2P-enter credential diagnostic
 - Package ID: `com.parkarsite.g6ainitdiag684`
 - Gate role: **DIAGNOSTIC ONLY**; cannot close G6A or unblock G6B
-- Physical status: **PHYSICAL RUN COMPLETE — INITIALIZATION HYPOTHESIS NOT SUPPORTED**
+- Physical status: **COLD-RECOVERY RERUN HIT GATT TRANSPORT TIMEOUT BEFORE ANY PROTOCOL WRITE**
 
 ## Question
 
@@ -37,7 +37,7 @@ No photo, Wi-Fi Direct, HTTP, catalog/media GET, persistent import, receipt, del
 - APK SHA-256: `06184f7c634ccb940fa64989c035a03ed96cf43835d0c413aea3a43931fae7e1`
 - exact source ZIP SHA-256: `16a139b81cc05caadd2f05b93d74bea4b4be46ddc1e17f4c84af7c006f112789`
 - CI/static status: verified
-- physical status: first physical run completed on 2026-10-02; one controlled cold-recovery rerun is authorized by the latest operational override
+- physical status: first physical run completed; cold-recovery rerun at 17:05 +0530 failed at GATT connection timeout before any protocol write
 
 ### run-36973982291-attempt-1 — NOT PROMOTED
 - exact bundle: `builds/run-36973982291-attempt-1/`
@@ -82,5 +82,33 @@ The authorized run `36973886568` was executed on 2026-10-02.
 Result: the added one-command initialization step completed successfully, but the subsequent transfer-entry behavior remained unchanged from the preceding diagnostic. No transfer setup response was obtained during the bounded observation.
 
 Conclusion: the single initialization-step hypothesis is not supported by this physical run.
+
+G6A remains OPEN. G6B remains BLOCKED.
+
+
+## Cold-recovery rerun — 2026-10-02T17:05:02+0530
+
+The same authorized v0.6.8.4 build was rerun after cold recovery.
+
+Result:
+- exactly one AIMB-G1-family bonded record was found;
+- GATT did not reach CONNECTED within the existing 30-second bound;
+- no 0x40/media-count/P2P-enter/exit write occurred;
+- no Wi-Fi Direct, HTTP, catalog, media, or capture activity occurred.
+
+Evidence:
+`builds/run-36973886568-attempt-1/reports/2026-10-02_G6A_V0_6_8_4_COLD_RECOVERY_GATT_TIMEOUT.md`
+
+This is a BLE transport-precondition failure, not a repeat of the credential-response result.
+
+One transport-recovery retry of the same exact build is authorized because the failed run reached zero proprietary writes. Do not build a new protocol variant.
+
+Transport recovery:
+- force-stop Cyan Glasses and v0.6.8.4;
+- cycle phone Bluetooth OFF then ON;
+- fully power AIMB-G1 OFF then ON;
+- allow Bluetooth to settle;
+- do not unpair, clear app data, open Cyan, or take a photo;
+- run the same exact v0.6.8.4 once.
 
 G6A remains OPEN. G6B remains BLOCKED.
