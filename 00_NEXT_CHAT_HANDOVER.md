@@ -3,7 +3,7 @@
 Prepared: 2026-10-02
 Repository: `kphomedocs-hue/Glasses-`
 Durable authority: latest GitHub `main`
-Project state: **RECOVER BLE GATT TRANSPORT BEFORE ANY FURTHER P2P DIAGNOSTIC**
+Project state: **RESEARCH MISSING PRE-TRANSFER / WORK-STATE PREPARATION BEFORE ANY NEW BUILD**
 
 ---
 
@@ -670,3 +670,55 @@ Next action is transport recovery only, not a new build:
 Because the failed rerun reached zero proprietary writes, one transport-precondition retry is authorized.
 
 G6A remains OPEN. G6B remains BLOCKED.
+
+
+## CURRENT OVERRIDE — 2026-10-07 final pre-handover status
+
+Latest exact physical evidence:
+- v0.6.8.4 run `36973886568`, attempt 1, commit `506b3f311be7e2dd8a6cd5ce8f7bf36615f95e25`;
+- GATT transport recovered and connected normally;
+- service discovery and notifications passed;
+- one Cyan-equivalent `0x40` write and response were observed;
+- media-count handshake passed;
+- current inventory was 0 / 0 / 0;
+- P2P-enter write/callback passed;
+- the same short non-credential `0x41` response returned;
+- no credential-bearing frame appeared in 10 s normal + 10 s passive late observation;
+- exit write callback passed;
+- no matching post-exit `0x73/0x01`;
+- zero Wi-Fi Direct / HTTP / catalog / media / capture activity.
+
+Evidence:
+`releases/v0.6.8.4/builds/run-36973886568-attempt-1/reports/2026-10-07_G6A_V0_6_8_4_TRANSPORT_RECOVERED_CREDENTIAL_BLOCKER_PERSISTS.md`
+
+### What is now ruled out
+- transient BLE/GATT failure as the main blocker;
+- simply waiting longer for the credential frame;
+- credential parser boundary as the obvious primary fault;
+- missing single `0x40` time-sync initialization;
+- media inventory count as the main cause.
+
+### Historical controls that still matter
+- G3B v0.3.1 physically succeeded with direct subscribe -> `02 01 04 01` -> credential response -> EXIT.
+- v0.6.7 physically completed four P2P-enter cycles on 2026-10-01.
+
+### Rethink direction
+Do not keep repeating v0.6.8.4 and do not create another timeout/parser variant.
+
+Current research priority:
+1. reconstruct the exact Cyan/Oudmon pre-transfer state preparation beyond single `0x40`;
+2. determine whether device work-state reset / transfer-finished / P2P-reset semantics are required before ENTER;
+3. compare the successful G3B/v0.6.7 path against the currently failing state;
+4. only after that, authorize the smallest bounded physical test.
+
+External implementation evidence worth reviewing:
+- some Oudmon/HeyCyan implementations explicitly use workType 15 as a P2P/reset-state operation;
+- workType 9 is treated as transfer-finished cleanup;
+- one implementation documents a broader pre-transfer preparation sequence including battery, time sync, device info, wear support, volume, and media-count activity before transfer mode.
+
+These external semantics are hypotheses/supporting evidence only until matched against Cyan/repository evidence. Do not promote them to fact without confirmation.
+
+### Gate state
+- G6A = OPEN.
+- G6B = BLOCKED.
+- No new APK is authorized yet.
