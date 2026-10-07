@@ -1028,3 +1028,31 @@ Next action is transport recovery only, not a new build:
 Because the failed rerun reached zero proprietary writes, one transport-precondition retry is authorized.
 
 G6A remains OPEN. G6B remains BLOCKED.
+
+
+## 2026-10-07 — v0.6.8.4 recovery verification
+
+Exact build: run `36973886568`, attempt 1, commit `506b3f311be7e2dd8a6cd5ce8f7bf36615f95e25`.
+
+Result:
+- GATT transport recovered and connected normally;
+- service discovery and notifications passed;
+- one 0x40 response was observed;
+- media-count handshake passed;
+- current inventory was 0 / 0 / 0;
+- P2P-enter write and callback passed;
+- the same previously observed short non-credential 0x41 response returned;
+- no credential-bearing frame appeared within the bounded 20-second observation;
+- exit write callback passed;
+- no matching post-exit inventory event was observed;
+- zero Wi-Fi Direct / HTTP / catalog / media / capture activity.
+
+Evidence:
+`releases/v0.6.8.4/builds/run-36973886568-attempt-1/reports/2026-10-07_G6A_V0_6_8_4_TRANSPORT_RECOVERED_CREDENTIAL_BLOCKER_PERSISTS.md`
+
+Conclusion:
+the temporary GATT issue is resolved, but the P2P credential blocker persists after cold recovery. Do not repeat v0.6.8.4 and do not add new proprietary initialization commands.
+
+Next root-cause test should reproduce the historically successful G3B direct-entry sequence: notification subscribe, one direct P2P ENTER, bounded observation, one EXIT, with no time-sync, media-count, Wi-Fi Direct, HTTP, capture, or credential-value logging.
+
+G6A remains OPEN. G6B remains BLOCKED.
