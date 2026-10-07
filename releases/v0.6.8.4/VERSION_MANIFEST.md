@@ -4,7 +4,7 @@
 - Build role: bounded one-`0x40` initialization -> media-count -> P2P-enter credential diagnostic
 - Package ID: `com.parkarsite.g6ainitdiag684`
 - Gate role: **DIAGNOSTIC ONLY**; cannot close G6A or unblock G6B
-- Physical status: **COLD-RECOVERY RERUN HIT GATT TRANSPORT TIMEOUT BEFORE ANY PROTOCOL WRITE**
+- Physical status: **TRANSPORT RECOVERED; P2P CREDENTIAL BLOCKER PERSISTS AFTER RECOVERY**
 
 ## Question
 
@@ -112,3 +112,23 @@ Transport recovery:
 - run the same exact v0.6.8.4 once.
 
 G6A remains OPEN. G6B remains BLOCKED.
+
+
+## 2026-10-07 recovery verification
+
+Exact authorized build was rerun after Bluetooth/device recovery.
+
+- GATT connected normally.
+- Notification subscription passed.
+- 0x40 write and response were observed.
+- Media-count handshake passed.
+- Current inventory was 0 / 0 / 0.
+- P2P-enter write/callback passed.
+- The same short non-credential response reappeared.
+- No credential-bearing response appeared within the bounded observation.
+- Zero Wi-Fi Direct, HTTP, catalog/media, or capture activity.
+
+Evidence:
+`builds/run-36973886568-attempt-1/reports/2026-10-07_G6A_V0_6_8_4_TRANSPORT_RECOVERED_CREDENTIAL_BLOCKER_PERSISTS.md`
+
+Do not repeat v0.6.8.4. Next root-cause test is the historically successful direct G3B entry sequence, without adding a new proprietary command.
