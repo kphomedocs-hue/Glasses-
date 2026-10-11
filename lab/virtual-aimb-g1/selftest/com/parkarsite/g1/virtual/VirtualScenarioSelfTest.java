@@ -39,7 +39,7 @@ public final class VirtualScenarioSelfTest {
     run("VGL-02-04",()->{byte[] b=frame41(5);b[2]=(byte)255;b[3]=(byte)255;ok(FrameEvidence.parse(b).kind()==FrameEvidence.Kind.INVALID);});
     run("VGL-02-05",()->{H h=new H().observing();ok(h.c.onFrame(event(1)).eventId()==1);h.c.onSyntheticInventory(4,2,1);ok(h.c.inventoryEvents()==1&&h.c.images()==4);h.close();});
     run("VGL-02-06",()->{H h=new H().observing();h.c.onFrame(event(8));h.c.onSyntheticIpEvent(true);ok(h.c.ipEvents()==1&&!h.c.catalogEligible());h.close();});
-    run("VGL-02-07",()->{H h=new H().observing();h.c.onGroupEvidence(true,false,true);h.c.onSyntheticIpEvent(true);ok(!h.c.catalogEligible());h.c.onGroupEvidence(true,true,true);h.c.onSyntheticIpEvent(true);ok(h.c.catalogEligible()&&!h.c.mediaGetAuthorized());h.close();});
+    run("VGL-02-07",()->{H h=new H().observing().peers(EXACT);h.c.onGroupEvidence(true,false,true);h.c.onSyntheticIpEvent(true);ok(!h.c.catalogEligible());h.c.onGroupEvidence(true,true,true);h.c.onSyntheticIpEvent(true);ok(h.c.catalogEligible()&&!h.c.mediaGetAuthorized());h.close();});
     run("VGL-02-08",()->{H h=new H().observing();for(int i=0;i<600;i++){h.c.onFrame(event(1));h.c.onFrame(event(8));}ok(h.c.eventCount()==256&&h.c.inventoryEvents()==256&&h.c.ipEvents()==256&&h.f.enters==1&&!h.c.mediaGetAuthorized());h.close();});
     run("VGL-03-01",()->{H h=new H().observing().peers(EXACT);ok(h.c.peerReport().exact()==1&&h.c.peerReport().verdict()==PeerIdentityPolicy.Verdict.SINGLE_UNVERIFIED_CANDIDATE&&!h.c.connectAuthorized());h.close();});
     run("VGL-03-02",()->{H h=new H().observing().peers("P2P_020000000001");ok(h.c.peerReport().normalizedSuffix()==1&&h.c.peerReport().exact()==0&&!h.c.connectAuthorized());h.close();});

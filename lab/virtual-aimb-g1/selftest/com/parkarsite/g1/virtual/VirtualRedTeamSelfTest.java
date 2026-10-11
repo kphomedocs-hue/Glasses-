@@ -24,6 +24,17 @@ public final class VirtualRedTeamSelfTest {
     Fake f2=new Fake();VirtualClock t2=new VirtualClock();VirtualGlassesCore c2=new VirtualGlassesCore(t2,f2,f2);
     c2.begin(1,"AIMB-G1_TEST",String.join(":", "02","00","00","00","00","03"));c2.onGatt(true);c2.onSubscribed(true);
     t2.advance(1_000_000);ok(c2.stage()==VirtualGlassesCore.Stage.READY&&f2.enter==0);
+    c2.armObservation();c2.onEnterWrite(true);
+    c2.onGroupEvidence(true,true,true);c2.onSyntheticIpEvent(true);
+    ok(!c2.catalogEligible()); // group claims alone without a peer candidate are insufficient
+    c2.onPeerSnapshot(List.of("TEST_020000000003"));
+    c2.onGroupEvidence(true,true,true);c2.onSyntheticIpEvent(true);
+    ok(c2.catalogEligible()); // synthetic trust gate only, never a real network permit
+    c2.onPeerSnapshot(List.of("OTHER"));
+    ok(!c2.catalogEligible()); // updated peer list invalidates all old group/IP claims
+    c2.finishObservation();c2.onExitWrite(true,true);
+    int events=c2.eventCount();c2.onFrame(FrameEvidence.synthetic(0x73,new byte[]{1}));
+    ok(c2.eventCount()==events); // late notifications cannot resurrect state
     System.out.println("RED_TEAM PASS: separate timers, no retry, no auth, no GET, invalid framing");
   }
 }

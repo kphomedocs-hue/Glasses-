@@ -22,7 +22,7 @@ public final class FrameEvidence {
             return new Parsed(Kind.INVALID, -1);
         int cmd = raw[1] & 255;
         if (cmd == 0x41) return new Parsed(length < 8 ? Kind.SHORT_41_UNKNOWN : Kind.OPAQUE_LONG_41, -1);
-        if (cmd == 0x73 && length > 0) return new Parsed(Kind.EVENT_73, payload[0] & 255);
+        if (cmd == 0x73) return length == 0 ? new Parsed(Kind.INVALID, -1) : new Parsed(Kind.EVENT_73, payload[0] & 255);
         return new Parsed(Kind.OTHER_VALID, -1);
     }
     /** Synthetic fixture builder; never transmits a frame. */

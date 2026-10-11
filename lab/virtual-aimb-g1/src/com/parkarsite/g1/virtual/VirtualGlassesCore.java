@@ -105,16 +105,21 @@ public final class VirtualGlassesCore {
         // Snapshot before ENTER callback is not readiness.
         if(stage!=Stage.OBSERVING)return;
         peerReport=PeerIdentityPolicy.assess(bondedName,bondedAddress,names);
+        groupVerified=false; ipObserved=false; // never carry attestation across changed peer snapshots
         // Intentionally NO call to connect, even when EXACT or sole candidate.
     }
     /** Called only by a future platform adapter after peer/group/network proof. */
     public void onGroupEvidence(boolean selectedPeerIsMember, boolean networkBound, boolean trustedSource) {
-        if(stage==Stage.OBSERVING)
-            groupVerified = selectedPeerIsMember && networkBound && trustedSource;
+        if(stage==Stage.OBSERVING) {
+            groupVerified = peerReport != null
+                && peerReport.verdict() == PeerIdentityPolicy.Verdict.SINGLE_UNVERIFIED_CANDIDATE
+                && selectedPeerIsMember && networkBound && trustedSource;
+            ipObserved = false; // require a freshly correlated IP after each attestation
+        }
     }
     public FrameEvidence.Parsed onFrame(byte[] raw) {
         FrameEvidence.Parsed evidence=FrameEvidence.parse(raw);
-        if(!evidence.valid())return evidence;
+        if(!evidence.valid() || stage==Stage.STOPPED || stage==Stage.FINISHED)return evidence;
         if(evidence.kind()==FrameEvidence.Kind.EVENT_73) {
             acceptedEvents=Math.min(MAX_EVENTS,acceptedEvents+1);
             if(evidence.eventId()==1)inventoryEvents=Math.min(MAX_EVENTS,inventoryEvents+1);
