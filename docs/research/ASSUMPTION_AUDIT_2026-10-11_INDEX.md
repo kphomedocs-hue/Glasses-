@@ -34,3 +34,9 @@ Status rule: CONFIRMED means proven **within a stated physical/source scope**; R
 5. Do not initiate further physical scans, unknown-peer association, bulk import, or G6B without a separately reviewed hypothesis and explicit authorization.
 
 **Source of truth:** `LATEST_CHECKPOINT.md` plus immutable reports; see linked register for per-assumption provenance. No private device names, addresses, credentials, original Cyan APK bytes, or client media included.
+
+
+## Assumption-first static closure (2026-10-11)
+- [Exact K vs Cyan comparison and static closures](G6A_ASSUMPTION_FIRST_STATIC_CLOSURE_2026-10-11.md)
+- [Resolution register, blocked unknowns and red-team tests](G6A_ASSUMPTION_FIRST_RESOLUTION_REGISTER_2026-10-11.md)
+These do **not** declare all 90 assumptions solved. No new APK or physical run authorized. G6A OPEN; G6B BLOCKED.
