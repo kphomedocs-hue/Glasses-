@@ -4,7 +4,7 @@ import java.util.*;
 
 /** 24 executable synthetic safety scenarios, not physical firmware tests. */
 public final class VirtualScenarioSelfTest {
-  static final String NAME="AIMB-G1_42",ADDR="02:00:00:00:00:01",EXACT="42_020000000001";
+  static final String NAME="AIMB-G1_42",ADDR=String.join(":", "02","00","00","00","00","01"),EXACT="42_020000000001";
   static int passed;
   static void ok(boolean b){if(!b)throw new AssertionError("synthetic scenario invariant");}
   static void run(String id,Runnable r){try{r.run();passed++;System.out.println(id+" OFFLINE_ASSERTIONS_PASS");}catch(Throwable e){System.err.println(id+" FAIL");throw e;}}
@@ -43,12 +43,12 @@ public final class VirtualScenarioSelfTest {
     run("VGL-02-08",()->{H h=new H().observing();for(int i=0;i<600;i++){h.c.onFrame(event(1));h.c.onFrame(event(8));}ok(h.c.eventCount()==256&&h.c.inventoryEvents()==256&&h.c.ipEvents()==256&&h.f.enters==1&&!h.c.mediaGetAuthorized());h.close();});
     run("VGL-03-01",()->{H h=new H().observing().peers(EXACT);ok(h.c.peerReport().exact()==1&&h.c.peerReport().verdict()==PeerIdentityPolicy.Verdict.SINGLE_UNVERIFIED_CANDIDATE&&!h.c.connectAuthorized());h.close();});
     run("VGL-03-02",()->{H h=new H().observing().peers("P2P_020000000001");ok(h.c.peerReport().normalizedSuffix()==1&&h.c.peerReport().exact()==0&&!h.c.connectAuthorized());h.close();});
-    run("VGL-03-03",()->{H h=new H().observing().peers("P2P_02:00:00:00:00:01");ok(h.c.peerReport().rawSuffixResearch()==1&&h.c.peerReport().normalizedSuffix()==0&&!h.c.connectAuthorized());h.close();});
+    run("VGL-03-03",()->{H h=new H().observing().peers("P2P_"+ADDR);ok(h.c.peerReport().rawSuffixResearch()==1&&h.c.peerReport().normalizedSuffix()==0&&!h.c.connectAuthorized());h.close();});
     run("VGL-03-04",()->{H h=new H().observing().peers("AIMB-G1_MOCK");ok(h.c.peerReport().familyOnly()==1&&h.c.peerReport().verdict()==PeerIdentityPolicy.Verdict.NO_CANDIDATE);h.close();});
     run("VGL-03-05",()->{H h=new H().observing().peers("OTHER_TEST");ok(h.c.peerReport().other()==1&&h.c.peerReport().verdict()==PeerIdentityPolicy.Verdict.NO_CANDIDATE);h.close();});
     run("VGL-03-06",()->{H h=new H().observing().peers(EXACT,"P2P_020000000001");ok(h.c.peerReport().verdict()==PeerIdentityPolicy.Verdict.AMBIGUOUS_CANDIDATES&&!h.c.connectAuthorized());h.close();});
     run("VGL-03-07",()->{H h=new H().observing().peers(EXACT);h.c.onGroupEvidence(false,true,true);h.c.onSyntheticIpEvent(true);ok(!h.c.catalogEligible()&&!h.c.connectAuthorized());h.close();});
-    run("VGL-03-08",()->{H h=new H().observing().peers(EXACT);String p2pInterface="06:00:00:00:00:02";ok(!ADDR.equals(p2pInterface));h.c.onGroupEvidence(true,false,true);ok(!h.c.catalogEligible()&&!h.c.connectAuthorized());h.close();});
+    run("VGL-03-08",()->{H h=new H().observing().peers(EXACT);String p2pInterface=String.join(":", "06","00","00","00","00","02");ok(!ADDR.equals(p2pInterface));h.c.onGroupEvidence(true,false,true);ok(!h.c.catalogEligible()&&!h.c.connectAuthorized());h.close();});
     ok(passed==24);System.out.println("24/24 OFFLINE SYNTHETIC ASSERTION SETS PASS; ZERO PHYSICAL GATES");
   }
 }

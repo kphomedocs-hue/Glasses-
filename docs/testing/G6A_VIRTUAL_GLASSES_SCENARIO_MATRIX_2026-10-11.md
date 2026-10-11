@@ -1,5 +1,5 @@
 # Virtual AIMB-G1 Lab — 96 PLANNED test scenarios
-**Created 2026-10-11** · All entries are **PLANNED / NOT RUN**. Passing legacy unit tests are separate evidence; no device gate promoted.
+**Created 2026-10-11** · Initially all 96 were PLANNED / NOT RUN. The first 24 now have executable **offline safety-subset assertions**; this is **not** a full production-integrated scenario PASS. Passing legacy unit tests are separate evidence; no device gate promoted.
 
 See [strategy](G6A_VIRTUAL_GLASSES_LAB_STRATEGY_2026-10-11.md). Only synthetic fixtures and sanitized generated reports may enter public GitHub. Every test must execute against shared application core; mocks are not evidence of actual current glasses firmware.
 
@@ -9,40 +9,40 @@ See [strategy](G6A_VIRTUAL_GLASSES_LAB_STRATEGY_2026-10-11.md). Only synthetic f
 
 | ID | Synthetic stimulus | Required assertion | Status |
 |---|---|---|---|
-| VGL-01-01 | Unique bonded target and valid services | single selected BLE target; read/notify setup succeeds; no unintended write | NOT RUN |
-| VGL-01-02 | No bonded AIMB-G1 target | fail closed before GATT; zero P2P/HTTP | NOT RUN |
-| VGL-01-03 | Two bonded lookalikes | abort ambiguous device selection without guessing | NOT RUN |
-| VGL-01-04 | GATT connect callback never arrives | independent deadline terminates; no P2P | NOT RUN |
-| VGL-01-05 | CCCD subscription fails | no ENTER, no peer acceptance | NOT RUN |
-| VGL-01-06 | ENTER BLE write callback fails | fail closed with bounded exit/cleanup decision | NOT RUN |
-| VGL-01-07 | ENTER callback delayed beyond discovery result | never treat early peer snapshot as readiness | NOT RUN |
-| VGL-01-08 | EXIT BLE callback delayed | do not issue overlapping exit writes; final state indeterminate unless verified | NOT RUN |
+| VGL-01-01 | Unique bonded target and valid services | single selected BLE target; read/notify setup succeeds; no unintended write | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-01-02 | No bonded AIMB-G1 target | fail closed before GATT; zero P2P/HTTP | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-01-03 | Two bonded lookalikes | abort ambiguous device selection without guessing | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-01-04 | GATT connect callback never arrives | independent deadline terminates; no P2P | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-01-05 | CCCD subscription fails | no ENTER, no peer acceptance | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-01-06 | ENTER BLE write callback fails | fail closed with bounded exit/cleanup decision | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-01-07 | ENTER callback delayed beyond discovery result | never treat early peer snapshot as readiness | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-01-08 | EXIT BLE callback delayed | do not issue overlapping exit writes; final state indeterminate unless verified | OFFLINE SUBSET RUN; INTEGRATION PENDING |
 
 ### 2. 0x41 response and 0x73 event handling (G2/G2B/G3B/G4A2)
 
 | ID | Synthetic stimulus | Required assertion | Status |
 |---|---|---|---|
-| VGL-02-01 | Historically valid long credential response | parse frame while treating name only as a candidate | NOT RUN |
-| VGL-02-02 | Five-byte short 0x41 response | record frame shape only; do not invent meaning | NOT RUN |
-| VGL-02-03 | CRC-corrupt 0x41 | reject; never change transfer state | NOT RUN |
-| VGL-02-04 | Invalid length field | reject without crashing or allocating large buffer | NOT RUN |
-| VGL-02-05 | 0x73/01 inventory notification | update bounded counts with typed evidence | NOT RUN |
-| VGL-02-06 | 0x73/08 IP before valid association | do not enable local media request | NOT RUN |
-| VGL-02-07 | 0x73/08 IP after formed verified group | check group/network provenance before catalogue request | NOT RUN |
-| VGL-02-08 | Out-of-order duplicated 0x73 notifications | no double import or unbounded event memory | NOT RUN |
+| VGL-02-01 | Historically valid long credential response | parse frame while treating name only as a candidate | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-02-02 | Five-byte short 0x41 response | record frame shape only; do not invent meaning | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-02-03 | CRC-corrupt 0x41 | reject; never change transfer state | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-02-04 | Invalid length field | reject without crashing or allocating large buffer | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-02-05 | 0x73/01 inventory notification | update bounded counts with typed evidence | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-02-06 | 0x73/08 IP before valid association | do not enable local media request | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-02-07 | 0x73/08 IP after formed verified group | check group/network provenance before catalogue request | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-02-08 | Out-of-order duplicated 0x73 notifications | no double import or unbounded event memory | OFFLINE SUBSET RUN; INTEGRATION PENDING |
 
 ### 3. Peer identity and adversarial advertisements (G4A/G6A)
 
 | ID | Synthetic stimulus | Required assertion | Status |
 |---|---|---|---|
-| VGL-03-01 | Exact derived peer name | candidate only; not authenticated or connection-authorized | NOT RUN |
-| VGL-03-02 | Normalized full Bluetooth-address suffix | candidate only; no generic-peer fallback | NOT RUN |
-| VGL-03-03 | Raw colon-formatted address suffix | separate research bucket; not equal to normalized predicate | NOT RUN |
-| VGL-03-04 | Generic AIMB-G1 prefix only | do not select this peer | NOT RUN |
-| VGL-03-05 | Sole OTHER peer | NO_CANDIDATE; no connect | NOT RUN |
-| VGL-03-06 | Two plausible peers | AMBIGUOUS; no connect | NOT RUN |
-| VGL-03-07 | Spoofed exact name plus unrelated peer address | no automatic trust based on name alone | NOT RUN |
-| VGL-03-08 | BLE and P2P MAC differ | never assume same interface address | NOT RUN |
+| VGL-03-01 | Exact derived peer name | candidate only; not authenticated or connection-authorized | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-03-02 | Normalized full Bluetooth-address suffix | candidate only; no generic-peer fallback | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-03-03 | Raw colon-formatted address suffix | separate research bucket; not equal to normalized predicate | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-03-04 | Generic AIMB-G1 prefix only | do not select this peer | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-03-05 | Sole OTHER peer | NO_CANDIDATE; no connect | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-03-06 | Two plausible peers | AMBIGUOUS; no connect | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-03-07 | Spoofed exact name plus unrelated peer address | no automatic trust based on name alone | OFFLINE SUBSET RUN; INTEGRATION PENDING |
+| VGL-03-08 | BLE and P2P MAC differ | never assume same interface address | OFFLINE SUBSET RUN; INTEGRATION PENDING |
 
 ### 4. Wi-Fi Direct group, timers and cleanup (G4A/G4A2/G7)
 
