@@ -1,0 +1,63 @@
+name: VGL Android Simulator Source Compile Only
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "lab/virtual-aimb-g1/android-simulator/**"
+      - "lab/virtual-aimb-g1/src/**"
+      - "modules/protocol/src/**"
+      - "source/g6a-identity-core/src/**"
+      - "source/g6a-recovery-core/src/**"
+      - ".github/workflows/vgl-android-source-compile.yml"
+permissions:
+  contents: read
+jobs:
+  compile-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: lab/virtual-aimb-g1/android-simulator
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Install Android platform 36
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKMANAGER=/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0" "platform-tools"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.6.0"
+      - name: Static isolation preflight
+        run: |
+          set -euo pipefail
+          MANIFEST=app/src/main/AndroidManifest.xml
+          if grep -Eq '<uses-permission|<uses-feature' "$MANIFEST"; then exit 1; fi
+          if grep -REn '^import android\.(bluetooth|net|location)|^import java\.net\.' app/src/main/java; then exit 1; fi
+          if grep -REn 'BluetoothGatt|WifiP2pManager|HttpURLConnection|URLConnection|Socket|URL\(' app/src/main/java; then exit 1; fi
+          test ! -d app/src/main/assets
+          echo 'PASS: isolated no-permissions synthetic Android source'
+      - name: Compile Android activity, linked lab sources, instrumentation test hook
+        run: |
+          set -euo pipefail
+          gradle --no-daemon :app:compileDebugJavaWithJavac :app:compileDebugAndroidTestJavaWithJavac :app:processDebugMainManifest
+      - name: Confirm no APK built and merged permissions absent
+        run: |
+          set -euo pipefail
+          test -z "$(find app/build -type f -name '*.apk' -print -quit)"
+          test -z "$(find app/build -type f -name '*.aab' -print -quit)"
+          MERGED=$(find app/build/intermediates -type f -name AndroidManifest.xml | grep -v '/androidTest/' || true)
+          test -n "$MERGED"
+          for FILE in $MERGED; do
+            if grep -Eq '<uses-permission|<uses-feature' "$FILE"; then
+              echo "ERROR: a merged manifest added unsafe hardware permissions"
+              exit 1
+            fi
+          done
+          echo 'PASS: compiled-only, no APK, no permission and no emulator'
