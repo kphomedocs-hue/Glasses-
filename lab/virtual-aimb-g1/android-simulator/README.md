@@ -31,3 +31,12 @@ This verifies **only synthetic Android private-storage semantics**, not physical
 The historical physical JPG GET followed by EXIT consumed the original photograph. The owner's original-on-glasses retention requirement remains HARD BLOCKED. No real glasses media transfer, phone installation or physical device experiment has been authorized.
 
 **Physical G6A OPEN; G6B BLOCKED.**
+
+
+## V3B — three actual Android process-stop recovery tests (2026-10-11)
+Exact audited application+test source: `6bde5ef0451984e5dd812d0159ecc277bc216aad`. A single API36 emulator running the separate zero-permissions synthetic-only app completed **three different JVM `Runtime.halt(73)` barriers**: after `FETCH_MAY_HAVE_STARTED`, after the full verified journal, and while writing 3 bytes of a synthetic 7-byte JPG. Each was followed by a separate instrumentation process, which verified fail-closed `REMOTE_UNCERTAIN` or local-only receipt recovery. The 3-byte partial was physically present in the emulator's app-private quarantine file after restart; no second Source read occurred.
+- Emulator CI: https://github.com/kphomedocs-hue/Glasses-/actions/runs/38163205078 — SUCCESS, `VGL_EMULATOR_HARD_STOP 3/3 PASS` and original `VGL_EMULATOR 2/2 PASS`.
+- Same-source Android compile CI 38163205071, virtual lab 96/HTTP CI 38163205073, hygiene 38163205106: SUCCESS.
+- Report: `docs/testing/results/2026-10-11_VGL_V3B_ANDROID_ABRUPT_PROCESS_RECOVERY_RESULT.md`.
+- Red team: `docs/testing/VGL_V3B_ANDROID_HARD_STOP_RED_TEAM_REVIEW_2026-10-11.md`.
+The initial hard-stop CI runs failed due to `am instrument` returning exit-code zero after `Runtime.halt`; fixed runner requires exact recovery evidence rather than relying on exit code. This is NOT a hardware power loss, device-specific radio test, whole-JPEG decode or proof of originals retained on glasses. G6A OPEN; G6B BLOCKED.
