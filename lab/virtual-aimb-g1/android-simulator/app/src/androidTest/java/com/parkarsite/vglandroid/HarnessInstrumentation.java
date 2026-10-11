@@ -21,8 +21,10 @@ public final class HarnessInstrumentation extends Instrumentation {
     private static final String MODE_KEY="vgl_mode";
     private static final String HARD_FETCH="crash_after_fetch_mark";
     private static final String HARD_VERIFIED="crash_after_verified_journal";
+    private static final String HARD_PARTIAL="crash_mid_part_write";
     private static final String RECOVER_FETCH="recover_after_fetch_mark";
     private static final String RECOVER_VERIFIED="recover_after_verified_journal";
+    private static final String RECOVER_PARTIAL="recover_mid_part_write";
     private static final byte[] SYNTHETIC_JPG={
         (byte)255,(byte)216,(byte)255,1,2,(byte)255,(byte)217
     };
@@ -113,6 +115,21 @@ public final class HarnessInstrumentation extends Instrumentation {
         throw new AssertionError("Unexpectedly survived configured hard-stop barrier");
     }
 
+    /** Real abrupt test-process halt with three synthetic JPG bytes already written. */
+    private void hardStopMidWrite() throws Exception {
+        stage="HARD_STOP_PARTIAL_PREPARE";
+        var data=store("hard-stop-partial");
+        var ticket=data.prepare(id("VGL-EMU-HARD-PARTIAL-01"),0L);
+        must(ticket.state()==RecoveryImportStore.State.PREPARED);
+        stage="HARD_STOP_PARTIAL_SOURCE";
+        data.execute(ticket,SYNTHETIC_JPG.length,out->{
+            out.write(SYNTHETIC_JPG,0,3);
+            // No close, flush, finalization or shutdown hook; kernel closes file on process death.
+            Runtime.getRuntime().halt(73);
+        },ignored->{});
+        throw new AssertionError("Unexpectedly survived mid-part halt");
+    }
+
     private void recoverHardStop(String name,String fixture,boolean fullBytesExpected)
             throws Exception {
         stage="HARD_STOP_RECOVER";
@@ -154,6 +171,16 @@ public final class HarnessInstrumentation extends Instrumentation {
             }else if(HARD_VERIFIED.equals(mode)){
                 hardStopAt(RecoveryImportStore.Barrier.AFTER_VERIFIED_JOURNAL,
                     "hard-stop-verified","VGL-EMU-HARD-VERIFIED-01");
+            }else if(HARD_PARTIAL.equals(mode)){
+                hardStopMidWrite();
+            }else if(RECOVER_PARTIAL.equals(mode)){
+                recoverHardStop("hard-stop-partial","VGL-EMU-HARD-PARTIAL-01",false);
+                report.putString("status","PASS");
+                report.putString("kind","EMULATOR_ONLY_SYNTHETIC");
+                report.putString("hard_stop","PARTIAL_BYTES_UNCERTAIN_NO_REFETCH");
+                report.putString("hardware_gate","G6A OPEN; G6B BLOCKED");
+                finish(0,report);
+                return;
             }else if(RECOVER_FETCH.equals(mode)){
                 recoverHardStop("hard-stop-fetch","VGL-EMU-HARD-FETCH-01",false);
                 report.putString("status","PASS");
