@@ -143,6 +143,9 @@ public final class VirtualLabPolicies {
         if(!baseline.contains(e.path()))fresh.add(e.path());
       }
       if(expectedImageCount!=null&&expectedImageCount!=jpg)return Decision.BLOCK;
+      Set<String> afterPaths=new HashSet<>();
+      for(Entry e:after.entries())afterPaths.add(e.path());
+      if(!afterPaths.containsAll(baseline))return Decision.BLOCK; // pre-GET retention is mandatory
       if(fresh.isEmpty())return Decision.EXPIRED;
       if(fresh.size()!=1)return Decision.AMBIGUOUS;
       String path=fresh.iterator().next();
@@ -156,6 +159,7 @@ public final class VirtualLabPolicies {
   /** Synthetic HTTP response machine; deliberately NO transport or automatic retry API. */
   public static final class OneShot {
     private boolean marked,requestOpened,committed;
+    private MediaKind requestedKind;
     private Decision outcome=Decision.BLOCK;
     private long actual;
     public Decision start(boolean networkVerified,boolean policyPermitsRead,
@@ -164,6 +168,7 @@ public final class VirtualLabPolicies {
       if(!networkVerified||!policyPermitsRead||hasRange||!"GET".equals(method)
            ||Catalog.kindOf(relativePath)==null ||relativePath.startsWith("/")
            ||relativePath.contains("..")||relativePath.contains(":"))return Decision.BLOCK;
+      requestedKind=Catalog.kindOf(relativePath);
       marked=true;outcome=Decision.REMOTE_UNCERTAIN;return Decision.ALLOW;
     }
     public boolean marked(){return marked;}
@@ -177,6 +182,7 @@ public final class VirtualLabPolicies {
          ||payload==null||payload.length>MEDIA_CAP||!fullyRead)return outcome;
       actual=payload.length;
       if(actual!=expected)return outcome;
+      if(Media.validate(requestedKind,payload)==Media.Fidelity.INVALID)return outcome;
       if(!durableReceipt)return outcome;
       committed=true;outcome=Decision.ALLOW;return outcome;
     }
@@ -221,6 +227,7 @@ public final class VirtualLabPolicies {
   /** Memory-only synthetic reservation model; actual durable JPG-only store tested separately. */
   public static final class Names {
     private final Map<String,String> ids=new HashMap<>(),paths=new HashMap<>();
+    private final Set<String> receipts=new HashSet<>();
     private final Map<String,Integer> daily=new HashMap<>();
     private final ZoneId zone;
     public Names(ZoneId zone){this.zone=zone;}
@@ -233,7 +240,12 @@ public final class VirtualLabPolicies {
       String path=date+"/"+String.format(Locale.ROOT,"%04d",sequence)+"."+extension;
       ids.put(opaqueId,path);paths.put(path,opaqueId);return path;
     }
-    public boolean knownReceipt(String opaqueId){return ids.containsKey(opaqueId);}
+    /** Caller must first verify durable local bytes and receipt through RecoveryImportStore. */
+    public boolean receiptVerified(String opaqueId,boolean durableReceiptAndBytesValid){
+      if(!ids.containsKey(opaqueId)||!durableReceiptAndBytesValid)return false;
+      receipts.add(opaqueId);return true;
+    }
+    public boolean knownReceipt(String opaqueId){return receipts.contains(opaqueId);}
     public Decision verifyIdentity(String opaqueId,String priorRemoteFingerprint,String newRemoteFingerprint){
       if(!ids.containsKey(opaqueId))return Decision.BLOCK;
       return Objects.equals(priorRemoteFingerprint,newRemoteFingerprint)?Decision.ALLOW:Decision.MANUAL_REVIEW;

@@ -79,7 +79,7 @@ public final class VirtualRemainingScenarioSelfTest {
     run("VGL-06-05",()->{var c=new VirtualLabPolicies.Capture(cat(""));ok(c.inspect(cat("media/n.opus"),null)==VirtualLabPolicies.Decision.BLOCK);});
     run("VGL-06-06",()->{var c=new VirtualLabPolicies.Capture(cat("media/z.jpg\nmedia/a.jpg"));ok(c.inspect(cat("media/a.jpg\nmedia/new.jpg\nmedia/z.jpg"),3)==VirtualLabPolicies.Decision.ALLOW&&c.selected().equals("media/new.jpg"));});
     run("VGL-06-07",()->{var c=new VirtualLabPolicies.Capture(cat("media/old.jpg"));var after=cat("media/old.jpg\nmedia/new.jpg");ok(c.inspect(after,2)==VirtualLabPolicies.Decision.ALLOW&&c.inspect(after,2)==VirtualLabPolicies.Decision.ALLOW);});
-    run("VGL-06-08",()->{var c=new VirtualLabPolicies.Capture(cat(""));ok(c.inspect(cat("media/only.jpg"),2)==VirtualLabPolicies.Decision.BLOCK);});
+    run("VGL-06-08",()->{var c=new VirtualLabPolicies.Capture(cat(""));ok(c.inspect(cat("media/only.jpg"),2)==VirtualLabPolicies.Decision.BLOCK);var d=new VirtualLabPolicies.Capture(cat("media/old.jpg"));ok(d.inspect(cat("media/new.jpg"),1)==VirtualLabPolicies.Decision.BLOCK);});
 
     // These are scripted response observations only; no socket and no production GET.
     run("VGL-07-01",()->{var o=begun();ok(o.observe(200,image().length,image(),false,true,true)==VirtualLabPolicies.Decision.ALLOW&&o.committed());});
@@ -117,7 +117,7 @@ public final class VirtualRemainingScenarioSelfTest {
     run("VGL-10-03",()->{var n=new VirtualLabPolicies.Names(ZoneId.of("UTC"));ok(n.reserve(id(1),86_399_999,VirtualLabPolicies.MediaKind.JPG).startsWith("1970-01-01/")&&n.reserve(id(2),86_400_000,VirtualLabPolicies.MediaKind.JPG).startsWith("1970-01-02/"));});
     run("VGL-10-04",()->{var n=new VirtualLabPolicies.Names(ZoneId.of("UTC"));n.reserve(id(1),1,VirtualLabPolicies.MediaKind.JPG);n.reserve(id(2),1,VirtualLabPolicies.MediaKind.JPG);ok(n.reservations()==2);});
     run("VGL-10-05",()->{var n=new VirtualLabPolicies.Names(ZoneId.of("UTC"));n.reserve(id(1),0,VirtualLabPolicies.MediaKind.JPG);ok(n.reserve(id(2),0,VirtualLabPolicies.MediaKind.JPG).endsWith("0002.jpg"));});
-    run("VGL-10-06",()->{var n=new VirtualLabPolicies.Names(ZoneId.of("UTC"));String path=n.reserve(id(1),0,VirtualLabPolicies.MediaKind.JPG);ok(n.knownReceipt(id(1))&&n.reserve(id(1),0,VirtualLabPolicies.MediaKind.JPG).equals(path));});
+    run("VGL-10-06",()->{var n=new VirtualLabPolicies.Names(ZoneId.of("UTC"));String path=n.reserve(id(1),0,VirtualLabPolicies.MediaKind.JPG);ok(!n.knownReceipt(id(1))&&n.reserve(id(1),0,VirtualLabPolicies.MediaKind.JPG).equals(path)&&n.receiptVerified(id(1),true)&&n.knownReceipt(id(1)));});
     run("VGL-10-07",()->{var n=new VirtualLabPolicies.Names(ZoneId.of("UTC"));n.reserve(id(1),0,VirtualLabPolicies.MediaKind.JPG);ok(n.verifyIdentity(id(1),"a","b")==VirtualLabPolicies.Decision.MANUAL_REVIEW);});
     run("VGL-10-08",()->{var n=new VirtualLabPolicies.Names(ZoneId.of("Asia/Kolkata"));ok(n.reserve(id(1),0,VirtualLabPolicies.MediaKind.JPG).startsWith("1970-01-01/")&&n.reserve(id(1),86_400_000,VirtualLabPolicies.MediaKind.JPG).endsWith("0001.jpg"));});
 
