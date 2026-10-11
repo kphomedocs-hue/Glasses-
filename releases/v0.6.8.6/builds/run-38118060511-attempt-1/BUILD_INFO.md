@@ -1,0 +1,23 @@
+# K G1 G6A Passive Peer Identity Diagnostic v0.6.8.6 — Exact Build
+- Build commit: 90c2acb4f8736acf6ff024bfa3ba660ead09dad9
+- Build run: 38118060511
+- Build attempt: 1
+- Package ID: com.parkarsite.g6apeerdiag686
+- versionCode: 1
+- APK SHA-256: d05ce2a23d25d409fc583c3830b9e574577586f2eb2f21e830895d9eece099d0
+- Exact source ZIP SHA-256: 9202118df6eb15a5628fdf0d199c909bc0b8ca47b01e02b93396bdc02422473b
+- Safety audit: PASS
+- Red-team static audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- physical capture code: NONE
+- Wi-Fi Direct discovery and read-only peer/group inspection: PRESENT; association code: ABSENT
+- HTTP/catalog/media code: NONE
+- persistent import/receipt code: NONE
+- discovery starts before ENTER; no time-sync or inventory command
+- credential values decoded/logged/persisted: NO
+- ENTER writes allowed: exactly one; EXIT writes allowed: exactly one
+- discovery bound: 16000 ms; connection bound: 15000 ms
+- credential parsing/logging: NONE\n- WifiP2pManager connect, cancelConnect, removeGroup: NONE
+- research-only build: NOT AUTHORIZED for physical use; G6A OPEN / G6B BLOCKED
