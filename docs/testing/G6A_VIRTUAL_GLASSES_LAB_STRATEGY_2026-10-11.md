@@ -104,3 +104,7 @@ No invented percent coverage; track required assertions and hardware-dependent c
 
 ## Post-plan implementation note — 2026-10-11
 The strategy above was a proposal at creation time. Lane A first 24 **source-only safety assertion subsets** were subsequently implemented under lab/virtual-aimb-g1/ and independently rechecked with a separate adversarial test, at source commit 1c195bd6fb6254365994520cabc48a493e6ed95c. CI run 38130089425 and hygiene 38130089461 PASS; see docs/testing/results/2026-10-11_VGL_PHASE1_24_OFFLINE_TEST_RESULT.md. This does **not** establish complete production-code path coverage or any hardware gate. 72 remain planned, no APK generated, G6A OPEN and G6B BLOCKED.
+
+
+## 2026-10-11 implementation update — 96 offline subset cases executed; no physical promotion
+Source-only candidate code under lab/virtual-aimb-g1 executes all 96 unique scenario IDs with real frozen protocol/identity and RecoveryImportStore modules where applicable. Source commit 34a218ccec0116909cc07fbc75c2a729b63a791a, GitHub Actions 38131350988 SUCCESS, hygiene 38131350927 SUCCESS. Both adversarial suites and 96-ID runner manifest check PASS. See docs/testing/results/2026-10-11_VGL_LANE_A_96_OFFLINE_TEST_RESULT.md and docs/testing/VGL_LANE_A_96_RED_TEAM_REVIEW_2026-10-11.md. This is NOT production Android path, emulator/transport, actual remote-original-preserving import or physical proof. Android adapters remain unwired; media formats, peer and 0x41 unresolved. No APK or new physical test was authorized. G6A OPEN; G6B BLOCKED.

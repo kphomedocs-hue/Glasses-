@@ -1,21 +1,34 @@
-# Virtual AIMB-G1 Lab — Lane A / first 24 scenarios
+# Virtual AIMB-G1 Lab — 96 Lane A offline safety-subset assertions
 
-**State:** source-only Java 17 candidate, packs VGL-01 through VGL-03, no APK or physical tests. Run with:
+**Source verification:** 34a218ccec0116909cc07fbc75c2a729b63a791a
+**GitHub Actions:** https://github.com/kphomedocs-hue/Glasses-/actions/runs/38131350988 SUCCESS.
+**Repository Hygiene:** https://github.com/kphomedocs-hue/Glasses-/actions/runs/38131350927 SUCCESS.
 
-    bash lab/virtual-aimb-g1/run_selftest.sh
+Run from repository root: bash lab/virtual-aimb-g1/run_selftest.sh (Java 17).
 
-Inputs are synthetic, e.g. the fabricated locally administered Bluetooth address in the tests. Prints fixture IDs and aggregate status only.
+## Source-only architecture
+- VirtualClock: deterministic separately scoped timeouts.
+- FrameEvidence: actual module protocol CRC and synthetic 0x41/0x73 envelopes; short 0x41 meaning UNKNOWN.
+- VirtualGlassesCore: BLE lifecycle, peer candidate classification via the actual PeerIdentityPolicy, no real peer connect or media GET.
+- VirtualLabPolicies: synthetic group teardown, bounded line-list/limited synthetic JSON catalog, capture-delta selection, one-shot response failure policy, JPG/MP4/OPUS shape-only verification, candidate mixed-media naming, injected platform policies, release report sanitation.
+- VirtualScenarioSelfTest covers packs 01–03 (24 IDs).
+- VirtualRemainingScenarioSelfTest covers packs 04–12 (72 IDs). Pack 09 actually exercises RecoveryImportStore, including crashes and local-only recovery.
+- VirtualRedTeamSelfTest and VirtualPhase2RedTeamSelfTest perform independent adversarial checks.
+- The runner enforces exactly all 96 unique scenario IDs, no missing/duplicate case.
 
-## What actually runs
-- One event-driven candidate reusable policy core with injected BLE + peer ports; an independent deterministic virtual clock scopes each deadline by name.
-- Historic CRC framing reused unchanged from modules/protocol; valid envelopes do not imply validated credential contents. In particular five-byte short 0x41 remains UNKNOWN.
-- Source-derived exact/normalized/full-raw Bluetooth suffix identity candidate policy reused unchanged from source/g6a-identity-core. No candidate, even exact-name, is authenticated or connection-authorized.
-- Synthetic callback order, timeout, CCCD/ENTER/EXIT behavior, 0x73 event-ID counter bounds, IP/group provenance gating and adversarial peer classification.
-- Independent adverse timing and unsafe-state checks in VirtualRedTeamSelfTest.
+## Critical limits
+96/96 means only **source-only synthetic safety assertion subsets PASS**. None is certified end-to-end against the final Android production code path. These tests contain no Android app build, real Bluetooth, Wi-Fi Direct, HTTP socket, new APK, physical capture or hardware run. Core ports are still not wired to production Android, and additional new decision models are candidate-only.
 
-## Limits that must remain visible
-The new VirtualGlassesCore is a **candidate production-shared core**, not yet wired to the actual Android app. Thus 24/24 executed synthetic safety assertion sets does not mean 24 complete matrix scenarios are fully production-path validated. VGL-02-01 covers long-frame envelope shape only, not an evidence-backed credential field decoder; typed synthetic inventory/IP/group evidence is not actual BLE payload decoding or verified Android WifiP2p group membership. VGL-03-07/08 block trust of a spoofed name, but do not verify real peer-address provenance. Do not label these full production/physical PASS.
+Real type-2 JSON, 0x73 typed content, short 0x41 meaning, media codecs and peer authentication are not proven. Simulated group/Android lifecycle evidence uses injected boolean values. Actual mixed-kind persisted counters are not implemented; the current RecoveryImportStore is JPG-only. JPEG and media container shape is NOT proof of full image/video/audio decoding.
 
-For preservation safety, LocalCatalogPort, OneShotMediaPort and DurableStorePort are intentionally unimplemented here. No peer connection or HTTP GET capability exists. In a later approved integration, use RecoveryImportStore for local commit and never treat a generic FAILED-to-DOWNLOADING ledger transition as permission for a second potentially consumptive GET.
+## Remaining development/physical gates
+1. Wire all safety policies into one adopted production state machine, Android adapters and durable storage; prohibit unsafe media GET.
+2. Validate one Android emulator with synthetic HTTP, permissions/lifecycle, error cases and simulated capture; then investigate dual-AVD virtual P2P only if feasible.
+3. Separately establish true device identity, current proprietary event semantics and media fidelity, and a method to import while keeping originals on glasses before physical sync.
 
-The 72 planned scenarios in packs 4–12 remain unimplemented. G6A OPEN and G6B BLOCKED. The observed tested JPG GET/exit path removes the source JPG from the glasses, so automatic production import stays blocked pending a proven originals-preserving path.
+Previous physical JPG GET+EXIT consumed the original from glasses. **No physical media GET or new physical test has been authorized by this work.**
+
+**G6A OPEN; G6B BLOCKED.**
+
+Detailed evidence: docs/testing/results/2026-10-11_VGL_LANE_A_96_OFFLINE_TEST_RESULT.md
+Independent findings: docs/testing/VGL_LANE_A_96_RED_TEAM_REVIEW_2026-10-11.md
