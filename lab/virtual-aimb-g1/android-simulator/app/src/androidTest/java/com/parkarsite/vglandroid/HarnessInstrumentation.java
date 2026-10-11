@@ -22,6 +22,12 @@ public final class HarnessInstrumentation extends Instrumentation {
     private static final String HARD_FETCH="crash_after_fetch_mark";
     private static final String HARD_VERIFIED="crash_after_verified_journal";
     private static final String HARD_PARTIAL="crash_mid_part_write";
+    private static final String HARD_SYNC="crash_after_part_sync";
+    private static final String HARD_MOVE="crash_after_final_move";
+    private static final String HARD_RECEIPT="crash_after_receipt";
+    private static final String RECOVER_SYNC="recover_after_part_sync";
+    private static final String RECOVER_MOVE="recover_after_final_move";
+    private static final String RECOVER_RECEIPT="recover_after_receipt";
     private static final String RECOVER_FETCH="recover_after_fetch_mark";
     private static final String RECOVER_VERIFIED="recover_after_verified_journal";
     private static final String RECOVER_PARTIAL="recover_mid_part_write";
@@ -183,6 +189,33 @@ public final class HarnessInstrumentation extends Instrumentation {
                     "hard-stop-verified","VGL-EMU-HARD-VERIFIED-01");
             }else if(HARD_PARTIAL.equals(mode)){
                 hardStopMidWrite();
+            }else if(HARD_SYNC.equals(mode)){
+                hardStopAt(RecoveryImportStore.Barrier.AFTER_PART_SYNC,
+                    "hard-stop-sync","VGL-EMU-HARD-SYNC-01");
+            }else if(HARD_MOVE.equals(mode)){
+                hardStopAt(RecoveryImportStore.Barrier.AFTER_FINAL_MOVE,
+                    "hard-stop-move","VGL-EMU-HARD-MOVE-01");
+            }else if(HARD_RECEIPT.equals(mode)){
+                hardStopAt(RecoveryImportStore.Barrier.AFTER_RECEIPT,
+                    "hard-stop-receipt","VGL-EMU-HARD-RECEIPT-01");
+            }else if(RECOVER_SYNC.equals(mode)){
+                recoverHardStop("hard-stop-sync","VGL-EMU-HARD-SYNC-01",false);
+                report.putString("status","PASS");
+                report.putString("kind","EMULATOR_ONLY_SYNTHETIC");
+                report.putString("hard_stop","SYNCED_PART_UNCERTAIN_NO_REFETCH");
+                finish(0,report);return;
+            }else if(RECOVER_MOVE.equals(mode)){
+                recoverHardStop("hard-stop-move","VGL-EMU-HARD-MOVE-01",true);
+                report.putString("status","PASS");
+                report.putString("kind","EMULATOR_ONLY_SYNTHETIC");
+                report.putString("hard_stop","MOVED_FINAL_LOCAL_RECOVERY");
+                finish(0,report);return;
+            }else if(RECOVER_RECEIPT.equals(mode)){
+                recoverHardStop("hard-stop-receipt","VGL-EMU-HARD-RECEIPT-01",true);
+                report.putString("status","PASS");
+                report.putString("kind","EMULATOR_ONLY_SYNTHETIC");
+                report.putString("hard_stop","RECEIPT_LOCAL_RECOVERY");
+                finish(0,report);return;
             }else if(RECOVER_PARTIAL.equals(mode)){
                 recoverHardStop("hard-stop-partial","VGL-EMU-HARD-PARTIAL-01",false);
                 report.putString("status","PASS");
