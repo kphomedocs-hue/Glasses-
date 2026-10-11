@@ -45,7 +45,7 @@ public final class PeerIdentityPolicy {
      * Returns a normalized 12-hex bonded BLE address, or null.
      * This address must NOT be presumed equal to WifiP2pDevice.deviceAddress.
      */
-    public static String normalizeBluetoothAddress(String address) {
+    static String normalizeBluetoothAddress(String address) {
         if (address == null) return null;
         if (!address.matches("(?i)(?:[0-9a-f]{2}:){5}[0-9a-f]{2}")
                 && !address.matches("(?i)[0-9a-f]{12}")) return null;
@@ -56,7 +56,7 @@ public final class PeerIdentityPolicy {
      * Reconstructs the Cyan candidate from its documented BLE connection handler.
      * Output is a candidate string ONLY. No claim of current over-the-air equality.
      */
-    public static String deriveCandidate(String bondedName, String bondedBleAddress) {
+    static String deriveCandidate(String bondedName, String bondedBleAddress) {
         if (!validBondedTargetName(bondedName)) return null;
         String suffix = normalizeBluetoothAddress(bondedBleAddress);
         if (suffix == null) return null;
