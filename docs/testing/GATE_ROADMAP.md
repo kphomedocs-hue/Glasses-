@@ -1642,3 +1642,7 @@ Source: `source/g6a-recovery-core/` and `docs/research/G6A_STEP3_OFFLINE_CONSUMP
 
 ### 2026-10-11 Step 4 source-only peer-identity reference (not gate pass)
 Identity research: source/g6a-identity-core/ and docs/research/G6A_STEP4_PEER_IDENTITY_RED_TEAM_AND_TEST_SPEC_2026-10-11.md. Hardened Java 17 offline CI 38126649073 PASS (54 assertions), hygiene 38126649087 PASS. A derived candidate, full BLE suffix, or model prefix is not sufficient to authenticate the current P2P peer. Previously observed single OTHER peer still unidentified and no current group formed/tested. No diagnostic APK or physical run authorized. G6A OPEN; G6B BLOCKED.
+
+
+### 2026-10-11 G6A Step 4 retry (source-only, no physical gate promotion)
+Original Cyan DEX recheck and direct frozen-v0.6.8.5/v0.6.8.6 matcher tests expose a v0.6.8.6 OTHER-category blind spot for hypothetical peer names ending with **colon-formatted** bonded Bluetooth address. See docs/research/G6A_STEP4_RETRY_ORIGINAL_DEX_RAW_ADDRESS_BLIND_SPOT_2026-10-11.md. CI run 38127615703 PASS (77 assertions), hygiene 38127615701 PASS. Actual anonymous peer was not identified; do not connect unknown peer or repeat prior passive scan unchanged. A discriminating observer would need raw-address suffix aggregate and temporal phase, and separate authorization. G6A OPEN; G6B BLOCKED.
