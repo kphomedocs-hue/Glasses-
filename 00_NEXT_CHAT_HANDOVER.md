@@ -789,3 +789,7 @@ The user must not repeat any failed/indeterminate run, must preserve the full te
 
 **G6A remains OPEN. G6B remains BLOCKED.**
 
+
+
+## CURRENT RESEARCH OVERRIDE — 2026-10-11 assumption-first closure
+After the full 90-row audit, compare exact K v0.4.0/v0.6.7/v0.6.8.5/v0.6.8.6 source and original Cyan DEX. Conclusions and adversarial blockers recorded in docs/research/G6A_ASSUMPTION_FIRST_STATIC_CLOSURE_2026-10-11.md and docs/research/G6A_ASSUMPTION_FIRST_RESOLUTION_REGISTER_2026-10-11.md. An old K credential-bearing 0x41 gate is an app-level prerequisite, not required by WPS-PBC WifiP2pConfig. Cyan creates candidate Wi-Fi name using paired Bluetooth name/address; observed OTHER peer still does not match full normalized suffix and cannot be identified without further evidence. No unsupported peer fallback or current physical association. Media GET is consumptive for observed JPG. Durability under crashes and preservation policy are open. No current test authorization. G6A OPEN; G6B BLOCKED.
