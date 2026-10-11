@@ -1666,3 +1666,7 @@ Actual single Google APIs Android 16/API36 emulator runtime verified on source r
 
 ### 2026-10-11 V3B Android emulator actual process-death recovery (NOT physical gate)
 Pure synthetic API36 Android emulator app-private storage using shared RecoveryImportStore, one virtual phone, zero manifest permissions. Source commit 6bde5ef0451984e5dd812d0159ecc277bc216aad. GitHub 38163205078 SUCCESS: real JVM `Runtime.halt(73)` after fetch marker, after verified journal, and during a three-byte partial write, followed by independent fresh-process recoveries; no second byte Source; incomplete bytes still quarantined. Companion CI compile/96/offline/hygiene SUCCESS. See docs/testing/results/2026-10-11_VGL_V3B_ANDROID_ABRUPT_PROCESS_RECOVERY_RESULT.md and docs/testing/VGL_V3B_ANDROID_HARD_STOP_RED_TEAM_REVIEW_2026-10-11.md. Not full phone power cut, actual firmware/media, original photo retention, or production Android sync; G6A OPEN/G6B BLOCKED.
+
+
+### 2026-10-12 V3C six-boundary Android emulator hard-stop result — software-only PASS
+Actual API36 emulator run 38169936791 SUCCESS: 6/6 abrupt JVM process terminations after transaction barriers with fresh-process local recovery; normal 2/2 storage instrumentation PASS. Detailed report docs/testing/results/2026-10-12_VGL_V3C_ANDROID_SIX_BARRIER_IMPLEMENTATION.md. This upgrades simulated Android recovery evidence only; not hardware power-loss, shipping Android integration, actual consumptive-transfer protection, or original-preservation proof. G6A OPEN; G6B BLOCKED.
