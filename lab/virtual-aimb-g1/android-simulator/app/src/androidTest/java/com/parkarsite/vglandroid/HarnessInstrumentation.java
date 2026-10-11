@@ -153,6 +153,16 @@ public final class HarnessInstrumentation extends Instrumentation {
                 throw new AssertionError("Remote-uncertain media re-opened");
             }catch(IOException expected){}
             must(sourceInvocations[0]==0);
+            if ("hard-stop-partial".equals(name)) {
+                // The interrupted source wrote exactly three synthetic bytes
+                // before its JVM exited. Recovery must preserve those bytes
+                // for review, not delete them or declare a complete JPG.
+                var quarantine=getTargetContext().getApplicationContext()
+                    .getNoBackupFilesDir().toPath().resolve("vgl-instrument-"+name)
+                    .resolve(".quarantine").resolve(opaque+".part");
+                must(java.nio.file.Files.isRegularFile(quarantine));
+                must(java.nio.file.Files.size(quarantine)==3L);
+            }
         }
     }
 
