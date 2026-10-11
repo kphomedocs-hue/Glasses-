@@ -105,4 +105,10 @@ run_hard_stop crash_after_verified_journal 02
 recover_hard_stop recover_after_verified_journal 02 VERIFIED_LOCAL_RECOVERY_NO_REFETCH
 run_hard_stop crash_mid_part_write 03
 recover_hard_stop recover_mid_part_write 03 PARTIAL_BYTES_UNCERTAIN_NO_REFETCH
-echo 'VGL_EMULATOR_HARD_STOP 3/3 PASS: real Android JVM termination at fetch/verified/midstream and local-only recovery'
+run_hard_stop crash_after_part_sync 04
+recover_hard_stop recover_after_part_sync 04 SYNCED_PART_UNCERTAIN_NO_REFETCH
+run_hard_stop crash_after_final_move 05
+recover_hard_stop recover_after_final_move 05 MOVED_FINAL_LOCAL_RECOVERY
+run_hard_stop crash_after_receipt 06
+recover_hard_stop recover_after_receipt 06 RECEIPT_LOCAL_RECOVERY
+echo 'VGL_EMULATOR_HARD_STOP 6/6 PASS: real Android JVM termination and local-only recovery at six boundaries'
