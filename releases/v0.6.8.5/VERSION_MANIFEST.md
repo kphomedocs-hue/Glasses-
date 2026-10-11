@@ -33,3 +33,17 @@ The one-time v0.6.8.5 diagnostic CI candidate is now **authorized for ONE superv
 - Do not resume persistent import until this diagnostic's full physical report is reviewed. Never treat CI success as physical PASS.
 
 **G6A OPEN. G6B BLOCKED.**
+
+## CURRENT OVERRIDE — 2026-10-11 G6A v0.6.8.5 physical INCONCLUSIVE
+
+Physical one-time diagnostic completed at 2026-10-11T11:45:57+0530:
+- Exact build: run `38116572973`, attempt `1`, source commit `c38203f6e96044b7d36b6b6c12d1775079d750e9`.
+- Complete operator report: `releases/v0.6.8.5/builds/run-38116572973-attempt-1/reports/2026-10-11_G6A_V0_6_8_5_PHYSICAL_INCONCLUSIVE.md`.
+- New root-cause assessment: `docs/research/G6A_V0_6_8_5_INCONCLUSIVE_PEER_MATCH_ANALYSIS_2026-10-11.md`.
+- BLE GATT, notifications, discovery-before-ENTER, one ENTER write/callback all succeeded. Peer count rose from 0 to 1 but zero matched; **no P2P connect was attempted**, so association/readiness remains untested.
+- Proven earlier G4A used exact BLE-reported P2P name. Tested v0.6.8.5 uses only a bonded BLE-address suffix match; its header's "name-or-suffix" claim is inaccurate.
+- One 0x73 event was counted during pending ENTER callback but event ID was not retained. Meaning unknown.
+- One EXIT write/callback succeeded, discovery stopped, and dual post-cleanup group-absence checks passed; no media/HTTP operations.
+- **INCONCLUSIVE. Do not repeat unchanged.** Next: exact Cyan name-matching recheck and, if necessary, sanitized no-connect peer classification + early 0x73 event-ID timing. No new physical APK authorized.
+
+**G6A OPEN. G6B BLOCKED.**
