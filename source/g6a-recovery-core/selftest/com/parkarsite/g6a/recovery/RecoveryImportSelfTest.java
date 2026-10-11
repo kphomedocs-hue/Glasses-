@@ -13,10 +13,22 @@ public final class RecoveryImportSelfTest {
     private static int assertions=0;
 
     public static void main(String[] args)throws Exception{
+        if(args.length==4 && args[0].equals("abrupt-worker")) {
+            Path root=Path.of(args[1]);
+            RecoveryImportStore.Barrier barrier=RecoveryImportStore.Barrier.valueOf(args[2]);
+            String opaqueId=args[3];
+            RecoveryImportStore s=new RecoveryImportStore(root,ZONE);
+            var t=s.prepare(opaqueId,TIME);
+            s.execute(t,JPEG.length,out->out.write(JPEG),at->{
+                if(at==barrier) Runtime.getRuntime().halt(37);
+            });
+            throw new AssertionError("Worker failed to terminate abruptly");
+        }
         testSuccessAndRepeatedOpen();
         testPrepareThenReopen();
         testErrorBeforeFetchDoesNotConsume();
         for(RecoveryImportStore.Barrier b:RecoveryImportStore.Barrier.values())testCrashAt(b);
+        for(RecoveryImportStore.Barrier b:RecoveryImportStore.Barrier.values())testAbruptProcessExit(b);
         testLengthMismatchCannotRetry();
         testRejectedJpegCannotRetry();
         testRemoteReadFailureCannotRetry();
@@ -71,6 +83,31 @@ public final class RecoveryImportSelfTest {
                 check(actual==RecoveryImportStore.Disposition.LOCAL_RECOVERED||actual==RecoveryImportStore.Disposition.COMPLETE,"local recovery "+barrier);
                 check(r.isCommittedAndIntact(id),"recovered bytes and receipt "+barrier);
                 throwsFailure(()->r.execute(t,JPEG.length,out->{throw new AssertionError("must not reread");},ignored->{}),"no retrigger recovered "+barrier);
+            }
+        });
+    }
+    /** Separate JVM exits with Runtime.halt, bypassing normal shutdown and exception handlers. */
+    private static void testAbruptProcessExit(RecoveryImportStore.Barrier barrier)throws Exception{
+        withStore("halt-"+barrier,(s,p)->{
+            String opaqueId=id("abrupt-"+barrier);
+            String java=Path.of(System.getProperty("java.home"),"bin","java").toString();
+            Process worker=new ProcessBuilder(java,"-cp",System.getProperty("java.class.path"),
+                RecoveryImportSelfTest.class.getName(),"abrupt-worker",p.toString(),barrier.name(),opaqueId)
+                .redirectErrorStream(true).start();
+            int exit=worker.waitFor();
+            check(exit==37,"intentional hard JVM termination "+barrier+" (exit="+exit+")");
+            var recovered=new RecoveryImportStore(p,ZONE);
+            var records=recovered.recover();
+            check(records.size()==1,"hard-stop single transaction "+barrier);
+            var state=records.get(0).disposition();
+            if(barrier==RecoveryImportStore.Barrier.AFTER_FETCH_MARK||
+                    barrier==RecoveryImportStore.Barrier.AFTER_PART_SYNC){
+                check(state==RecoveryImportStore.Disposition.REMOTE_UNCERTAIN,"hard-stop uncertain "+barrier);
+                check(!recovered.isCommittedAndIntact(opaqueId),"hard-stop no false receipt "+barrier);
+            }else{
+                check(state==RecoveryImportStore.Disposition.LOCAL_RECOVERED||
+                      state==RecoveryImportStore.Disposition.COMPLETE,"hard-stop local recovery "+barrier);
+                check(recovered.isCommittedAndIntact(opaqueId),"hard-stop recovered receipt "+barrier);
             }
         });
     }
