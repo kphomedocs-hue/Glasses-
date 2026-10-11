@@ -62,7 +62,7 @@ public final class MainActivity extends Activity {
     private boolean exitWriteAttempted, exitWriteStarted, exitCallbackSucceeded;
     private boolean discoveryRequested, discoveryStarted, connectRequested, targetPeerMatched, groupCreatedByTest;
     private boolean preflightConfirmedAbsent, preexistingGroup, cleanupIssue, cleanupConfirmedAbsent;
-    private boolean peersRequestPending, connectionInfoRequestPending;
+    private boolean peersRequestPending, connectionInfoRequestPending, groupProofPending, exitDeferredAwaitingEnterCallback;
     private int preEnter73Count, pendingEnter73Count;
     private String failureReason, pairedAddressSuffix, expectedP2pAddress;
     private BluetoothDevice pendingTarget;
@@ -153,7 +153,7 @@ public final class MainActivity extends Activity {
         exitWriteAttempted=false;exitWriteStarted=false;exitCallbackSucceeded=false;
         discoveryRequested=false;discoveryStarted=false;connectRequested=false;targetPeerMatched=false;groupCreatedByTest=false;
         preflightConfirmedAbsent=false;preexistingGroup=false;cleanupIssue=false;cleanupConfirmedAbsent=false;
-        peersRequestPending=false;connectionInfoRequestPending=false;preEnter73Count=0;pendingEnter73Count=0;
+        peersRequestPending=false;connectionInfoRequestPending=false;groupProofPending=false;exitDeferredAwaitingEnterCallback=false;preEnter73Count=0;pendingEnter73Count=0;
         failureReason=null;pairedAddressSuffix=null;expectedP2pAddress=null;pendingTarget=null;
         cleanupStep=CleanupStep.NONE; phase=Phase.IDLE;
         runButton.setEnabled(false);copyButton.setEnabled(false);shareButton.setEnabled(false);
@@ -232,6 +232,9 @@ public final class MainActivity extends Activity {
                 append("ENTER write callback: "+(status==BluetoothGatt.GATT_SUCCESS?"SUCCESS":"FAILED "+status));
                 if(status==BluetoothGatt.GATT_SUCCESS && !terminalStarted){enterCallbackSucceeded=true;requestPeers();}
                 else if(status!=BluetoothGatt.GATT_SUCCESS)requestTerminal("ENTER write callback failed.");
+                // If termination began while ENTER was still in flight, the callback
+                // releases the GATT write slot so the single EXIT can be attempted.
+                if(terminalStarted&&exitDeferredAwaitingEnterCallback)attemptExitWriteNow();
             }else{
                 cancelTimer("EXIT");exitCallbackSucceeded=status==BluetoothGatt.GATT_SUCCESS;
                 append("EXIT callback: "+(exitCallbackSucceeded?"SUCCESS":"FAILED "+status));
@@ -299,7 +302,9 @@ public final class MainActivity extends Activity {
             else if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(a))requestConnectionInfo();
         }};
         try{
-            if(Build.VERSION.SDK_INT>=33)registerReceiver(p2pReceiver,f,Context.RECEIVER_NOT_EXPORTED);
+            // Wi-Fi Direct broadcasts may originate from a privileged Wi-Fi service UID.
+            // Only actions are consumed; all peer/group facts are re-read via platform APIs.
+            if(Build.VERSION.SDK_INT>=33)registerReceiver(p2pReceiver,f,Context.RECEIVER_EXPORTED);
             else registerReceiver(p2pReceiver,f);
         }catch(Exception e){p2pReceiver=null;requestTerminal("Cannot register P2P broadcast receiver.");}
     }
@@ -339,11 +344,21 @@ public final class MainActivity extends Activity {
             connectionInfoRequestPending=false;
             if(reportFinished||terminalStarted||phase!=Phase.CONNECTING)return;
             if(expired("ASSOCIATION")){requestTerminal("Connection info beyond deadline.");return;}
-            if(info==null||!info.groupFormed)return;
-            cancelTimer("ASSOCIATION");phase=Phase.CONNECTED;groupCreatedByTest=true;
-            append("P2P group formed: TRUE");append("Phone is group owner: "+info.isGroupOwner);
-            append("HTTP/socket/media operations: 0");setStatus("Association observed; awaiting bounded passive 0x73 events…");
-            armTimer("OBSERVE",POST_CONNECT_OBSERVE_MS,()->requestTerminal(null));
+            if(info==null||!info.groupFormed||groupProofPending)return;
+            // ConnectionInfo alone does not attribute the group to the selected peer.
+            // Verify target membership via the platform before positive classification.
+            groupProofPending=true;
+            try{p2pManager.requestGroupInfo(p2pChannel,group->{
+                groupProofPending=false;
+                if(reportFinished||terminalStarted||phase!=Phase.CONNECTING)return;
+                if(expired("ASSOCIATION")){requestTerminal("Group identity verification after deadline.");return;}
+                if(!groupContainsTarget(group)){append("Group formed, selected peer membership not yet verified");return;}
+                cancelTimer("ASSOCIATION");phase=Phase.CONNECTED;groupCreatedByTest=true;
+                append("P2P group and selected peer membership verified: TRUE");
+                append("Phone is group owner: "+info.isGroupOwner);
+                append("HTTP/socket/media operations: 0");setStatus("Association observed; awaiting bounded passive 0x73 events…");
+                armTimer("OBSERVE",POST_CONNECT_OBSERVE_MS,()->requestTerminal(null));
+            });}catch(Exception e){groupProofPending=false;requestTerminal("Group identity verification API error.");}
         });}catch(Exception e){connectionInfoRequestPending=false;requestTerminal("Connection-info API error.");}
     }
     private void handleNotify(byte[] v){
@@ -377,6 +392,22 @@ public final class MainActivity extends Activity {
     }
     private void sendExitOnce(){
         if(exitWriteAttempted){startCleanup();return;}
+        if(pendingWrites.contains(BleWrite.ENTER)){
+            if(exitDeferredAwaitingEnterCallback)return;
+            exitDeferredAwaitingEnterCallback=true;phase=Phase.EXIT_SENT;
+            append("EXIT deferred: ENTER BLE write callback remains pending");
+            armTimer("EXIT_WAIT",EXIT_CALLBACK_TIMEOUT_MS,()->{
+                exitDeferredAwaitingEnterCallback=false;
+                noteCleanupIssue("ENTER callback did not settle before EXIT attempt");
+                attemptExitWriteNow(); // exactly one bounded attempt; never retry
+            });
+            return;
+        }
+        attemptExitWriteNow();
+    }
+    private void attemptExitWriteNow(){
+        if(exitWriteAttempted){startCleanup();return;}
+        cancelTimer("EXIT_WAIT");exitDeferredAwaitingEnterCallback=false;
         exitWriteAttempted=true;phase=Phase.EXIT_SENT;
         append("");append("EXIT TRANSFER MODE");append("Command: 0x41 / 02 01 09; at most one attempt");
         if(!bleConnected||gatt==null||writeChar==null){
@@ -393,7 +424,8 @@ public final class MainActivity extends Activity {
     private void startCleanup(){
         if(phase==Phase.CLEANUP||phase==Phase.COMPLETE)return;
         phase=Phase.CLEANUP;cleanupStep=CleanupStep.NONE;
-        cancelTimer("EXIT");cancelTimer("OBSERVE");cancelTimer("ASSOCIATION");
+        cancelTimer("EXIT");cancelTimer("EXIT_WAIT");exitDeferredAwaitingEnterCallback=false;
+        cancelTimer("OBSERVE");cancelTimer("ASSOCIATION");
         cancelTimer("DISCOVERY");cancelTimer("BLE");cancelTimer("PREFLIGHT");
         append("");append("BOUNDED TERMINAL CLEANUP");
         armTimer("CLEANUP_TOTAL",CLEANUP_TOTAL_TIMEOUT_MS,()->{
@@ -571,9 +603,8 @@ public final class MainActivity extends Activity {
     private static String safeGetName(BluetoothDevice d){try{return d==null?null:d.getName();}catch(SecurityException e){return null;}}
     private static String addressSuffix(BluetoothDevice d){try{return d==null?null:d.getAddress().replace(":","").toUpperCase(Locale.US);}catch(SecurityException e){return null;}}
     private boolean matchesCyanPeer(WifiP2pDevice d){
-        if(d==null||d.deviceName==null||pairedAddressSuffix==null)return false;
-        String name=d.deviceName.trim();
-        return name.equalsIgnoreCase(TARGET_NAME)||name.toUpperCase(Locale.US).endsWith(pairedAddressSuffix);
+        // Never use a generic device name to substitute for the bonded target.
+        return DiagnosticSafetyRules.matchesPairedPeerName(d==null?null:d.deviceName,pairedAddressSuffix);
     }
     private static String safeName(String n){if(n==null)return "<none>";String x=n.trim().toUpperCase(Locale.US);return x.equals(TARGET_NAME)?TARGET_NAME:x.startsWith(TARGET_NAME+"_")?TARGET_NAME+"_<suffix>":"<other>";}
     private static String isoNow(){return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ",Locale.US).format(new Date());}

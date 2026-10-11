@@ -52,3 +52,14 @@ The immutable archive still requires full independent review before promotion.
 The group-removal policy now explicitly requires observed group formation by
 this test, not merely a clean preflight and matching peer identity. If the
 app cannot prove attribution, it must not remove the group; it fails closed.
+
+## Independent manual review follow-up — 2026-10-11
+
+A further review after the original static audit found and corrected generic Wi-Fi peer
+matching, EXIT-write-before-ENTER-callback overlap, unverified P2P group attribution,
+and potentially lost privileged Wi-Fi Direct broadcasts. See
+`docs/research/G6A_v0.6.8.5_INDEPENDENT_MANUAL_REVIEW_2026-10-11.md`.
+
+This newer source supersedes the previous v0.6.8.5 source commit for any eventual
+CI build. No build or physical run is approved until exact-commit CI succeeds
+and the resulting artifact receives a separate manual review.

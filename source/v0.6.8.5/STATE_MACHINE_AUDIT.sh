@@ -38,6 +38,12 @@ requirements={
  'discovery then ENTER': 'append("discoverPeers: SUCCESS");sendEnter(gatt);' in s,
  'permission denial report': 'private void abortBeforeRun(String reason)' in s,
  'CI build provenance in report': 'appendBuildIdentity();' in s and 'BuildConfig.BUILD_COMMIT' in s and 'BuildConfig.BUILD_RUN' in s and 'BuildConfig.BUILD_ATTEMPT' in s,
+ 'generic peer name not sufficient': 'DiagnosticSafetyRules.matchesPairedPeerName(' in s,
+ 'deferred EXIT for pending ENTER': 'pendingWrites.contains(BleWrite.ENTER)' in s and 'if(terminalStarted&&exitDeferredAwaitingEnterCallback)attemptExitWriteNow();' in s,
+ 'bounded EXIT pending callback': 'armTimer("EXIT_WAIT",EXIT_CALLBACK_TIMEOUT_MS' in s,
+ 'group proof before positive classification': 'if(!groupContainsTarget(group))' in s and 'groupProofPending=true;' in s,
+ 'privileged Wi-Fi broadcast compatible': 'registerReceiver(p2pReceiver,f,Context.RECEIVER_EXPORTED)' in s,
+
 }
 for name,ok in requirements.items(): print(('PASS' if ok else 'FAIL')+': '+name)
 if not all(requirements.values()):raise SystemExit(1)

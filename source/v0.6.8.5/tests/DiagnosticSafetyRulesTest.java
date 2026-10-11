@@ -31,6 +31,12 @@ public final class DiagnosticSafetyRulesTest {
         check(DiagnosticSafetyRules.cleanTerminalClassification(true,true,false,true,false),false,"EXIT callback missing");
         check(DiagnosticSafetyRules.cleanTerminalClassification(true,true,true,false,false),false,"group still present");
         check(DiagnosticSafetyRules.cleanTerminalClassification(true,true,true,true,true),false,"cleanup callback error");
+        check(DiagnosticSafetyRules.matchesPairedPeerName("AIMB-G1", "A1B2C3D4E5F6"),false,"bare model name unsafe");
+        check(DiagnosticSafetyRules.matchesPairedPeerName("AIMB-G1_A1B2C3D4E5F6", "A1B2C3D4E5F6"),true,"suffix match");
+        check(DiagnosticSafetyRules.matchesPairedPeerName("AIMB-G1_A1B2C3D4E5F0", "A1B2C3D4E5F6"),false,"wrong device suffix");
+        check(DiagnosticSafetyRules.matchesPairedPeerName(null, "A1B2C3D4E5F6"),false,"missing peer name");
+        check(DiagnosticSafetyRules.matchesPairedPeerName("AIMB-G1_A1B2C3D4E5F6", "F6"),false,"truncated suffix unsafe");
+        check(DiagnosticSafetyRules.matchesPairedPeerName("AIMB-G1_A1B2C3D4E5F6", "A1B2C3D4E5GG"),false,"nonhex suffix unsafe");
         System.out.println("PASS "+assertions+" host-JVM negative-path policy assertions");
     }
 }
