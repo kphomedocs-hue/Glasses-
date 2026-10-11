@@ -14,6 +14,8 @@ The source of truth before modification was main b4dc372cccd2500b0b71c59c58407d4
 - [x] Exact, normalized suffix, raw-colon suffix and generic/OTHER remain separate categories.
 - [x] No peer-name category grants trusted identity. Catalogue eligibility needs three independently supplied synthetic prerequisites (peer membership, network binding, correlated IP).
 - [x] G6A and G6B status deliberately unchanged.
+- [x] Follow-up red team closed a potential stale peer/group/IP attestation hole: changed snapshot invalidates proof, fresh IP required and terminal events inert.
+- [x] Synthetic MAC literals rejected by public hygiene were replaced by composed synthetic test data.
 
 ## Open findings — not accepted as resolved
 1. This is a candidate shared core, not yet adopted by the Android production app. Port equivalence and Android-specific callback provenance need separate review.
@@ -22,7 +24,7 @@ The source of truth before modification was main b4dc372cccd2500b0b71c59c58407d4
 4. 03-07/08 do not provide an authenticated physical peer-address oracle. They assert fail-closed behavior only.
 5. No transport teardown API/group cleanup exists here. EXIT callback is simulated and asserted, not Android removeGroup proof.
 6. No crash-proof storage, media validation, numbering, or preservation-safe media copy is integrated. Existing recovery experiments are separate and not production evidence.
-7. External CI status and executable result must be linked separately after a real GitHub Actions run. This document is a **static red-team review**, not an invented runtime pass.
+7. Exact verified runtime log: https://github.com/kphomedocs-hue/Glasses-/actions/runs/38130089425 (24/24 safety subsets PASS and separate negative-path suite PASS); hygiene https://github.com/kphomedocs-hue/Glasses-/actions/runs/38130089461 PASS. See the separate evidence report for the initial failed hygiene run and corrective commits. This remains source-only, not a device PASS.
 
 ## Promotion rule
 Run offline CI and inspect logs. Record the exact tested commit and failures. Preserve scenario matrix historical labels until integration semantics are independently verified; only mark executable safety subset separately. No APK or physical test is authorized.

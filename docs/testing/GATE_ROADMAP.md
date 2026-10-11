@@ -1646,3 +1646,7 @@ Identity research: source/g6a-identity-core/ and docs/research/G6A_STEP4_PEER_ID
 
 ### 2026-10-11 G6A Step 4 retry (source-only, no physical gate promotion)
 Original Cyan DEX recheck and direct frozen-v0.6.8.5/v0.6.8.6 matcher tests expose a v0.6.8.6 OTHER-category blind spot for hypothetical peer names ending with **colon-formatted** bonded Bluetooth address. See docs/research/G6A_STEP4_RETRY_ORIGINAL_DEX_RAW_ADDRESS_BLIND_SPOT_2026-10-11.md. CI run 38127615703 PASS (77 assertions), hygiene 38127615701 PASS. Actual anonymous peer was not identified; do not connect unknown peer or repeat prior passive scan unchanged. A discriminating observer would need raw-address suffix aggregate and temporal phase, and separate authorization. G6A OPEN; G6B BLOCKED.
+
+
+### 2026-10-11 Virtual Lab phase 1 — OFFLINE SUBSETS ONLY
+Additive shared-core candidate and test harness: lab/virtual-aimb-g1/. Source commit 1c195bd6fb6254365994520cabc48a493e6ed95c, CI run 38130089425 PASS with 24/24 Java 17 synthetic assertion sets, and hygiene run 38130089461 PASS. Details and initial hygiene-fail correction: docs/testing/results/2026-10-11_VGL_PHASE1_24_OFFLINE_TEST_RESULT.md. These are **not production Android, emulator, radio, or physical proofs**; scenario matrix 01–03 marked OFFLINE SUBSET RUN / INTEGRATION PENDING; 72 remain unrun. P2P peer identity and preservation-safe GET still unproven. No experimental APK or real-glasses testing authorized. **G6A OPEN; G6B BLOCKED.**

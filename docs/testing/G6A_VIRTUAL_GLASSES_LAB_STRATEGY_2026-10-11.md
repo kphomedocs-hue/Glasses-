@@ -100,3 +100,7 @@ No invented percent coverage; track required assertions and hardware-dependent c
 **Decision request for implementation**: First implement V0/V1 in a new `lab/virtual-aimb-g1/` tree with CI, retaining all existing releases and gate status. Hardware interaction remains separately authorized.
 
 **Current:** G6A OPEN; G6B BLOCKED. This plan is research architecture only.
+
+
+## Post-plan implementation note — 2026-10-11
+The strategy above was a proposal at creation time. Lane A first 24 **source-only safety assertion subsets** were subsequently implemented under lab/virtual-aimb-g1/ and independently rechecked with a separate adversarial test, at source commit 1c195bd6fb6254365994520cabc48a493e6ed95c. CI run 38130089425 and hygiene 38130089461 PASS; see docs/testing/results/2026-10-11_VGL_PHASE1_24_OFFLINE_TEST_RESULT.md. This does **not** establish complete production-code path coverage or any hardware gate. 72 remain planned, no APK generated, G6A OPEN and G6B BLOCKED.
