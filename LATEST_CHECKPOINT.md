@@ -1179,3 +1179,7 @@ The user must not repeat any failed/indeterminate run, must preserve the full te
 
 ## v0.6.8.6 physical result — 2026-10-11
 One supervised run at 12:04:39 IST completed. Result INCONCLUSIVE, cleanup verified. One peer observed with nonempty name classified OTHER (no AIMB-G1 family prefix, no full paired BLE suffix); peer identity unknown. No 0x73 event and no Wi-Fi Direct connection. ENTER and EXIT succeeded. Exact report: releases/v0.6.8.6/builds/run-38118060511-attempt-1/reports/2026-10-11_G6A_V0_6_8_6_PHYSICAL_INCONCLUSIVE.md. Research: docs/research/G6A_V0_6_8_6_PHYSICAL_RECHECK_2026-10-11.md. One-run authorization consumed. No unchanged rerun. G6A OPEN; G6B BLOCKED.
+
+
+## 2026-10-11 Exact Cyan APK provenance blocker
+Focused static research is preserved in docs/research/G6A_CYAN_WIFI_NAME_PROVENANCE_BLOCKER_2026-10-11.md. Original Cyan split/base APK not accessible in current working files; repository code search did not recover precise stored-Wi-Fi-name setter/getter implementation. Historical BLE-credential SSID identity proven by G4A, but independent current name remains unknown. Need exact owner-exported Cyan APK matching documented SHA-256 to continue bytecode provenance. No further physical test authorized. G6A OPEN; G6B BLOCKED.
