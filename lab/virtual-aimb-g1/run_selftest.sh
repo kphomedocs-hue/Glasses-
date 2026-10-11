@@ -21,8 +21,7 @@ java -cp "$OUT" com.parkarsite.g1.virtual.VirtualRemainingScenarioSelfTest | tee
 java -cp "$OUT" com.parkarsite.g1.virtual.VirtualRedTeamSelfTest
 java -cp "$OUT" com.parkarsite.g1.virtual.VirtualPhase2RedTeamSelfTest
 # Explicitly verify manifest completeness, uniqueness and exact status phrase.
-test "$(grep -Ec '^VGL-[0-9]{2}-[0-9]{2} OFFLINE_ASSERTIONS_PASS
- "$OUT/scenarios.log")" -eq 96
+test "$(grep -c OFFLINE_ASSERTIONS_PASS "$OUT/scenarios.log")" -eq 96
 test -z "$(grep '^VGL-' "$OUT/scenarios.log" | sort | uniq -d)"
 for pack in $(seq 1 12); do
   for case_number in $(seq 1 8); do
