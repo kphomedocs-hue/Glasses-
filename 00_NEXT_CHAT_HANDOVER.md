@@ -722,3 +722,16 @@ These external semantics are hypotheses/supporting evidence only until matched a
 - G6A = OPEN.
 - G6B = BLOCKED.
 - No new APK is authorized yet.
+
+## CURRENT UPDATE — 2026-10-11 automated v0.6.8.5 CI build verified
+
+- Automatic CI builds have been restored for changes to `source/v0.6.8.5/**`, its build workflow, or exact-build archive script on `main`; manual dispatch remains available.
+- Release archive-only commits do **not** trigger another build; workflow concurrency serializes v0.6.8.5 builds.
+- First automatic build `38116492149` failed before compilation because the CI runner lacked `rg` (ripgrep). Both static audits were changed to portable `grep`; no new glasses protocol commands were introduced.
+- Successful automatic CI run: `38116572973`, attempt `1`, exact source commit `c38203f6e96044b7d36b6b6c12d1775079d750e9`.
+- Safety audit, red-team static audit, host-JVM regression checks, Android compilation, Android lint, APK signature verification, immutable release archiving, and Actions artifact upload: **PASS**.
+- Exact build: `releases/v0.6.8.5/builds/run-38116572973-attempt-1/`.
+- APK SHA-256: `49a134cc3e971faf1f9c3c5560cdbe4bf674b058ab58f64e1213469bdce9ddaf`.
+- Source ZIP SHA-256: `2d1f149a8f62ef3043bcb4d8b669ebb31a78d6aba14478c8526b8e518deb152c`.
+- **Build success is NOT physical authorization.** Separate exact-build manual lifecycle/provenance review and explicit physical promotion are still required; do not install or run the APK yet.
+- **G6A OPEN. G6B BLOCKED.**
