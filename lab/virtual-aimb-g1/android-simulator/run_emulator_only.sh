@@ -53,7 +53,8 @@ for round in 1 2; do
      ! grep -Fqx 'INSTRUMENTATION_RESULT: interrupt=REMOTE_UNCERTAIN_AND_LOCAL_RECOVERY_OK' <<<"$OUTPUT" ||
      ! grep -Fqx 'INSTRUMENTATION_CODE: 0' <<<"$OUTPUT"; then
     echo "ERROR: emulator-only synthetic instrumentation failed in separate execution $round"
-    # Do not print file paths or other raw Android output.
+    # Strict whitelist: only the synthetic phase and exception class, never raw logcat/data.
+    grep -E '^INSTRUMENTATION_RESULT: (kind|status|error_kind|stage)=|^INSTRUMENTATION_CODE:' <<<"$OUTPUT" || true
     exit 1
   fi
   echo "VGL-EMU-0$round PASS: actual API36 emulator private receipts, recovery and blocked re-fetch"

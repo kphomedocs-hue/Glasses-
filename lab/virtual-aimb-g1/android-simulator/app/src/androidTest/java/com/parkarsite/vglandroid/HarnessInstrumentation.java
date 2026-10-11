@@ -16,6 +16,7 @@ import java.util.HexFormat;
  * between independently invoked instrumentations and are read on restart.
  */
 public final class HarnessInstrumentation extends Instrumentation {
+    private static String stage="INITIAL";
     private static final byte[] SYNTHETIC_JPG={
         (byte)255,(byte)216,(byte)255,1,2,(byte)255,(byte)217
     };
@@ -32,6 +33,7 @@ public final class HarnessInstrumentation extends Instrumentation {
     private void faultChecks()throws Exception{
         // Mark a possible remote GET before a synthetic interrupted source.
         // Confirm no source is called at this barrier, and no automatic retry.
+        stage="INTERRUPT_PREPARE";
         RecoveryImportStore first=store("uncertain");
         String uncertain=id("VGL-EMU-UNCERTAIN-01");
         var ticket=first.prepare(uncertain,0L);
@@ -46,6 +48,7 @@ public final class HarnessInstrumentation extends Instrumentation {
             }catch(IOException expected){}
             must(reads[0]==0);
         }
+        stage="INTERRUPT_REOPEN";
         RecoveryImportStore reopened=store("uncertain");
         must(reopened.recover().stream().anyMatch(r->r.opaqueId().equals(uncertain)
             &&r.disposition()==RecoveryImportStore.Disposition.REMOTE_UNCERTAIN));
@@ -57,6 +60,7 @@ public final class HarnessInstrumentation extends Instrumentation {
         }catch(IOException expected){}
         must(duplicateReads[0]==0);
 
+        stage="VERIFIED_PREPARE";
         RecoveryImportStore second=store("verified");
         String verified=id("VGL-EMU-VERIFIED-01");
         var prepared=second.prepare(verified,0L);
@@ -69,6 +73,7 @@ public final class HarnessInstrumentation extends Instrumentation {
                 throw new AssertionError("expected verification barrier");
             }catch(IOException expected){}
         }
+        stage="VERIFIED_REOPEN";
         RecoveryImportStore recovered=store("verified");
         must(recovered.recover().stream().anyMatch(r->r.opaqueId().equals(verified)
             &&(r.disposition()==RecoveryImportStore.Disposition.COMPLETE
@@ -79,9 +84,12 @@ public final class HarnessInstrumentation extends Instrumentation {
     @Override public void onStart(){
         Bundle report=new Bundle();
         try{
+            stage="FIRST_APP_PRIVATE_IMPORT";
             var a=AndroidHarnessController.run(getTargetContext());
+            stage="SECOND_APP_PRIVATE_REOPEN";
             var b=AndroidHarnessController.run(getTargetContext());
             must(a.allPassed()&&b.allPassed());
+            stage="CRASH_RECOVERY_PROBES";
             faultChecks();
             report.putString("kind","EMULATOR_ONLY_SYNTHETIC");
             report.putString("status","PASS");
@@ -93,6 +101,7 @@ public final class HarnessInstrumentation extends Instrumentation {
             report.putString("status","FAIL");
             report.putString("kind","EMULATOR_ONLY_SYNTHETIC");
             report.putString("error_kind",failure.getClass().getSimpleName());
+            report.putString("stage",stage);
             report.putString("hardware_gate","G6A OPEN; G6B BLOCKED");
             finish(1,report);
         }
