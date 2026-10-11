@@ -17,6 +17,12 @@ import java.util.HexFormat;
  */
 public final class HarnessInstrumentation extends Instrumentation {
     private static String stage="INITIAL";
+    private Bundle startupArguments;
+    private static final String MODE_KEY="vgl_mode";
+    private static final String HARD_FETCH="crash_after_fetch_mark";
+    private static final String HARD_VERIFIED="crash_after_verified_journal";
+    private static final String RECOVER_FETCH="recover_after_fetch_mark";
+    private static final String RECOVER_VERIFIED="recover_after_verified_journal";
     private static final byte[] SYNTHETIC_JPG={
         (byte)255,(byte)216,(byte)255,1,2,(byte)255,(byte)217
     };
@@ -80,10 +86,93 @@ public final class HarnessInstrumentation extends Instrumentation {
              ||r.disposition()==RecoveryImportStore.Disposition.LOCAL_RECOVERED)));
         must(recovered.isCommittedAndIntact(verified));
     }
-    @Override public void onCreate(Bundle args){super.onCreate(args);start();}
+
+    /**
+     * Synthetic crash-only fixture. These modes are allowed solely in the
+     * separate, no-permissions emulator instrumentation APK. The first mode
+     * kills its own JVM after the synced possible-fetch marker and BEFORE
+     * any Source invocation; the second kills after VERIFIED journal fsync.
+     *
+     * This is a real test-process death (Runtime.halt), NOT an Android or
+     * hardware power loss, and it never opens Bluetooth/HTTP/network.
+     */
+    private void hardStopAt(RecoveryImportStore.Barrier selected,String name,String fixture) throws Exception {
+        stage="HARD_STOP_PREPARE";
+        var store=store(name);
+        var ticket=store.prepare(id(fixture),0L);
+        must(ticket.state()==RecoveryImportStore.State.PREPARED);
+        stage="HARD_STOP_EXECUTE";
+        store.execute(ticket,SYNTHETIC_JPG.length,
+            out->out.write(SYNTHETIC_JPG),
+            barrier->{
+                if(barrier==selected){
+                    // No normal exception handler, finally block or shutdown hook.
+                    Runtime.getRuntime().halt(73);
+                }
+            });
+        throw new AssertionError("Unexpectedly survived configured hard-stop barrier");
+    }
+
+    private void recoverHardStop(String name,String fixture,boolean fullBytesExpected)
+            throws Exception {
+        stage="HARD_STOP_RECOVER";
+        var store=store(name);
+        String opaque=id(fixture);
+        var events=store.recover();
+        if(fullBytesExpected){
+            must(events.stream().anyMatch(r->r.opaqueId().equals(opaque)
+                &&(r.disposition()==RecoveryImportStore.Disposition.COMPLETE
+                ||r.disposition()==RecoveryImportStore.Disposition.LOCAL_RECOVERED)));
+            must(store.isCommittedAndIntact(opaque));
+        }else{
+            must(events.stream().anyMatch(r->r.opaqueId().equals(opaque)
+                &&r.disposition()==RecoveryImportStore.Disposition.REMOTE_UNCERTAIN));
+            // No fresh Source is invoked during recovery.
+            final int[] sourceInvocations={0};
+            var stale=store.prepare(opaque,0L);
+            try {
+                store.execute(stale,SYNTHETIC_JPG.length,
+                    out->{sourceInvocations[0]++;out.write(SYNTHETIC_JPG);},barrier->{});
+                throw new AssertionError("Remote-uncertain media re-opened");
+            }catch(IOException expected){}
+            must(sourceInvocations[0]==0);
+        }
+    }
+
+    @Override public void onCreate(Bundle args){
+        super.onCreate(args);
+        startupArguments=args;
+        start();
+    }
     @Override public void onStart(){
         Bundle report=new Bundle();
         try{
+            String mode=startupArguments==null?"":startupArguments.getString(MODE_KEY,"");
+            if(HARD_FETCH.equals(mode)){
+                hardStopAt(RecoveryImportStore.Barrier.AFTER_FETCH_MARK,
+                    "hard-stop-fetch","VGL-EMU-HARD-FETCH-01");
+            }else if(HARD_VERIFIED.equals(mode)){
+                hardStopAt(RecoveryImportStore.Barrier.AFTER_VERIFIED_JOURNAL,
+                    "hard-stop-verified","VGL-EMU-HARD-VERIFIED-01");
+            }else if(RECOVER_FETCH.equals(mode)){
+                recoverHardStop("hard-stop-fetch","VGL-EMU-HARD-FETCH-01",false);
+                report.putString("status","PASS");
+                report.putString("kind","EMULATOR_ONLY_SYNTHETIC");
+                report.putString("hard_stop","FETCH_MARK_UNCERTAIN_NO_REFETCH");
+                report.putString("hardware_gate","G6A OPEN; G6B BLOCKED");
+                finish(0,report);
+                return;
+            }else if(RECOVER_VERIFIED.equals(mode)){
+                recoverHardStop("hard-stop-verified","VGL-EMU-HARD-VERIFIED-01",true);
+                report.putString("status","PASS");
+                report.putString("kind","EMULATOR_ONLY_SYNTHETIC");
+                report.putString("hard_stop","VERIFIED_LOCAL_RECOVERY_NO_REFETCH");
+                report.putString("hardware_gate","G6A OPEN; G6B BLOCKED");
+                finish(0,report);
+                return;
+            }else if(!mode.isEmpty()){
+                throw new IllegalArgumentException("Unrecognized synthetic mode");
+            }
             stage="FIRST_APP_PRIVATE_IMPORT";
             var a=AndroidHarnessController.run(getTargetContext());
             stage="SECOND_APP_PRIVATE_REOPEN";
