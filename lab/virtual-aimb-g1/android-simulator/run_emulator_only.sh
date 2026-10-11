@@ -71,10 +71,13 @@ run_hard_stop() {
   output="$(timeout 120s adb -s "$SERIAL" shell am instrument -w -r -e vgl_mode "$mode" "$TEST_PKG/$RUNNER" 2>&1)"
   code=$?
   set -e
+  # Android am instrument may print INSTRUMENTATION_CODE: 0 after a
+  # Runtime.halt() process death. It is NOT a valid success signal here.
+  # Demand NO normal status and independently verify the synced transaction
+  # state in a fresh recovery instrumentation process immediately afterward.
   if [[ "$code" == "124" ]] ||
      grep -Fq 'INSTRUMENTATION_RESULT: status=FAIL' <<<"$output" ||
      grep -Fqx 'INSTRUMENTATION_RESULT: status=PASS' <<<"$output" ||
-     grep -Fqx 'INSTRUMENTATION_CODE: 0' <<<"$output" ||
      grep -Fq 'INSTRUMENTATION_RESULT: error_kind=' <<<"$output"; then
     echo "ERROR: synthetic hard-stop did not terminate the process cleanly at $label"
     # No raw logcat, device paths, addresses or test media printed.
