@@ -10,7 +10,11 @@ javac --release 17 -d "$OUT" \
   "$ROOT/src/com/parkarsite/g1/virtual/VirtualClock.java" \
   "$ROOT/src/com/parkarsite/g1/virtual/FrameEvidence.java" \
   "$ROOT/src/com/parkarsite/g1/virtual/VirtualGlassesCore.java" \
+  "$ROOT/src/com/parkarsite/g1/virtual/VirtualLabPolicies.java" \
+  "$REPO/source/g6a-recovery-core/src/com/parkarsite/g6a/recovery/RecoveryImportStore.java" \
   "$ROOT/selftest/com/parkarsite/g1/virtual/VirtualScenarioSelfTest.java" \
-  "$ROOT/selftest/com/parkarsite/g1/virtual/VirtualRedTeamSelfTest.java"
+  "$ROOT/selftest/com/parkarsite/g1/virtual/VirtualRedTeamSelfTest.java" \
+  "$ROOT/selftest/com/parkarsite/g1/virtual/VirtualRemainingScenarioSelfTest.java"
 java -cp "$OUT" com.parkarsite.g1.virtual.VirtualScenarioSelfTest
 java -cp "$OUT" com.parkarsite.g1.virtual.VirtualRedTeamSelfTest
+java -cp "$OUT" com.parkarsite.g1.virtual.VirtualRemainingScenarioSelfTest

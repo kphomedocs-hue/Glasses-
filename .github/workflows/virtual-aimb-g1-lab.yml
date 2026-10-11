@@ -1,4 +1,4 @@
-name: Virtual AIMB-G1 Lab Offline 24
+name: Virtual AIMB-G1 Lab Offline 96
 on:
   workflow_dispatch:
   push:
@@ -7,10 +7,11 @@ on:
       - ".github/workflows/virtual-aimb-g1-lab.yml"
       - "modules/protocol/src/**"
       - "source/g6a-identity-core/src/**"
+      - "source/g6a-recovery-core/src/**"
 permissions:
   contents: read
 jobs:
-  offline-24:
+  offline-96:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -29,7 +30,7 @@ jobs:
           fi
           test ! -d lab/virtual-aimb-g1/app
           echo "PASS: no Android build or real media transport"
-      - name: Compile and run 24 source-only synthetic fixtures and red-team
+      - name: Compile and run 96 source-only synthetic assertion sets and red-team
         shell: bash
         run: bash lab/virtual-aimb-g1/run_selftest.sh
       - name: Gate status guard
