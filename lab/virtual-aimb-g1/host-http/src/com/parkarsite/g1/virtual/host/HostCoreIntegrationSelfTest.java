@@ -168,7 +168,7 @@ public final class HostCoreIntegrationSelfTest {
             throws Exception {
         var baseline=list(session,server);
         var latest=list(session,server);
-        return new VirtualLabPolicies.Capture(baseline).inspect(latest,2);
+        return new VirtualLabPolicies.Capture(baseline).inspect(latest,latest.count(VirtualLabPolicies.MediaKind.JPG));
     }
     private static void denyCatalog(Session session,FakeGlassesServer server)throws Exception{
         try{list(session,server);throw new AssertionError("Expected blocked catalog");}
