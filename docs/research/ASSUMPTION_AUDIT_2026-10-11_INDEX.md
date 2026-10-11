@@ -40,3 +40,10 @@ Status rule: CONFIRMED means proven **within a stated physical/source scope**; R
 - [Exact K vs Cyan comparison and static closures](G6A_ASSUMPTION_FIRST_STATIC_CLOSURE_2026-10-11.md)
 - [Resolution register, blocked unknowns and red-team tests](G6A_ASSUMPTION_FIRST_RESOLUTION_REGISTER_2026-10-11.md)
 These do **not** declare all 90 assumptions solved. No new APK or physical run authorized. G6A OPEN; G6B BLOCKED.
+
+
+### Completed source-only Step 1/Step 2 and adversarial review — 2026-10-11
+- [Wi-Fi name derivation, exact K predicate comparison, synthetic checks](G6A_STEP1_EXACT_WIFI_IDENTITY_STATIC_COMPARISON_2026-10-11.md)
+- [Non-consumptive transfer alternatives evidence audit](G6A_STEP2_NONCONSUMPTIVE_MEDIA_PATH_AUDIT_2026-10-11.md)
+- [Independent red-team rejection/approval boundaries](G6A_STEP1_STEP2_INDEPENDENT_RED_TEAM_2026-10-11.md)
+All static-only. Neither physical peer identity nor a non-consumptive media path has been proven. G6A OPEN; G6B BLOCKED.
