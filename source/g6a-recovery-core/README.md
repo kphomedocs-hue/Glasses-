@@ -6,8 +6,14 @@ The tested JPG transfer path may consume the remote image. Consequently, the pro
 
 After complete expected-byte-count and JPEG marker validation, it records a local SHA-256 and `VERIFIED` state. A crash before final receipt can then recover the already-validated bytes locally without another source read. A separate receipt and transaction record are verified against the completed file. Reservation assigns shared daily numeric `.jpg` filenames and persists only SHA-256 opaque media identifiers.
 
-Current offline test command: `bash source/g6a-recovery-core/run_selftest.sh` (Java 17). The initial 61 assertions covered normal commit, six simulated failure barriers, restart, partial length, invalid JPEG, mid-stream source loss, tampering, receipt mismatch, numbering and privacy.
+Current offline test command: `bash source/g6a-recovery-core/run_selftest.sh` (Java 17). The current 85 assertions cover normal commit, six simulated failure barriers, restart, partial length, invalid JPEG, mid-stream source loss, tampering, receipt mismatch, numbering and privacy.
 
 **Limits:** Synthetic exceptions are not physical process-kill or power-cut tests; directory fsync and atomic rename require compatible storage; SOI/EOI are not full JPEG decoding. No real glasses transfer, retention on glasses, Android integration, video/audio, or end-to-end exactly-once delivery is established. Requires independent code review and future authorization before connecting to remote GET.
 
 G6A OPEN; G6B BLOCKED.
+
+## Abrupt process-stop regression
+
+The selftest also starts six independent Java processes and deliberately terminates each using `Runtime.halt(37)` after a separate transaction barrier. A fresh recovery instance then verifies either local-only file/receipt recovery or `REMOTE_UNCERTAIN` with no automatic re-fetch. This tests abrupt JVM termination without normal shutdown hooks; it does **not** simulate full filesystem power loss or verify Android device hardware.
+
+GitHub Actions workflow: `.github/workflows/g6a-recovery-fault-tests.yml` (Java 17, transport dependency guard, selftest). Repository hygiene independently guards secrets, binary provenance and private media.
