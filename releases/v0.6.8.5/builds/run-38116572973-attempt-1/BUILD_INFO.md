@@ -1,0 +1,23 @@
+# K G1 G6A Cyan P2P State Diagnostic v0.6.8.5 — Exact Build
+- Build commit: c38203f6e96044b7d36b6b6c12d1775079d750e9
+- Build run: 38116572973
+- Build attempt: 1
+- Package ID: com.parkarsite.g6ap2pdiag685
+- versionCode: 1
+- APK SHA-256: 49a134cc3e971faf1f9c3c5560cdbe4bf674b058ab58f64e1213469bdce9ddaf
+- Exact source ZIP SHA-256: 2d1f149a8f62ef3043bcb4d8b669ebb31a78d6aba14478c8526b8e518deb152c
+- Safety audit: PASS
+- Red-team static audit: PASS
+- Android compile: PASS
+- Android Lint: PASS
+- APK signature verification: PASS
+- physical capture code: NONE
+- Wi-Fi Direct discovery/association code: PRESENT (bounded diagnostic only)
+- HTTP/catalog/media code: NONE
+- persistent import/receipt code: NONE
+- discovery starts before ENTER; no time-sync or inventory command
+- credential values decoded/logged/persisted: NO
+- ENTER writes allowed: exactly one; EXIT writes allowed: exactly one
+- discovery bound: 16000 ms; connection bound: 15000 ms
+- credential parsing/logging: NONE
+- diagnostic only: does not close G6A or unblock G6B
