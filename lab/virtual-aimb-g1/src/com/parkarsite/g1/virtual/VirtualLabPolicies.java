@@ -55,6 +55,7 @@ public final class VirtualLabPolicies {
     }
     public void activityDestroyed(){if(state!=State.CLEAN&&state!=State.ABORTED)cleanup();}
     public void cleanup(){
+      if(state==State.NEW){state=State.ABORTED;return;}
       if(state==State.CLEAN||state==State.UNCERTAIN||state==State.ABORTED||state==State.CLEANUP_PENDING)return;
       clock.cancel("group-discovery");state=State.CLEANUP_PENDING;
       removals++;
@@ -286,6 +287,9 @@ public final class VirtualLabPolicies {
     public static String redact(String raw){
       if(raw==null)return "";
       String clean=raw.replaceAll("(?i)(?:[0-9a-f]{2}:){5}[0-9a-f]{2}","[REDACTED_MAC]");
+      clean=clean.replaceAll("(?i)\\b[a-z0-9_.+-]+@[a-z0-9.-]+\\.[a-z]{2,}\\b","[REDACTED_EMAIL]");
+      clean=clean.replaceAll("\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b","[REDACTED_IP]");
+      clean=clean.replaceAll("(?i)\\b(?:ssid|password|token|passphrase)\\s*[:=]\\s*(?:\\\"[^\\\"]*\\\"|'[^']*'|[^\\s,;]+)","[REDACTED_SECRET]");
       clean=clean.replaceAll("(?i)(?:/[^\\s:]+)+\\.(?:jpg|mp4|opus)","[REDACTED_PATH]");
       clean=clean.replaceAll("(?i)\\b(?:[a-z0-9_-]+/)+[a-z0-9_.-]+\\.(?:jpg|mp4|opus)\\b","[REDACTED_PATH]");
       return clean;
@@ -293,7 +297,10 @@ public final class VirtualLabPolicies {
     public static boolean safeReport(String report){
       if(report==null)return false;
       return !Pattern.compile("(?i)(?:[0-9a-f]{2}:){5}[0-9a-f]{2}").matcher(report).find()
-        &&!report.matches("(?s).*(?:/[^\\s:]+)+\\.(?:jpg|mp4|opus).*");
+        &&!report.matches("(?s).*(?:/[^\\s:]+)+\\.(?:jpg|mp4|opus).*")
+        &&!Pattern.compile("(?i)\\b[a-z0-9_.+-]+@[a-z0-9.-]+\\.[a-z]{2,}\\b").matcher(report).find()
+        &&!Pattern.compile("\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b").matcher(report).find()
+        &&!Pattern.compile("(?i)\\b(?:ssid|password|token|passphrase)\\s*[:=]").matcher(report).find();
     }
   }
 }
