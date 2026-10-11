@@ -1175,3 +1175,7 @@ The user must not repeat any failed/indeterminate run, must preserve the full te
 
 **G6A remains OPEN. G6B remains BLOCKED.**
 
+
+
+## v0.6.8.6 physical result — 2026-10-11
+One supervised run at 12:04:39 IST completed. Result INCONCLUSIVE, cleanup verified. One peer observed with nonempty name classified OTHER (no AIMB-G1 family prefix, no full paired BLE suffix); peer identity unknown. No 0x73 event and no Wi-Fi Direct connection. ENTER and EXIT succeeded. Exact report: releases/v0.6.8.6/builds/run-38118060511-attempt-1/reports/2026-10-11_G6A_V0_6_8_6_PHYSICAL_INCONCLUSIVE.md. Research: docs/research/G6A_V0_6_8_6_PHYSICAL_RECHECK_2026-10-11.md. One-run authorization consumed. No unchanged rerun. G6A OPEN; G6B BLOCKED.
