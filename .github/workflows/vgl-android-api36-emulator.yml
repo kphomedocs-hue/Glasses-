@@ -1,0 +1,74 @@
+name: VGL API36 Emulator Synthetic Storage Only
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "lab/virtual-aimb-g1/android-simulator/**"
+      - ".github/workflows/vgl-android-api36-emulator.yml"
+      - "source/g6a-recovery-core/src/**"
+      - "lab/virtual-aimb-g1/src/**"
+permissions:
+  contents: read
+jobs:
+  one-avd-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.6.0"
+      - name: Fail-closed source and manifest preflight
+        working-directory: lab/virtual-aimb-g1/android-simulator
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f app/src/main/AndroidManifest.xml
+          if grep -Eqi '<uses-permission|<uses-feature' app/src/main/AndroidManifest.xml; then
+            echo "ERROR: emulator manifest must not request ANY permissions/features"
+            exit 1
+          fi
+          if grep -RniE '(^import android\.(bluetooth|net|location)|^import java\.net\.|BluetoothGatt|WifiP2pManager|HttpURLConnection|URLConnection|Socket|URL\()' app/src/main/java; then
+            echo "ERROR: radio or network source not permitted in emulator-only app"
+            exit 1
+          fi
+          grep -Fq 'applicationId = "com.parkarsite.vglandroid.simulator"' app/build.gradle.kts
+          grep -Fq 'minSdk = 36' app/build.gradle.kts
+          grep -Fq 'android:allowBackup="false"' app/src/main/AndroidManifest.xml
+          echo 'PASS: no network/radio source, no permissions, simulator-only app ID'
+      - name: Enable KVM for single AVD only
+        shell: bash
+        run: |
+          if test -e /dev/kvm; then
+            sudo chmod 666 /dev/kvm
+            echo 'KVM available for one emulator'
+          else
+            echo 'KVM unavailable; emulator feasibility may fail'
+          fi
+      - name: Emulator-only synthetic Android private storage execution
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 36
+          target: google_apis
+          arch: x86_64
+          cores: 2
+          ram-size: 2048M
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
+          working-directory: lab/virtual-aimb-g1/android-simulator
+          script: bash run_emulator_only.sh
+      - name: Gate status and artifact-privacy check
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'G6A.*OPEN' LATEST_CHECKPOINT.md
+          grep -q 'G6B.*BLOCKED' LATEST_CHECKPOINT.md
+          echo 'PASS: emulator test only; no release APK upload, original-retention gate OPEN'
+# No artifacts uploaded, no real device connected, no remote glasses media GET.
+# APK builds are short-lived and are installed solely on the GitHub-hosted API36 emulator.
