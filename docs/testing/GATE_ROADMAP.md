@@ -1634,3 +1634,7 @@ The user must not repeat any failed/indeterminate run, must preserve the full te
 
 **G6A remains OPEN. G6B remains BLOCKED.**
 
+
+
+### 2026-10-11 G6A Step 3 offline crash-safe reference (NOT a device gate)
+Source: `source/g6a-recovery-core/` and `docs/research/G6A_STEP3_OFFLINE_CONSUMPTIVE_RECOVERY_RED_TEAM_2026-10-11.md`. Pure Java 17, no Android/radio/network. Test 85 assertions including six abrupt JVM process stops; GitHub run 38125976170 PASS; hygiene 38125976168 PASS. Locally validated bytes can be recovered with no second remote GET after verified crash; partial/uncertain transfers are quarantined, not retried. Not production exactly-once or on-device power-fail proof. Does not advance G6A physical gate; G6B BLOCKED.
