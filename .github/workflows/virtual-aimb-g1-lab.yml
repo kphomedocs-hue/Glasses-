@@ -33,6 +33,9 @@ jobs:
       - name: Compile and run 96 source-only synthetic assertion sets and red-team
         shell: bash
         run: bash lab/virtual-aimb-g1/run_selftest.sh
+      - name: Local-only synthetic HTTP and durable recovery regression (no glasses)
+        shell: bash
+        run: bash lab/virtual-aimb-g1/host-http/run_selftest.sh
       - name: Gate status guard
         shell: bash
         run: |
