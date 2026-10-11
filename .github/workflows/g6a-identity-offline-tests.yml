@@ -1,0 +1,33 @@
+name: G6A Identity Candidate Offline Tests
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "source/g6a-identity-core/**"
+      - ".github/workflows/g6a-identity-offline-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  peer-name-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Ensure only static string logic in identity policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RniE '(import android\.|import java\.net\.|WifiP2pManager|BluetoothGatt|HttpURLConnection|\.connect\(|\.requestPeers\(|\.discoverPeers\(|\.removeGroup\()' source/g6a-identity-core/src; then
+            exit 1
+          fi
+          echo 'PASS transport-free identity analysis'
+      - name: Test adversarial peer-name classification
+        shell: bash
+        run: bash source/g6a-identity-core/run_selftest.sh
