@@ -76,8 +76,8 @@ public final class VirtualLabPolicies {
     public record Result(List<Entry> entries,int duplicates,int blanks) {
       public int count(MediaKind kind){return (int)entries.stream().filter(e->e.kind()==kind).count();}
     }
-    private static final Pattern JSON=Pattern.compile("\\s*\\{\\s*\"files\"\\s*:\\s*\\[(.*)]\\s*}\\s*",Pattern.DOTALL);
-    private static final Pattern JSON_ITEM=Pattern.compile("\\s*\\{\\s*\"path\"\\s*:\\s*\"([A-Za-z0-9_./-]+)\"\\s*}\\s*");
+    private static final Pattern JSON=Pattern.compile("\\s*\\{\\s*\"files\"\\s*:\\s*\\[(.*)\\]\\s*\\}\\s*",Pattern.DOTALL);
+    private static final Pattern JSON_ITEM=Pattern.compile("\\s*\\{\\s*\"path\"\\s*:\\s*\"([A-Za-z0-9_./-]+)\"\\s*\\}\\s*");
     private static String text(byte[] body){
       require(body!=null&&body.length<=CATALOG_CAP);
       try{return StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
