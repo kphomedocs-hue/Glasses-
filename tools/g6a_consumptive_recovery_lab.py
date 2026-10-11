@@ -118,7 +118,7 @@ class RecoveryLab:
         stem = f'{row["seq"]:04d}.jpg'
         return daydir, daydir / stem, daydir / (stem + ".part"), daydir / ("." + stem + ".ready.json")
 
-    def ingest_synthetic_chunks(self, opaque, chunks, crash_at=None):
+    def ingest_synthetic_chunks(self, opaque, chunks, crash_at=None, *, expected_size=None, transfer_complete=False):
         row = self.get(opaque)
         if row is None or row["state"] != "IN_FLIGHT" or opaque not in self.armed:
             raise PermissionError("Not a freshly armed single-use reservation")
@@ -143,6 +143,11 @@ class RecoveryLab:
             out.flush()
             os.fsync(out.fileno())
         fault(crash_at, "after_part_sync")
+        # Completion evidence must be supplied by the transport adapter: a
+        # successful entire response and its expected byte count, not merely EOI.
+        if (not transfer_complete or not isinstance(expected_size, int)
+                or expected_size != size or expected_size < 5):
+            raise ValueError("No validated transfer completion / exact byte count")
         if not validate_file(part, size, sha.hexdigest()):
             raise ValueError("Incomplete / invalid JPEG; no automatic retry")
         payload = {
@@ -234,7 +239,8 @@ def child_main():
         root, opaque, day, checkpoint = args.child
         store = RecoveryLab(root)
         store.reserve(opaque, day, checkpoint)
-        store.ingest_synthetic_chunks(opaque, [SYNTHETIC_JPEG[:8], SYNTHETIC_JPEG[8:]], checkpoint)
+        store.ingest_synthetic_chunks(opaque, [SYNTHETIC_JPEG[:8], SYNTHETIC_JPEG[8:]], checkpoint,
+                                     expected_size=len(SYNTHETIC_JPEG), transfer_complete=True)
 
 
 if __name__ == "__main__":
