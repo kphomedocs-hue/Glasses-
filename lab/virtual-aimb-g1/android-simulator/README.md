@@ -1,15 +1,33 @@
-# AIMB-G1 Android simulator — SOURCE ONLY, no APK
+# VGL Android synthetic emulator — API 36 runtime verified
 
-Android SDK 36, Gradle 9.6, Java 17, independent test-only application ID. Uses **sourceSets paths to the same** VGL classes, real protocol/identity implementations and durable RecoveryImportStore already exercised by the 96 JVM scenarios. No copies of shared policy code.
+**Latest tested source:** 7495e9bba9a0bcf0323e859fcd19f10902f251c9
+**GitHub emulator CI:** https://github.com/kphomedocs-hue/Glasses-/actions/runs/38141611598 — SUCCESS; VGL-EMU-01 PASS, VGL-EMU-02 PASS.
+**Report:** docs/testing/results/2026-10-11_VGL_V3_EMULATOR_ANDROID_RUNTIME_RESULT.md
+**Red team:** docs/testing/VGL_V3_EMULATOR_RED_TEAM_REVIEW_2026-10-11.md
 
-This is *not* the production K G1 app. No HTTP client, no mock server, no network, Bluetooth, location, Wi-Fi Direct or Internet permissions; nothing can access the actual glasses. No physical commands, no source deletion, no external photos or recordings. A local in-memory marker-only JPG fixture is written to Android private no-backup storage through the actual RecoveryImportStore transaction code and checked on reopening. The synthetic Activity exercises the actual shared BLE-control state machine through fake callbacks, no real radios, plus the capture policy.
+## Source and simulation boundaries
+This is a separate, simulation-only Android app; it is NOT the shipping K G1 application. It uses SDK 36, Gradle 9.6, Java 17, a distinct application ID and Android API 36 minimum/target. Its Gradle sourceSets compile the SAME real VirtualGlassesCore, VirtualLabPolicies, protocol/peer-identity and RecoveryImportStore source files as the offline lab. There is no copied policy implementation.
 
-CI command (from this directory):
+Its Android manifest requests ZERO permissions. The Android app includes no live Bluetooth, Wi-Fi Direct, network, external storage, media GET or vendor glasses access. The fixture is a generated seven-byte marker-only JPG **not a decodable photograph**.
 
-    gradle --no-daemon :app:compileDebugJavaWithJavac :app:compileDebugAndroidTestJavaWithJavac :app:processDebugMainManifest
+## Verified runtime tests on ONE virtual Android 16 device
+- Real Android app-private no-backup storage commit, receipt checksum verification and reopening through RecoveryImportStore.
+- Separate injected exceptions at the BEFORE-SOURCE marker and AFTER-VERIFIED journal barriers: prevent blind re-fetch and locally reconstruct receipt from verified bytes.
+- **Two separate instrumentation sessions**, with Android app/test force-stop in between; no data or source GET lost/duplicated.
+- Android-source safety guard and packaged APK permission guard pass; no phone or real glasses connected.
+- Generated debug simulator app+test APKs exist only temporarily on GitHub runner, installed/uninstalled only on virtual device; no upload/release or user-downloadable APK created.
 
-The CI workflow does not assemble APKs, boot Android emulators, connect to glasses, or upload installation artifacts. The separately compiled instrumentation hook for twice-run local receipts is NOT YET EXECUTED. Android runtime and filesystem checks therefore remain PENDING until an emulator-only run is separately authorized.
+The actual on-emulator runner is:
+    bash lab/virtual-aimb-g1/android-simulator/run_emulator_only.sh
 
-Known Android runtime APIs here should be tested first on an Android 16/API 36 emulator (target and minimum 36 for this lab). Process kill, storage pressure and transport faults remain untested in Android. No production simulator-flavor/normal-flavor release hardening has been implemented.
+It REQUIRES exactly one emulator serial, ro.kernel.qemu=1 and API 36 before Gradle assembly/ADB installation. A real device triggers fail-closed refusal. The full workflow lives in .github/workflows/vgl-android-api36-emulator.yml. A separate existing source-only compile workflow remains intact.
 
-The historical physical JPG GET consumed the remote original. **Real media GET is blocked. G6A OPEN; G6B BLOCKED.**
+## Debugging lineage
+The first API36 run compiled but instrumentation failed during class init. Safe stage/class diagnosis identified an Android ICU regex incompatibility: closing braces in the synthetic JSON catalog pattern were unescaped. The SAME shared VirtualLabPolicies class was fixed and both host+Android tests passed. No emulator failure was reclassified as an earlier pass.
+
+## Limits still open
+This verifies **only synthetic Android private-storage semantics**, not physical power-loss, real Android HTTP, location/permission lifecycle, group association, proprietary 0x41/0x73, real JPG/MP4/OPUS integrity, production APK wiring or retention of remote originals on glasses. The host-JVM local HTTP reference tests (7 + 10 integrated cases) remain independent of Android runtime.
+
+The historical physical JPG GET followed by EXIT consumed the original photograph. The owner's original-on-glasses retention requirement remains HARD BLOCKED. No real glasses media transfer, phone installation or physical device experiment has been authorized.
+
+**Physical G6A OPEN; G6B BLOCKED.**
