@@ -26,7 +26,7 @@ Date: 2026-10-11 (IST). Research + offline reference only. No phone, glasses, AP
 - per-snapshot *counts only*: INVALID_BONDED_INPUT / NO_CANDIDATE / SINGLE_UNVERIFIED_CANDIDATE / AMBIGUOUS_CANDIDATES;
 - hard-coded `authenticated() == false` and `connectAuthorized() == false`, regardless of category.
 - address/name derivation helpers restricted to package visibility after red-team privacy review; no public API returns a raw Bluetooth address or derived candidate string.
-The Java 17 CI on source version before helper-visibility hardening executed **54 synthetic assertions PASS**: mismatched address, family-only match, duplicate names, exact vs suffix, no-connect, privacy and invalid input. Revised helper-visibility CI must be green independently before concluding final source PASS.
+Java 17 CI on the **privacy-hardened source** executed **54 synthetic assertions PASS**: mismatched address, family-only match, duplicate names, exact vs suffix, no-connect, privacy and invalid input. [G6A Identity Candidate Offline Tests run 38126649073](https://github.com/kphomedocs-hue/Glasses-/actions/runs/38126649073): SUCCESS. [Repository Hygiene run 38126649087](https://github.com/kphomedocs-hue/Glasses-/actions/runs/38126649087): SUCCESS. These are offline code checks, not current device evidence.
 
 ## Red-team adversarial checks
 1. **Spoofed user-friendly name:** A name can be imitated by another peer; even an exact constructed candidate is not proof of ownership. The model never outputs an `AUTHENTICATED` state.
@@ -51,6 +51,6 @@ A next test would be justified **only** if it can observe an identity datum miss
 - No current physical candidate is promoted by this note.
 
 ## Formal decision
-**Step 4 source-only identity comparison and defensive classification can close as a reviewed reference, subject to green CI after privacy hardening.** Current physical peer identity **OPEN**. Short 0x41 meaning **UNKNOWN**. Originals-on-glasses preservation **UNMET for previously tested JPG GET + EXIT interval**. No real image transfer warranted.
+**Step 4 source-only identity comparison and defensive classification CLOSED as a reviewed offline reference (54 tests and privacy hygiene PASS).** Current physical peer identity **OPEN**. Short 0x41 meaning **UNKNOWN**. Originals-on-glasses preservation **UNMET for previously tested JPG GET + EXIT interval**. No real image transfer warranted.
 
 **G6A OPEN; G6B BLOCKED.**
