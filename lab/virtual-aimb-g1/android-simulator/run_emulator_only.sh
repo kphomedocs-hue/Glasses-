@@ -60,3 +60,44 @@ for round in 1 2; do
   echo "VGL-EMU-0$round PASS: actual API36 emulator private receipts, recovery and blocked re-fetch"
 done
 echo 'VGL_EMULATOR 2/2 PASS: synthetic-only, separate Android processes; no user phone/glasses'
+
+# Actual abrupt test-process termination at two durable-storage barriers.
+# The process is forcibly terminated by Runtime.halt(73), not a caught exception.
+# Distinguish expected termination from normal instrumentation PASS, timeout,
+# or a caught instrumentation assertion/error (which reports status=FAIL).
+run_hard_stop() {
+  local mode="$1" label="$2" output code
+  set +e
+  output="$(timeout 120s adb -s "$SERIAL" shell am instrument -w -r -e vgl_mode "$mode" "$TEST_PKG/$RUNNER" 2>&1)"
+  code=$?
+  set -e
+  if [[ "$code" == "124" ]] ||
+     grep -Fq 'INSTRUMENTATION_RESULT: status=FAIL' <<<"$output" ||
+     grep -Fqx 'INSTRUMENTATION_RESULT: status=PASS' <<<"$output" ||
+     grep -Fqx 'INSTRUMENTATION_CODE: 0' <<<"$output" ||
+     grep -Fq 'INSTRUMENTATION_RESULT: error_kind=' <<<"$output"; then
+    echo "ERROR: synthetic hard-stop did not terminate the process cleanly at $label"
+    # No raw logcat, device paths, addresses or test media printed.
+    grep -E '^INSTRUMENTATION_RESULT: (status|error_kind|stage)=|^INSTRUMENTATION_CODE:' <<<"$output" || true
+    exit 1
+  fi
+  echo "VGL-EMU-CRASH-$label: instrumentation process terminated without normal result"
+}
+recover_hard_stop() {
+  local mode="$1" label="$2" outcome="$3" output
+  output="$(timeout 120s adb -s "$SERIAL" shell am instrument -w -r -e vgl_mode "$mode" "$TEST_PKG/$RUNNER")"
+  if ! grep -Fqx 'INSTRUMENTATION_RESULT: status=PASS' <<<"$output" ||
+     ! grep -Fqx "INSTRUMENTATION_RESULT: hard_stop=$outcome" <<<"$output" ||
+     ! grep -Fqx 'INSTRUMENTATION_CODE: 0' <<<"$output"; then
+    echo "ERROR: recovery after synthetic hard stop failed at $label"
+    grep -E '^INSTRUMENTATION_RESULT: (kind|status|error_kind|stage|hard_stop)=|^INSTRUMENTATION_CODE:' <<<"$output" || true
+    exit 1
+  fi
+  echo "VGL-EMU-CRASH-$label PASS: independent Android process recovers without source re-read"
+}
+
+run_hard_stop crash_after_fetch_mark 01
+recover_hard_stop recover_after_fetch_mark 01 FETCH_MARK_UNCERTAIN_NO_REFETCH
+run_hard_stop crash_after_verified_journal 02
+recover_hard_stop recover_after_verified_journal 02 VERIFIED_LOCAL_RECOVERY_NO_REFETCH
+echo 'VGL_EMULATOR_HARD_STOP 2/2 PASS: real Android JVM termination and local-only recovery'
