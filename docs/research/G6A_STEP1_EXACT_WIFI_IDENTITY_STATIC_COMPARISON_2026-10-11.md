@@ -34,10 +34,10 @@ Date: 2026-10-11. No new glasses run, diagnostic APK or association.
 - Physical result: one peer with nonempty name, category OTHER; no valid `0x73` events, no Android connect/group attempted; safe EXIT and group absence.
 
 ## Counterfactual test (synthetic names only, no owner device identifiers)
-Let Bluetooth name `AIMB-G1_EXAMPLE`, Bluetooth address `AA:BB:CC:DD:EE:FF`.
+Let Bluetooth name `AIMB-G1_EXAMPLE`, normalized Bluetooth address `AABBCCDDEEFF` (the colon-free form).
 The verified Cyan formula produces `EXAMPLE_AABBCCDDEEFF` — K v0.6.8.6 classifies it FULL-SUFFIX, **not OTHER**.
 With `AIMB-G1_ALPHA_BETA` Cyan formula produces `BETA_AABBCCDDEEFF` and still FULL-SUFFIX.
-A name `EXAMPLE_AABBCCDDEE01` constructed from a different Bluetooth address is OTHER to K's paired address `AA:BB:CC:DD:EE:FF`.
+A name `EXAMPLE_AABBCCDDEE01` constructed from a different Bluetooth address is OTHER to K's normalized paired address `AABBCCDDEEFF`.
 Evaluated these predicates in an isolated pure-JavaScript synthetic truth table; three assertions passed. This validates comparator logic only, **not current hardware**.
 
 ## Resolved source-level questions
