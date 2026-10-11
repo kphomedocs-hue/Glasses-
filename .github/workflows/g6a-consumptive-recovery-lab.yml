@@ -1,0 +1,43 @@
+name: G6A Consumptive Import Offline Recovery Lab
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "tools/g6a_consumptive_recovery_lab.py"
+      - "tools/test_g6a_consumptive_recovery_lab.py"
+      - ".github/workflows/g6a-consumptive-recovery-lab.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  offline-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm isolated transport-free scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -nE '^(import|from) (socket|requests|urllib|http|bluetooth|android|webbrowser)' tools/g6a_consumptive_recovery_lab.py; then
+            echo "Unexpected network/device dependency"
+            exit 1
+          fi
+          python3 -m py_compile tools/g6a_consumptive_recovery_lab.py tools/test_g6a_consumptive_recovery_lab.py
+      - name: Run process-termination fault injection and recovery tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/test_g6a_consumptive_recovery_lab.py
+      - name: Scope label
+        shell: bash
+        run: |
+          {
+            echo "## G6A consumptive transfer recovery lab"
+            echo "- Transport-free Python stdlib reference model: TESTED"
+            echo "- Real subprocess termination at simulated crash boundaries: TESTED"
+            echo "- Android runtime / glasses media / remote GET: NOT TESTED"
+            echo "- G6A remains OPEN; G6B remains BLOCKED"
+          } >> "$GITHUB_STEP_SUMMARY"
