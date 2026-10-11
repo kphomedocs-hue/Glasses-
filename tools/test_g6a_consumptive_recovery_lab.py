@@ -50,7 +50,7 @@ class RecoveryLabTest(unittest.TestCase):
         s = self.store()
         first = s.reserve(KEY_A, DAY)
         self.assertEqual(first["seq"], 1)
-        finished = s.ingest_synthetic_chunks(KEY_A, [lab.SYNTHETIC_JPEG])
+        finished = s.ingest_synthetic_chunks(KEY_A, [lab.SYNTHETIC_JPEG], expected_size=len(lab.SYNTHETIC_JPEG), transfer_complete=True)
         self.assertEqual(finished["state"], "COMMITTED")
         daydir, final, part, marker = s.paths(finished)
         self.assertTrue(final.is_file())
@@ -64,7 +64,7 @@ class RecoveryLabTest(unittest.TestCase):
         duplicate = s.reserve(KEY_A, DAY)
         self.assertEqual(duplicate["seq"], 1)
         with self.assertRaises(PermissionError):
-            s.ingest_synthetic_chunks(KEY_A, [lab.SYNTHETIC_JPEG])
+            s.ingest_synthetic_chunks(KEY_A, [lab.SYNTHETIC_JPEG], expected_size=len(lab.SYNTHETIC_JPEG), transfer_complete=True)
         self.assertEqual(final.read_bytes(), lab.SYNTHETIC_JPEG)
         s.close()
 
@@ -125,7 +125,7 @@ class RecoveryLabTest(unittest.TestCase):
     def test_tampered_final_is_fail_closed(self):
         s = self.store()
         s.reserve(KEY_A, DAY)
-        row = s.ingest_synthetic_chunks(KEY_A, [lab.SYNTHETIC_JPEG])
+        row = s.ingest_synthetic_chunks(KEY_A, [lab.SYNTHETIC_JPEG], expected_size=len(lab.SYNTHETIC_JPEG), transfer_complete=True)
         _, final, _, _ = s.paths(row)
         final.write_bytes(b"\xff\xd8\xffnotoriginal\xff\xd9")
         self.assertEqual(s.recover()[0][1], "NEEDS_REVIEW")
@@ -148,7 +148,7 @@ class RecoveryLabTest(unittest.TestCase):
         s = self.store()
         s.reserve(KEY_A, DAY)
         with self.assertRaises(ValueError):
-            s.ingest_synthetic_chunks(KEY_A, [b"invalid_frame"])
+            s.ingest_synthetic_chunks(KEY_A, [b"invalid_frame"], expected_size=len(b"invalid_frame"), transfer_complete=True)
         self.assertEqual(s.get(KEY_A)["state"], "IN_FLIGHT")
         self.assertEqual(s.recover()[0][1], "NEEDS_REVIEW")
         self.assert_review_without_auto_retry(s)
@@ -158,11 +158,11 @@ class RecoveryLabTest(unittest.TestCase):
         s = self.store()
         s.reserve(KEY_A, DAY)
         with self.assertRaises(ValueError):
-            s.ingest_synthetic_chunks(KEY_A, [b"invalid_frame"])
+            s.ingest_synthetic_chunks(KEY_A, [b"invalid_frame"], expected_size=len(b"invalid_frame"), transfer_complete=True)
         s.recover()
         next_row = s.reserve(KEY_B, DAY)
         self.assertEqual(next_row["seq"], 2)
-        s.ingest_synthetic_chunks(KEY_B, [lab.SYNTHETIC_JPEG])
+        s.ingest_synthetic_chunks(KEY_B, [lab.SYNTHETIC_JPEG], expected_size=len(lab.SYNTHETIC_JPEG), transfer_complete=True)
         self.assertEqual(s.get(KEY_A)["seq"], 1)
         self.assertEqual(s.get(KEY_B)["seq"], 2)
         s.close()
@@ -184,16 +184,44 @@ class RecoveryLabTest(unittest.TestCase):
         try:
             lab.MAX_JPG = 10
             with self.assertRaises(ValueError):
-                s.ingest_synthetic_chunks(KEY_A, [lab.SYNTHETIC_JPEG])
+                s.ingest_synthetic_chunks(KEY_A, [lab.SYNTHETIC_JPEG], expected_size=len(lab.SYNTHETIC_JPEG), transfer_complete=True)
         finally:
             lab.MAX_JPG = original
+        self.assertEqual(s.recover()[0][1], "NEEDS_REVIEW")
+        s.close()
+
+    def test_refuses_missing_transport_completion_proof(self):
+        s = self.store()
+        s.reserve(KEY_A, DAY)
+        with self.assertRaises(ValueError):
+            s.ingest_synthetic_chunks(KEY_A, [lab.SYNTHETIC_JPEG],
+                                      expected_size=len(lab.SYNTHETIC_JPEG))
+        self.assertEqual(s.recover()[0][1], "NEEDS_REVIEW")
+        s.close()
+
+    def test_refuses_missing_expected_byte_count(self):
+        s = self.store()
+        s.reserve(KEY_A, DAY)
+        with self.assertRaises(ValueError):
+            s.ingest_synthetic_chunks(KEY_A, [lab.SYNTHETIC_JPEG],
+                                      transfer_complete=True)
+        self.assertEqual(s.recover()[0][1], "NEEDS_REVIEW")
+        s.close()
+
+    def test_refuses_jpeg_shaped_truncation_even_with_eoi(self):
+        s = self.store()
+        s.reserve(KEY_A, DAY)
+        short_jpeg = b"\\xff\\xd8\\xff" + b"short" + b"\\xff\\xd9"
+        with self.assertRaises(ValueError):
+            s.ingest_synthetic_chunks(KEY_A, [short_jpeg],
+                expected_size=len(short_jpeg)+10, transfer_complete=True)
         self.assertEqual(s.recover()[0][1], "NEEDS_REVIEW")
         s.close()
 
     def test_no_remote_string_or_secret_in_journal(self):
         s = self.store()
         s.reserve(KEY_A, DAY)
-        s.ingest_synthetic_chunks(KEY_A, [lab.SYNTHETIC_JPEG])
+        s.ingest_synthetic_chunks(KEY_A, [lab.SYNTHETIC_JPEG], expected_size=len(lab.SYNTHETIC_JPEG), transfer_complete=True)
         all_text = " ".join(
             p.read_text(errors="ignore") for p in self.root.rglob("*")
             if p.is_file() and p.suffix == ".json"
