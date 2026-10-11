@@ -184,7 +184,7 @@ public final class RecoveryImportStore {
             if(!Files.exists(txn(id)))return false;
             Ticket t=load(txn(id));
             return t.state==State.COMMITTED && Files.exists(receiptFile(id))
-                    && Files.readString(receiptFile(id)).equals(serializeReceipt(t))
+                    && readUtf8(receiptFile(id)).equals(serializeReceipt(t))
                     && matches(finalPath(t.relativePath),t);
         });
     }
@@ -193,7 +193,7 @@ public final class RecoveryImportStore {
         Path r=receiptFile(t.opaqueId);
         String expected=serializeReceipt(t);
         if(Files.exists(r)) {
-            if(!Files.readString(r).equals(expected)) throw new IOException("Receipt conflict; manual review");
+            if(!readUtf8(r).equals(expected)) throw new IOException("Receipt conflict; manual review");
             return;
         }
         atomicWrite(r,expected);
@@ -204,9 +204,26 @@ public final class RecoveryImportStore {
     private Path receiptFile(String id){return receipts.resolve(id+".receipt");}
     private Path finalPath(String rel){return root.resolve(rel);}
     private void save(Ticket t) throws IOException {atomicWrite(txn(t.opaqueId),"TXN1\t"+t.opaqueId+"\t"+t.relativePath+"\t"+t.state+"\t"+t.bytes+"\t"+t.digest+"\n");}
+    /**
+     * Android-compatible strict metadata reader. Only small journal/receipt files
+     * are accepted; malformed UTF-8 must never silently alter receipt identity.
+     */
+    private static String readUtf8(Path path) throws IOException {
+        if (!Files.isRegularFile(path) || Files.size(path)>4096L)
+            throw new IOException("Invalid metadata file size/type");
+        try {
+            return java.nio.charset.StandardCharsets.UTF_8.newDecoder()
+                .onMalformedInput(java.nio.charset.CodingErrorAction.REPORT)
+                .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPORT)
+                .decode(ByteBuffer.wrap(Files.readAllBytes(path))).toString();
+        } catch (java.nio.charset.CharacterCodingException error) {
+            throw new IOException("Malformed UTF-8 transaction metadata", error);
+        }
+    }
+
     private Ticket load(Path path) throws IOException {
         if(!Files.isRegularFile(path))throw new IOException("Missing transaction");
-        String[] p=Files.readString(path).stripTrailing().split("\\t",-1);
+        String[] p=readUtf8(path).stripTrailing().split("\\t",-1);
         if(p.length!=6||!p[0].equals("TXN1"))throw new IOException("Invalid transaction format");
         requireId(p[1]);
         if(!path.getFileName().toString().equals(p[1]+".txn"))throw new IOException("Identity/file mismatch");
