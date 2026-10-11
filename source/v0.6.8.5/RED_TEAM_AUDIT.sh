@@ -3,8 +3,15 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 JAVA="$ROOT/app/src/main/java/com/parkarsite/g6ap2pdiag685/MainActivity.java"
 fail=0
-require(){ rg -Fq "$1" "$JAVA" || { echo "FAIL: $2"; fail=1; }; }
-forbid(){ ! rg -q "$1" "$JAVA" || { echo "FAIL: $2"; fail=1; }; }
+require(){ grep -Fq -- "$1" "$JAVA" || { echo "FAIL: $2"; fail=1; }; }
+forbid(){
+  if grep -Eq -- "$1" "$JAVA"; then
+    echo "FAIL: $2"; fail=1
+  else
+    rc=$?
+    if [ "$rc" -ne 1 ]; then echo "FAIL: $2 scan error ($rc)"; fail=1; fi
+  fi
+}
 require 'startGroupPreflight' 'read-only clean-group preflight missing'
 require 'startP2pDiscovery();' 'discovery-before-ENTER path missing'
 require 'pairedAddressSuffix=addressSuffix(target)' 'paired BLE suffix identity missing'

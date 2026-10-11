@@ -5,8 +5,17 @@ SRC="$ROOT/app/src/main"
 JAVA="$SRC/java/com/parkarsite/g6ap2pdiag685/MainActivity.java"
 MANIFEST="$SRC/AndroidManifest.xml"
 fail=0
-bad(){ if rg -n "$1" "$SRC" >/tmp/g6a685_hits 2>/dev/null; then echo "FAIL: $2"; cat /tmp/g6a685_hits; fail=1; else echo "PASS: $2 absent"; fi; }
-need(){ if rg -Fq "$1" "$2"; then echo "PASS: $3"; else echo "FAIL: $3"; fail=1; fi; }
+HITS="$(mktemp)"
+trap 'rm -f "$HITS"' EXIT
+bad(){
+  if grep -REn -- "$1" "$SRC" >"$HITS"; then
+    echo "FAIL: $2"; cat "$HITS"; fail=1
+  else
+    rc=$?
+    if [ "$rc" -eq 1 ]; then echo "PASS: $2 absent"; else echo "FAIL: $2 scan error ($rc)"; fail=1; fi
+  fi
+}
+need(){ if grep -Fq -- "$1" "$2"; then echo "PASS: $3"; else echo "FAIL: $3"; fail=1; fi; }
 bad 'android\.permission\.INTERNET' 'Internet permission'
 bad 'HttpURLConnection|okhttp|java\.net\.Socket|ServerSocket|URL\(' 'HTTP/socket implementation'
 bad 'media\.config|/files/|download|deleteFile|FileOutputStream' 'media/file access'
