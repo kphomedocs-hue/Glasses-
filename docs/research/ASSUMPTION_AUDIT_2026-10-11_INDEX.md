@@ -47,3 +47,10 @@ These do **not** declare all 90 assumptions solved. No new APK or physical run a
 - [Non-consumptive transfer alternatives evidence audit](G6A_STEP2_NONCONSUMPTIVE_MEDIA_PATH_AUDIT_2026-10-11.md)
 - [Independent red-team rejection/approval boundaries](G6A_STEP1_STEP2_INDEPENDENT_RED_TEAM_2026-10-11.md)
 All static-only. Neither physical peer identity nor a non-consumptive media path has been proven. G6A OPEN; G6B BLOCKED.
+
+
+### G6A Step 3 — offline recovery lab and red team (2026-10-11)
+- [Crash-consistency design and 17-test CI evidence](G6A_STEP3_CRASH_SAFE_OFFLINE_LAB_RESULT_2026-10-11.md)
+- [Adversarial review and production blockers](G6A_STEP3_OFFLINE_RECOVERY_RED_TEAM_2026-10-11.md)
+- [Trustworthy peer identity evidence contract](G6A_PEER_IDENTITY_NEXT_EVIDENCE_CONTRACT_2026-10-11.md)
+New transport-free Python model and tests are in tools/ with a dedicated offline CI workflow. Hardware/Android media import **not tested or authorized**; G6A OPEN / G6B BLOCKED.
