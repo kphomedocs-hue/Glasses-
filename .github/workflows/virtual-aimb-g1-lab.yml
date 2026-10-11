@@ -1,0 +1,41 @@
+name: Virtual AIMB-G1 Lab Offline 24
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "lab/virtual-aimb-g1/**"
+      - ".github/workflows/virtual-aimb-g1-lab.yml"
+      - "modules/protocol/src/**"
+      - "source/g6a-identity-core/src/**"
+permissions:
+  contents: read
+jobs:
+  offline-24:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Offline transport boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RniE '(^import android\.|^import java\.net\.|BluetoothGatt|WifiP2pManager|HttpURLConnection|URLConnection|\.connectToPeer\(|\.mediaGet\()' lab/virtual-aimb-g1/src; then
+            echo "ERROR: executable device transport in virtual core"
+            exit 1
+          fi
+          test ! -d lab/virtual-aimb-g1/app
+          echo "PASS: no Android build or real media transport"
+      - name: Compile and run 24 source-only synthetic fixtures and red-team
+        shell: bash
+        run: bash lab/virtual-aimb-g1/run_selftest.sh
+      - name: Gate status guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q "G6A.*OPEN" LATEST_CHECKPOINT.md
+          grep -q "G6B.*BLOCKED" LATEST_CHECKPOINT.md
+          echo "PASS: physical G6A OPEN and G6B BLOCKED"
