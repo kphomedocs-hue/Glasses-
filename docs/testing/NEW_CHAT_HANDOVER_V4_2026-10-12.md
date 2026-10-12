@@ -1,3 +1,14 @@
+# LATEST 2026-10-12 V4 EXECUTION OVERRIDE — READ BEFORE HISTORICAL HANDOVER
+**V4 Steps 01–04 static audit/spec documented; Steps 05–06 shared Java/default-deny foundation implemented; Steps 07–08 host-integrated synthetic PASS; Step 09 API36 source compile PASS; Steps 10–11 actual emulator same-controller/full decoded synthetic JPG/restart/VERIFIED process crash PASS; Step 12 mixed JPG/MP4/OPUS local numbering/legacy guard host 38 assertions + API36 emulator crash/recovery PASS. Step 13 release red-team source audit documented but FINAL APK CERTIFICATION BLOCKED. Step 14 reconciliation completed with C1 HOLD, C2 BLOCKED, C3 NO-GO, C4 BLOCKED. G6A OPEN; G6B BLOCKED.**
+Read the most recent additions at the END of `LATEST_CHECKPOINT.md` and `docs/testing/GATE_ROADMAP.md`. Exact reports:
+- `docs/testing/results/2026-10-12_V4_STEP10_11_ANDROID_SHARED_RUNTIME_AND_FULL_JPEG.md` — emulator run 38280843057 SUCCESS.
+- `docs/testing/results/2026-10-12_V4_STEP12_MIXED_DURABLE_HOST_ANDROID.md` — host 38282545306 SUCCESS (38 assertions), emulator 38282672292 SUCCESS, no actual vendor MP4/OPUS decoder parity.
+- `docs/testing/V4_STEP13_RELEASE_ISOLATION_RED_TEAM_2026-10-12.md`
+- `docs/testing/V4_STEP14_SOFTWARE_HARDWARE_CONVERGENCE_DECISION_2026-10-12.md`.
+**DO NOT restart the old 14-step list from Step 01 or repeat the prior six emulator crash tests for counts.** Further software work: production controller integration of typed real platform evidence under default-OFF connection/media, conservative mixed-media local store integration and vendor format research. Physical preservation issue: a successful real JPG GET followed by EXIT previously made the exact original disappear; no preserving GET method verified. Real current P2P peer identity unverified. NO physical glasses or media GET and NO physical-test APK without separately scoped authorization.
+
+---
+
 # AIMB-G1 / K G1 — concise next-chat handover (2026-10-12)
 
 **Source of truth:** https://github.com/kphomedocs-hue/Glasses- `main`.
