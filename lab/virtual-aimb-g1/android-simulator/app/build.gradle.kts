@@ -24,7 +24,8 @@ android {
             "../../src",
             "../../../../modules/protocol/src/main/java",
             "../../../../source/g6a-identity-core/src",
-            "../../../../source/g6a-recovery-core/src"
+            "../../../../source/g6a-recovery-core/src",
+            "../../../../source/g1-shared-workflow/src"
         )
     }
 }
