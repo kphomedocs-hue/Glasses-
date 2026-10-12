@@ -182,6 +182,20 @@ public final class HarnessInstrumentation extends Instrumentation {
         Bundle report=new Bundle();
         try{
             String mode=startupArguments==null?"":startupArguments.getString(MODE_KEY,"");
+            if(mode.startsWith("mixed_")){
+                stage="V4_MIXED_MEDIA_RECOVERY";
+                if("mixed_crash_verified".equals(mode)){
+                    MixedMediaInstrumentationProbe.crashAtVerified(getTargetContext());
+                    throw new AssertionError("Unexpected return from mixed crash barrier");
+                }
+                String result=MixedMediaInstrumentationProbe.run(getTargetContext(),mode);
+                report.putString("status","PASS");
+                report.putString("kind","EMULATOR_ONLY_SYNTHETIC");
+                report.putString("mixed",result);
+                report.putString("hardware_gate","G6A OPEN; G6B BLOCKED");
+                finish(0,report);
+                return;
+            }
             if(mode.startsWith("shared_")){
                 stage="V4_SHARED_COORDINATOR";
                 if("shared_crash_verified".equals(mode)){
