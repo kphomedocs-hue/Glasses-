@@ -31,7 +31,7 @@ public final class MixedMediaRecoveryStore {
     public record Result(String opaqueId, Recovery outcome) {}
     private static final long CAP=33_554_432L;
     private static final int METADATA_CAP=4096;
-    private final Path root,journals,receipts,parts,lock,legacy;
+    private final Path root,journals,receipts,parts,lock,legacy,legacyReceipts;
     private final ZoneId zone;
 
     public MixedMediaRecoveryStore(Path root,ZoneId zone)throws IOException {
@@ -42,6 +42,7 @@ public final class MixedMediaRecoveryStore {
         receipts=this.root.resolve(".mixed-receipts");
         parts=this.root.resolve(".mixed-parts");
         legacy=this.root.resolve(".transactions");
+        legacyReceipts=this.root.resolve(".receipts");
         Files.createDirectories(journals);
         Files.createDirectories(receipts);
         Files.createDirectories(parts);
@@ -152,10 +153,31 @@ public final class MixedMediaRecoveryStore {
         atomicWrite(file,expected);
     }
     private boolean hasLegacyId(String id)throws IOException{
-        if(!Files.exists(legacy))return false;
-        if(!Files.isDirectory(legacy))throw new IOException("Unexpected legacy ledger");
-        // Even incomplete legacy fetches remain explicitly blocked from re-download.
-        return Files.exists(journalPath(legacy,id));
+        if(Files.exists(legacy)&&!Files.isDirectory(legacy))
+            throw new IOException("Unexpected legacy journal directory");
+        if(Files.exists(legacyReceipts)&&!Files.isDirectory(legacyReceipts))
+            throw new IOException("Unexpected legacy receipt directory");
+        // A legacy receipt with a missing journal is still a NO-GET collision.
+        return Files.exists(journalPath(legacy,id))
+            || Files.exists(legacyReceipts.resolve(id+".receipt"));
+    }
+    private long legacyMaxOrdinal(String date)throws IOException {
+        if(!Files.exists(legacy))return 0;
+        if(!Files.isDirectory(legacy))throw new IOException("Unexpected legacy journals");
+        long max=0;
+        try(DirectoryStream<Path> entries=Files.newDirectoryStream(legacy,"*.txn")){
+            for(Path entry:entries){
+                String[] v=utf8(entry).stripTrailing().split("\\t",-1);
+                if(v.length!=6 || !v[0].equals("TXN1")
+                    || !v[1].matches("[0-9a-f]{64}")
+                    || !entry.getFileName().toString().equals(v[1]+".txn")
+                    || !v[2].matches("[0-9]{4}-[0-9]{2}-[0-9]{2}/[0-9]{4,}\\\\.jpg"))
+                    throw new IOException("Unrecognized legacy ledger; migration blocked");
+                if(v[2].startsWith(date+"/"))
+                    max=Math.max(max,seq(v[2]));
+            }
+        }
+        return max;
     }
     /** Conservative migration: legacy identities are never reimported or overwritten. */
     public boolean legacyIdentityPresent(String opaqueId)throws Exception{
@@ -183,7 +205,7 @@ public final class MixedMediaRecoveryStore {
                 return previous;
             }
             String date=day(firstSeenEpochMs,zone);
-            long max=0;
+            long max=legacyMaxOrdinal(date);
             try(DirectoryStream<Path> entries=Files.newDirectoryStream(journals,"*.txn")){
                 for(Path file:entries){
                     var previous=read(file);
