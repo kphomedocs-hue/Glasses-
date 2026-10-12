@@ -1,0 +1,65 @@
+name: K Site Capture Read-Only Android Compile
+on:
+  push:
+    paths:
+      - 'apps/site-capture/**'
+      - 'source/g1-shared-workflow/src/**'
+      - '.github/workflows/site-capture-android-preview-compile.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compile-no-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: apps/site-capture/android-preview
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install Android 36 platform
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKMANAGER=/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.6.0'
+      - name: Fail closed on any device/network permissions or test imports
+        run: |
+          set -euo pipefail
+          test -f app/src/main/AndroidManifest.xml
+          if grep -Eqi '<uses-permission|<uses-feature' app/src/main/AndroidManifest.xml; then exit 1; fi
+          grep -Fq 'android:allowBackup="false"' app/src/main/AndroidManifest.xml
+          grep -Fq 'android:usesCleartextTraffic="false"' app/src/main/AndroidManifest.xml
+          grep -Fq 'applicationId = "com.parkarsite.g1.readonlypreview"' app/build.gradle.kts
+          grep -Fq 'minSdk = 36' app/build.gradle.kts
+          if grep -REn 'android[.]bluetooth|android[.]net[.]wifi|WifiP2pManager|HttpURLConnection|java[.]net[.]|HostFixturePermit|importSyntheticFixture|OneShotByteSource' app/src/main ../../src/main/java; then
+            echo 'ERROR: network, fixture or media-transfer capability in preview app'
+            exit 1
+          fi
+          test ! -d app/src/main/assets
+          echo 'PASS: read-only app source has no transfer API and zero permissions'
+      - name: Compile-only same offline local store
+        run: |
+          set -euo pipefail
+          gradle --no-daemon :app:compileDebugJavaWithJavac :app:processDebugMainManifest
+      - name: No APK and merged manifest remains permission-free
+        run: |
+          set -euo pipefail
+          test -z "$(find app/build -type f \( -name '*.apk' -o -name '*.aab' \) -print -quit)"
+          MERGED=$(find app/build/intermediates -type f -name AndroidManifest.xml | grep -v '/androidTest/' || true)
+          test -n "$MERGED"
+          for FILE in $MERGED; do
+            if grep -Eqi '<uses-permission|<uses-feature' "$FILE"; then
+              echo 'Unsafe permission or feature added by manifest merge'
+              exit 1
+            fi
+          done
+          echo 'PASS: Android source compiles, no media or radio permission, zero installable artifacts'
