@@ -29,3 +29,7 @@ Development should consume modular components under `modules/` rather than reviv
 - The existing fixture-grant path in the shared coordinator must be excluded and independently audited in any future signed release.
 
 **Do not install this preview on a real phone as a substitute for the final app. No live transfer is authorized. G6A OPEN; G6B BLOCKED.**
+
+
+### UI preview later validation / security hardening (same date)
+The initial source-only milestone above was extended. The final API36 emulator run [38285067667](https://github.com/kphomedocs-hue/Glasses-/actions/runs/38285067667) **PASS** confirms that the Android UI actually displays its transfer-disabled warning and local archive title on the virtual device. Final compile-only [38285067603](https://github.com/kphomedocs-hue/Glasses-/actions/runs/38285067603) **PASS** confirms there are no transfer-coordinator classes compiled into the preview and no permissions/APK produced in that compilation. An ephemeral zero-permission preview APK was built **only inside the emulator UI workflow**, not published. Neither the preview nor its test APK is approved for a physical phone.
