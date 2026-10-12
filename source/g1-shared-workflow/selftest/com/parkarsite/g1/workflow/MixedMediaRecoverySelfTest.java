@@ -130,7 +130,7 @@ public final class MixedMediaRecoverySelfTest {
         Path legacy=storeRoot.resolve(".transactions");
         Files.createDirectories(legacy);
         Files.writeString(legacy.resolve(legacyId+".txn"),
-            "TXN1\\t"+legacyId+"\\t2026-10-14/0008.jpg\\tPREPARED\\t0\\t-\\n");
+            "TXN1\t"+legacyId+"\t2026-10-14/0008.jpg\tPREPARED\t0\t-\n");
         var migration=new MixedMediaRecoveryStore(storeRoot,zone);
         check(migration.legacyIdentityPresent(legacyId),"old ledger recognized without parsing/modifying");
         try{
@@ -149,7 +149,7 @@ public final class MixedMediaRecoverySelfTest {
         // must still reserve its daily ordinal in the new mixed namespace.
         String pendingId=id("PENDING-LEGACY-JPG");
         Files.writeString(legacy.resolve(pendingId+".txn"),
-            "TXN1\\t"+pendingId+"\\t2026-10-15/0007.jpg\\tPREPARED\\t0\\t-\\n");
+            "TXN1\t"+pendingId+"\t2026-10-15/0007.jpg\tPREPARED\t0\t-\n");
         var afterPending=migration.prepare(id("MIXED-AFTER-PENDING-LEGACY"),
             MixedMediaRecoveryStore.Kind.MP4,time(15,8,0),olderCapture);
         check(afterPending.relativePath().equals("2026-10-15/0008.mp4"),
