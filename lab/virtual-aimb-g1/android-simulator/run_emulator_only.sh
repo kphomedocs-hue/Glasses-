@@ -135,3 +135,26 @@ adb -s "$SERIAL" shell am force-stop "$PKG"
 adb -s "$SERIAL" shell am force-stop "$TEST_PKG"
 run_v4_mode shared_recover_verified V4_SHARED_HALT_RECOVERED_NO_REFETCH
 echo 'V4-EMULATOR-SHARED PASS: one complete locally decoded synthetic JPEG; new coordinator persisted and recovered after actual test-process death'
+
+# V4 Step 12: test the distinct shared mixed-media daily journal on the SAME API36 AVD.
+mixed_mode(){
+  local mode="$1" expected="$2" output
+  output="$(timeout 120s adb -s "$SERIAL" shell am instrument -w -r -e vgl_mode "$mode" "$TEST_PKG/$RUNNER")"
+  if ! grep -Fqx 'INSTRUMENTATION_RESULT: status=PASS' <<<"$output" ||
+     ! grep -Fqx "INSTRUMENTATION_RESULT: mixed=$expected" <<<"$output" ||
+     ! grep -Fqx 'INSTRUMENTATION_CODE: 0' <<<"$output"; then
+    echo "ERROR: mixed-media synthetic emulator test failed: $mode"
+    grep -E '^INSTRUMENTATION_RESULT: (status|stage|error_kind|mixed)=|^INSTRUMENTATION_CODE:' <<<"$output" || true
+    exit 1
+  fi
+  echo "V4-MIXED-EMU $expected PASS"
+}
+mixed_mode mixed_first V4_MIXED_JPG_MP4_OPUS_NUMBERED
+adb -s "$SERIAL" shell am force-stop "$PKG"
+adb -s "$SERIAL" shell am force-stop "$TEST_PKG"
+mixed_mode mixed_reopen V4_MIXED_REOPEN_NO_DUPLICATES
+run_hard_stop mixed_crash_verified MM
+adb -s "$SERIAL" shell am force-stop "$PKG"
+adb -s "$SERIAL" shell am force-stop "$TEST_PKG"
+mixed_mode mixed_recover_verified V4_MIXED_MP4_RECOVERED_NO_RETRY
+echo 'V4-MIXED-EMULATOR PASS: daily mixed JPG MP4 OPUS journal + recovery, synthetic-only, no network'
