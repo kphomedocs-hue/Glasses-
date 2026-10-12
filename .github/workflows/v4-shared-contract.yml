@@ -1,0 +1,30 @@
+name: V4 Shared Contract JVM
+on:
+  push:
+    paths:
+      - 'source/g1-shared-workflow/**'
+      - '.github/workflows/v4-shared-contract.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pure-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Compile and run source-only contract tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(find source/g1-shared-workflow -type f \( -name '*.apk' -o -name '*.dex' \) -print -quit)"
+          mkdir -p "$RUNNER_TEMP/v4-contract-classes"
+          javac --release 17 -d "$RUNNER_TEMP/v4-contract-classes" \
+            source/g1-shared-workflow/src/com/parkarsite/g1/workflow/SharedTransferContracts.java \
+            source/g1-shared-workflow/selftest/com/parkarsite/g1/workflow/ContractSelfTest.java
+          java -cp "$RUNNER_TEMP/v4-contract-classes" com.parkarsite.g1.workflow.ContractSelfTest
