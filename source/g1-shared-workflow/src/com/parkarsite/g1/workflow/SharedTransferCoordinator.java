@@ -1,6 +1,8 @@
 package com.parkarsite.g1.workflow;
 
 import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -37,6 +39,8 @@ public final class SharedTransferCoordinator {
     private Phase phase=Phase.NEW;
     private Verdict verdict=Verdict.BLOCKED_EVIDENCE;
     private Set<String> baseline;
+    private Map<String,SharedTransferContracts.MediaDescriptor> baselineDetails;
+    private int baselineJpg;
     private SharedTransferContracts.MediaDescriptor selected;
     private boolean attempted;
 
@@ -95,6 +99,10 @@ public final class SharedTransferCoordinator {
             if(inventoryJpg<0 || jpgs(snapshot.media())!=inventoryJpg)
                 return deny(Verdict.BLOCKED_CATALOG);
             baseline=Set.copyOf(identities);
+            var originalDetails=new HashMap<String,SharedTransferContracts.MediaDescriptor>();
+            for(var item:snapshot.media())originalDetails.put(item.opaqueIdentity(),item);
+            baselineDetails=Map.copyOf(originalDetails);
+            baselineJpg=inventoryJpg;
             phase=Phase.BASELINED;
             verdict=Verdict.BASELINE_ACCEPTED;
             return verdict;
@@ -109,15 +117,20 @@ public final class SharedTransferCoordinator {
         try {
             var snapshot=catalog.readCatalog();
             var identities=checked(snapshot);
-            if(inventoryJpg<0 || jpgs(snapshot.media())!=inventoryJpg
+            if(inventoryJpg!=baselineJpg+1 || jpgs(snapshot.media())!=inventoryJpg
                     || !identities.containsAll(baseline)
                     || identities.size()!=baseline.size()+1)
                 return deny(Verdict.BLOCKED_CATALOG);
             SharedTransferContracts.MediaDescriptor found=null;
-            for(var item:snapshot.media())if(!baseline.contains(item.opaqueIdentity())) {
-                if(found!=null || item.kind()!=SharedTransferContracts.MediaKind.JPG)
-                    return deny(Verdict.BLOCKED_CATALOG);
-                found=item;
+            for(var item:snapshot.media()) {
+                if(baseline.contains(item.opaqueIdentity())) {
+                    if(!item.equals(baselineDetails.get(item.opaqueIdentity())))
+                        return deny(Verdict.BLOCKED_CATALOG);
+                } else {
+                    if(found!=null || item.kind()!=SharedTransferContracts.MediaKind.JPG)
+                        return deny(Verdict.BLOCKED_CATALOG);
+                    found=item;
+                }
             }
             if(found==null)return deny(Verdict.BLOCKED_CATALOG);
             selected=found;
@@ -136,13 +149,14 @@ public final class SharedTransferCoordinator {
      */
     public synchronized Verdict importSyntheticFixture(
         SharedTransferContracts.OneShotByteSource source, DurableOneShotImport store) {
-        Objects.requireNonNull(source);
-        Objects.requireNonNull(store);
         if(attempted || phase!=Phase.SELECTED) return deny(Verdict.BLOCKED_REPLAY);
+        if(source==null || store==null) return deny(Verdict.BLOCKED_EVIDENCE);
         attempted=true;
         if(!observationReady()) return deny(Verdict.BLOCKED_EVIDENCE);
-        if(hostFixture==null || !hostFixture.syntheticHostOnly()
-                || observation.remoteMediaGetAuthorized()
+        boolean syntheticTestAuthorized=false;
+        try { syntheticTestAuthorized=hostFixture!=null && hostFixture.syntheticHostOnly(); }
+        catch(RuntimeException ignored) { /* Treat any adapter failure as denial. */ }
+        if(!syntheticTestAuthorized || observation.remoteMediaGetAuthorized()
                 || observation.physicalConnectAuthorized())
             return deny(Verdict.BLOCKED_PRESERVATION);
         try {
