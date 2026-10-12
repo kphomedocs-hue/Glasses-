@@ -92,6 +92,7 @@ public final class SharedTransferCoordinator {
 
     public synchronized Verdict observeBaseline(int inventoryJpg) {
         if(phase!=Phase.NEW)return deny(Verdict.BLOCKED_REPLAY);
+        observation.refreshPeerCandidates(); // invalidate stale injected peer snapshots
         if(!observationReady())return deny(Verdict.BLOCKED_EVIDENCE);
         try {
             var snapshot=catalog.readCatalog();
@@ -113,6 +114,7 @@ public final class SharedTransferCoordinator {
 
     public synchronized Verdict observeSingleNewJpg(int inventoryJpg) {
         if(phase!=Phase.BASELINED)return deny(Verdict.BLOCKED_REPLAY);
+        observation.refreshPeerCandidates(); // invalidate stale injected peer snapshots
         if(!observationReady())return deny(Verdict.BLOCKED_EVIDENCE);
         try {
             var snapshot=catalog.readCatalog();
@@ -152,6 +154,7 @@ public final class SharedTransferCoordinator {
         if(attempted || phase!=Phase.SELECTED) return deny(Verdict.BLOCKED_REPLAY);
         if(source==null || store==null) return deny(Verdict.BLOCKED_EVIDENCE);
         attempted=true;
+        observation.refreshPeerCandidates(); // no cached candidate grant at fetch boundary
         if(!observationReady()) return deny(Verdict.BLOCKED_EVIDENCE);
         boolean syntheticTestAuthorized=false;
         try { syntheticTestAuthorized=hostFixture!=null && hostFixture.syntheticHostOnly(); }
