@@ -112,3 +112,26 @@ recover_hard_stop recover_after_final_move 05 MOVED_FINAL_LOCAL_RECOVERY
 run_hard_stop crash_after_receipt 06
 recover_hard_stop recover_after_receipt 06 RECEIPT_LOCAL_RECOVERY
 echo 'VGL_EMULATOR_HARD_STOP 6/6 PASS: real Android JVM termination and local-only recovery at six boundaries'
+
+# V4: same shared coordinator, completely synthetic but bitmap-decodable JPEG.
+run_v4_mode(){
+  local mode="$1" expected="$2" output
+  output="$(timeout 120s adb -s "$SERIAL" shell am instrument -w -r -e vgl_mode "$mode" "$TEST_PKG/$RUNNER")"
+  if ! grep -Fqx 'INSTRUMENTATION_RESULT: status=PASS' <<<"$output" ||
+     ! grep -Fqx "INSTRUMENTATION_RESULT: shared=$expected" <<<"$output" ||
+     ! grep -Fqx 'INSTRUMENTATION_CODE: 0' <<<"$output"; then
+    echo "ERROR: V4 synthetic coordinator mode $mode failed"
+    grep -E '^INSTRUMENTATION_RESULT: (status|stage|error_kind|shared)=|^INSTRUMENTATION_CODE:' <<<"$output" || true
+    exit 1
+  fi
+  echo "V4-EMU $expected PASS"
+}
+run_v4_mode shared_first V4_SHARED_FULL_JPEG_COMMITTED
+adb -s "$SERIAL" shell am force-stop "$PKG"
+adb -s "$SERIAL" shell am force-stop "$TEST_PKG"
+run_v4_mode shared_reopen V4_SHARED_REOPEN_NO_DUPLICATE
+run_hard_stop shared_crash_verified V4
+adb -s "$SERIAL" shell am force-stop "$PKG"
+adb -s "$SERIAL" shell am force-stop "$TEST_PKG"
+run_v4_mode shared_recover_verified V4_SHARED_HALT_RECOVERED_NO_REFETCH
+echo 'V4-EMULATOR-SHARED PASS: one complete locally decoded synthetic JPEG; new coordinator persisted and recovered after actual test-process death'
