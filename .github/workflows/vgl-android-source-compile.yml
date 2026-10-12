@@ -8,6 +8,7 @@ on:
       - "modules/protocol/src/**"
       - "source/g6a-identity-core/src/**"
       - "source/g6a-recovery-core/src/**"
+      - "source/g1-shared-workflow/src/**"
       - ".github/workflows/vgl-android-source-compile.yml"
 permissions:
   contents: read
@@ -42,6 +43,15 @@ jobs:
           if grep -REn '^import android\.(bluetooth|net|location)|^import java\.net\.' app/src/main/java; then exit 1; fi
           if grep -REn 'BluetoothGatt|WifiP2pManager|HttpURLConnection|URLConnection|Socket|URL\(' app/src/main/java; then exit 1; fi
           test ! -d app/src/main/assets
+          # Test-only transfer capability must remain outside the Android source set.
+          test ! -d ../../../../source/g1-shared-workflow/src/com/parkarsite/g1/workflow/selftest
+          test -f ../../../../source/g1-shared-workflow/src/com/parkarsite/g1/workflow/SharedTransferCoordinator.java
+          if grep -REn '^import android\.|^import java\.net\.|HttpURLConnection|WifiP2pManager|BluetoothGatt' \
+                 ../../../../source/g1-shared-workflow/src; then
+            echo "Shared controller unexpectedly introduced hardware/network access" >&2
+            exit 1
+          fi
+          echo 'PASS: same production-oriented shared coordinator source, no fixture implementation'
           echo 'PASS: isolated no-permissions synthetic Android source'
       - name: Compile Android activity, linked lab sources, instrumentation test hook
         run: |
