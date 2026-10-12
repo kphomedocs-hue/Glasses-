@@ -15,3 +15,17 @@ Target behavior:
 - minimal UI.
 
 Development should consume modular components under `modules/` rather than reviving the legacy monolithic transport directly.
+
+
+## 2026-10-12 V4 source-only offline milestone
+`src/main/java/com/parkarsite/g1/sitecapture/SiteCaptureOfflineCore.java` is a production-facing **local-only** backend for durable mixed-media receipt recovery and review. It accepts an app-private filesystem root and has **no BLE, Wi-Fi Direct, HTTP or remote media GET capability**. Default real sync/connect/read methods are false.
+
+`android-preview/` contains an isolated API36 **read-only UI source prototype** that displays local verified counts and warnings using `getNoBackupFilesDir()`. It intentionally has no permissions or remote-connection controls. It was **compiled only** — no installable APK was built or signed and no emulator runtime/screenshot result is claimed. Host JVM test run 38284068924 PASS (16 assertions); Android compile-only 38284338093 PASS; full report `docs/testing/results/2026-10-12_V4_SITE_CAPTURE_PRODUCTION_OFFLINE_UI_SCAFFOLD.md`.
+
+### Hard product blockers
+- Real JPG GET+EXIT was associated with disappearance of the exact original on the glasses; no original-preserving import exists in proven evidence.
+- Real Wi-Fi Direct peer identity is unknown; BLE name/suffix matches alone do not authorize connection.
+- Android live BLE/P2P/HTTP adapters and verified vendor media fidelity do not yet exist in the new shared shipping controller.
+- The existing fixture-grant path in the shared coordinator must be excluded and independently audited in any future signed release.
+
+**Do not install this preview on a real phone as a substitute for the final app. No live transfer is authorized. G6A OPEN; G6B BLOCKED.**
