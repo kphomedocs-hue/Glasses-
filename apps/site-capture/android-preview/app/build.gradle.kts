@@ -23,5 +23,12 @@ android {
             "../../src/main/java",
             "../../../../source/g1-shared-workflow/src"
         )
+        // The preview uses only the durable local store. Explicitly EXCLUDE
+        // the coordinator's package-private synthetic fixture-permit path.
+        getByName("main").java.exclude(
+            "**/SharedTransferCoordinator.java",
+            "**/SharedObservationController.java",
+            "**/SharedTransferContracts.java"
+        )
     }
 }
