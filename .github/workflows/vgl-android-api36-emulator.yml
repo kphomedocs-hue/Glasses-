@@ -8,6 +8,7 @@ on:
       - "lab/virtual-aimb-g1/android-simulator/**"
       - ".github/workflows/vgl-android-api36-emulator.yml"
       - "source/g6a-recovery-core/src/**"
+      - "source/g1-shared-workflow/src/**"
       - "lab/virtual-aimb-g1/src/**"
 permissions:
   contents: read
@@ -41,6 +42,11 @@ jobs:
           grep -Fq 'applicationId = "com.parkarsite.vglandroid.simulator"' app/build.gradle.kts
           grep -Fq 'minSdk = 36' app/build.gradle.kts
           grep -Fq 'android:allowBackup="false"' app/src/main/AndroidManifest.xml
+          test -f app/src/androidTest/java/com/parkarsite/g1/workflow/SharedCoordinatorInstrumentationProbe.java
+          test -f app/src/androidTest/java/com/parkarsite/vglandroid/MixedMediaInstrumentationProbe.java
+          test ! -f app/src/main/java/com/parkarsite/g1/workflow/SharedCoordinatorInstrumentationProbe.java
+          test ! -f app/src/main/java/com/parkarsite/vglandroid/MixedMediaInstrumentationProbe.java
+          echo 'PASS: V4 synthetic fixture implementations are in AndroidTest, not Android main'
           echo 'PASS: no network/radio source, no permissions, simulator-only app ID'
       - name: Enable KVM for single AVD only
         shell: bash
