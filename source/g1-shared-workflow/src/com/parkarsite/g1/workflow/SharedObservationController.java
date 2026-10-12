@@ -47,8 +47,10 @@ public final class SharedObservationController {
         stage=SharedTransferContracts.Stage.OBSERVING;
         try {
             observeDeadline=Objects.requireNonNull(deadlines.arm(OBSERVATION_LIMIT_MS,this::observationTimedOut));
+            if(stage!=SharedTransferContracts.Stage.OBSERVING) return; // synchronous deadline callback
             lifecycleStarted=true; // may have issued part of operation before throwing
             ble.beginObservation();
+            if(stage!=SharedTransferContracts.Stage.OBSERVING) return;
             ble.requestInventory();
         } catch (RuntimeException failure) {
             result=Result.START_FAILED;
