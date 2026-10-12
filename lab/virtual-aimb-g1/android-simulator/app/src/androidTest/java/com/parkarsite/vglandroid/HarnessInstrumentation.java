@@ -3,6 +3,7 @@ package com.parkarsite.vglandroid;
 import android.app.Instrumentation;
 import android.os.Bundle;
 import com.parkarsite.g6a.recovery.RecoveryImportStore;
+import com.parkarsite.g1.workflow.SharedCoordinatorInstrumentationProbe;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -181,6 +182,20 @@ public final class HarnessInstrumentation extends Instrumentation {
         Bundle report=new Bundle();
         try{
             String mode=startupArguments==null?"":startupArguments.getString(MODE_KEY,"");
+            if(mode.startsWith("shared_")){
+                stage="V4_SHARED_COORDINATOR";
+                if("shared_crash_verified".equals(mode)){
+                    SharedCoordinatorInstrumentationProbe.crashAtVerified(getTargetContext());
+                    throw new AssertionError("Unexpected return from V4 crash barrier");
+                }
+                String outcome=SharedCoordinatorInstrumentationProbe.run(getTargetContext(),mode);
+                report.putString("status","PASS");
+                report.putString("kind","EMULATOR_ONLY_SYNTHETIC");
+                report.putString("shared",outcome);
+                report.putString("hardware_gate","G6A OPEN; G6B BLOCKED");
+                finish(0,report);
+                return;
+            }
             if(HARD_FETCH.equals(mode)){
                 hardStopAt(RecoveryImportStore.Barrier.AFTER_FETCH_MARK,
                     "hard-stop-fetch","VGL-EMU-HARD-FETCH-01");
