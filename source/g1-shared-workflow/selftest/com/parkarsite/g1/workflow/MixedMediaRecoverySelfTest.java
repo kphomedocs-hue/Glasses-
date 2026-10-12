@@ -129,7 +129,8 @@ public final class MixedMediaRecoverySelfTest {
         String legacyId=id("OLD-LEDGER-NO-REREAD");
         Path legacy=storeRoot.resolve(".transactions");
         Files.createDirectories(legacy);
-        Files.writeString(legacy.resolve(legacyId+".txn"),"LEGACY_DONT_TOUCH");
+        Files.writeString(legacy.resolve(legacyId+".txn"),
+            "TXN1\\t"+legacyId+"\\t2026-10-14/0008.jpg\\tPREPARED\\t0\\t-\\n");
         var migration=new MixedMediaRecoveryStore(storeRoot,zone);
         check(migration.legacyIdentityPresent(legacyId),"old ledger recognized without parsing/modifying");
         try{
@@ -144,6 +145,27 @@ public final class MixedMediaRecoverySelfTest {
         check(Files.isRegularFile(legacyDay.resolve("0009.jpg"))
             &&Files.isRegularFile(legacy.resolve(legacyId+".txn")),
             "old source and ledger unmodified");
+        // An uncommitted legacy numbering reservation WITHOUT a final file
+        // must still reserve its daily ordinal in the new mixed namespace.
+        String pendingId=id("PENDING-LEGACY-JPG");
+        Files.writeString(legacy.resolve(pendingId+".txn"),
+            "TXN1\\t"+pendingId+"\\t2026-10-15/0007.jpg\\tPREPARED\\t0\\t-\\n");
+        var afterPending=migration.prepare(id("MIXED-AFTER-PENDING-LEGACY"),
+            MixedMediaRecoveryStore.Kind.MP4,time(15,8,0),olderCapture);
+        check(afterPending.relativePath().equals("2026-10-15/0008.mp4"),
+            "legacy uncommitted JPG reservation protects sequence even without final file");
+        // Orphan legacy receipt is not permission to re-download its opaque ID.
+        String orphan=id("LEGACY-RECEIPT-ONLY");
+        Path legacyReceipts=storeRoot.resolve(".receipts");
+        Files.createDirectories(legacyReceipts);
+        Files.writeString(legacyReceipts.resolve(orphan+".receipt"),"LEGACY_RECEIPT");
+        check(migration.legacyIdentityPresent(orphan),"orphan legacy receipt blocks duplicate fetch");
+        try{
+            migration.prepare(orphan,MixedMediaRecoveryStore.Kind.OPUS,
+                time(15,8,0),olderCapture);
+            throw new AssertionError("orphan old receipt reimport allowed");
+        }catch(IOException expected){}
+
 
         // Explicit no-overwrite and corrupt local receipt classification.
         Path receipt=storeRoot.resolve(".mixed-receipts").resolve(a+".receipt");
