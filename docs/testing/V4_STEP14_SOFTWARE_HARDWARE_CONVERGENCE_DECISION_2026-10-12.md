@@ -15,7 +15,7 @@ Date: 2026-10-12. **DOCUMENTED HOLD, not a completed production app or physical 
 | 09 | Shared Java controller compiled in permission-free API36 Android simulator | PASS, GitHub run 38278073484 |
 | 10 | SAME shared coordinator in API36 emulator end-to-end and VERIFIED crash recovery | PASS in synthetic Android scope, run 38280843057 |
 | 11 | Fully decoded synthetic JPEG (Android Bitmap compress/decode and durable readback) | PASS synthetic 32x24 raster; vendor fidelity/EXIF NOT proven |
-| 12 | Mixed JPG/MP4/OPUS durable daily naming, timezone and read-only legacy protection | Host 38 regression assertions PASS (38282545306); API36 mixed simulated test PASS in run 38282170119 before final legacy-scanner hardening; latest same-source rerun tracked separately |
+| 12 | Mixed JPG/MP4/OPUS durable daily naming, timezone and read-only legacy protection | Host 38 assertions PASS (38282545306), final API36 revised-source mixed-media runtime + MP4 halt/recover PASS (38282672292) |
 | 13 | Red-team release isolation | SOURCE AUDIT FILED; final production signed APK / DEX isolation NOT CERTIFIED |
 | 14 | Reconcile V4 software coverage with hardware evidence and next gate | This documented **HOLD** decision |
 
@@ -51,3 +51,7 @@ Date: 2026-10-12. **DOCUMENTED HOLD, not a completed production app or physical 
 5. No final syncing APK until C2 and C3 are independently supported.
 
 All historical source/release artifacts must remain immutable.
+
+
+## Final Step 12 verification addendum
+`docs/testing/results/2026-10-12_V4_STEP12_MIXED_DURABLE_HOST_ANDROID.md` records the updated conservative legacy collision guards. Final host test [38282545306](https://github.com/kphomedocs-hue/Glasses-/actions/runs/38282545306) SUCCESS 38 assertions; exact fully revised source API36 emulator [38282672292](https://github.com/kphomedocs-hue/Glasses-/actions/runs/38282672292) SUCCESS with `V4_MIXED_JPG_MP4_OPUS_NUMBERED`, `V4_MIXED_REOPEN_NO_DUPLICATES` and `V4_MIXED_MP4_RECOVERED_NO_RETRY` PASS. This upgrades Step 12 **in synthetic local-store scope only** and does not alter C1–C4 HOLD decisions.
