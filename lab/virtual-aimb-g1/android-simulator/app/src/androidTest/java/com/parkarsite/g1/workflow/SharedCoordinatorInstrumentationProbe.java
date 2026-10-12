@@ -152,7 +152,9 @@ public final class SharedCoordinatorInstrumentationProbe {
             must(workflow.importSyntheticFixture((item,out)->{
                 f.sourceReads++;
                 var marker=root.resolve(".transactions").resolve(item.opaqueIdentity()+".txn");
-                must(Files.readString(marker).contains("FETCH_MAY_HAVE_STARTED"),
+                must(Files.isRegularFile(marker) && Files.size(marker)<=4096L
+                    && new String(Files.readAllBytes(marker),StandardCharsets.UTF_8)
+                        .contains("FETCH_MAY_HAVE_STARTED"),
                     "durable intent must precede fixture access");
                 out.write(bytes);
             },store)==SharedTransferCoordinator.Verdict.SYNTHETIC_RECEIPT_COMMITTED,
