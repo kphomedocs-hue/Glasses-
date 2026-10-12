@@ -12,7 +12,7 @@ public final class ControllerSelfTest {
         SharedTransferContracts.PeerObserver, SharedTransferContracts.Lifecycle,
         SharedTransferContracts.DeadlineScheduler {
         int begin, inventory, exits, teardown, sourceCalls, storeCalls, nextTimerId;
-        boolean absent=true, failTeardown, failStart, failSchedule, failExit;
+        boolean absent=true, failTeardown, failStart, failSchedule, failExit, inlineFirstDeadline;
         List<SharedTransferContracts.PeerEvidence> peers=List.of();
         final Map<Integer,Runnable> callbacks=new HashMap<>();
         public void beginObservation() { begin++;if(failStart)throw new IllegalStateException("synthetic"); }
@@ -26,6 +26,7 @@ public final class ControllerSelfTest {
             if(failSchedule)throw new IllegalStateException("synthetic");
             int id=++nextTimerId;
             callbacks.put(id,callback);
+            if(inlineFirstDeadline && id==1) { callbacks.remove(id);callback.run(); }
             return ()->callbacks.remove(id);
         }
         void fire(int id) { Runnable r=callbacks.remove(id);if(r!=null)r.run(); }
@@ -120,6 +121,12 @@ public final class ControllerSelfTest {
         first.onExitEvidence(true,true);second.onExitEvidence(true,true);
         must(first.stage()==SharedTransferContracts.Stage.CLOSED
             &&second.stage()==SharedTransferContracts.Stage.FAILED,"independent result retention");
+        Fake inline=new Fake();inline.inlineFirstDeadline=true;var m=inline.controller();m.startObservation();
+        must(m.stage()==SharedTransferContracts.Stage.EXITING
+            &&m.result()==SharedObservationController.Result.OBSERVATION_TIMEOUT,
+            "synchronous deadline cannot leave run observing");
+        must(inline.begin==0&&inline.inventory==0&&inline.teardown==1,
+            "no BLE work after synchronous timeout");
         must(checks>=20,"sufficient assertions");
         System.out.println("V4-OBSERVATION-FAIL-CLOSED PASS ("+checks+" assertions)");
     }
