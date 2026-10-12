@@ -54,6 +54,14 @@ jobs:
         run: |
           set -euo pipefail
           test -z "$(find app/build -type f \( -name '*.apk' -o -name '*.aab' \) -print -quit)"
+          # Even test-only package-private transfer access must NOT be in this
+          # preview's compiled main class output.
+          for FORBIDDEN in SharedTransferCoordinator.class SharedObservationController.class SharedTransferContracts.class; do
+            if find app/build -type f -name "$FORBIDDEN" | grep -q .; then
+              echo "Unsafe shared transfer class included in read-only preview compilation"
+              exit 1
+            fi
+          done
           MERGED=$(find app/build/intermediates -type f -name AndroidManifest.xml | grep -v '/androidTest/' || true)
           test -n "$MERGED"
           for FILE in $MERGED; do
