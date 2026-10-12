@@ -23,12 +23,12 @@ android {
             "../../src/main/java",
             "../../../../source/g1-shared-workflow/src"
         )
-        // The preview uses only the durable local store. Explicitly EXCLUDE
-        // the coordinator's package-private synthetic fixture-permit path.
-        getByName("main").java.exclude(
-            "**/SharedTransferCoordinator.java",
-            "**/SharedObservationController.java",
-            "**/SharedTransferContracts.java"
-        )
     }
+}
+
+/** Strip every shared transfer coordinator/test-authorization class from preview Java compilation. */
+tasks.withType<org.gradle.api.tasks.compile.JavaCompile>().configureEach {
+    exclude("**/SharedTransferCoordinator.java",
+            "**/SharedObservationController.java",
+            "**/SharedTransferContracts.java")
 }
