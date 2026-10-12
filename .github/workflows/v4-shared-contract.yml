@@ -27,10 +27,18 @@ jobs:
           javac --release 17 -d "$RUNNER_TEMP/v4-contract-classes" \
             source/g1-shared-workflow/src/com/parkarsite/g1/workflow/SharedTransferContracts.java \
             source/g1-shared-workflow/src/com/parkarsite/g1/workflow/SharedObservationController.java \
+            source/g1-shared-workflow/src/com/parkarsite/g1/workflow/SharedTransferCoordinator.java \
+            source/g6a-recovery-core/src/com/parkarsite/g6a/recovery/RecoveryImportStore.java \
             source/g1-shared-workflow/selftest/com/parkarsite/g1/workflow/ContractSelfTest.java \
-            source/g1-shared-workflow/selftest/com/parkarsite/g1/workflow/ControllerSelfTest.java
+            source/g1-shared-workflow/selftest/com/parkarsite/g1/workflow/ControllerSelfTest.java \
+            source/g1-shared-workflow/selftest/com/parkarsite/g1/workflow/HostSharedWorkflowSelfTest.java
           java -cp "$RUNNER_TEMP/v4-contract-classes" com.parkarsite.g1.workflow.ContractSelfTest
           java -cp "$RUNNER_TEMP/v4-contract-classes" com.parkarsite.g1.workflow.ControllerSelfTest
+          java -cp "$RUNNER_TEMP/v4-contract-classes" com.parkarsite.g1.workflow.HostSharedWorkflowSelfTest
+          if find source/g1-shared-workflow/src -type f -name '*SelfTest*' | grep -q .; then
+            echo "Host test implementation leaked into shipping source tree" >&2
+            exit 1
+          fi
           if grep -Eq 'android[.]|java[.]net[.]|HttpURLConnection|\.streamOnce\(' source/g1-shared-workflow/src/com/parkarsite/g1/workflow/*.java; then
             echo "V4 shared source illegally references Android/network or executable media source" >&2
             exit 1
