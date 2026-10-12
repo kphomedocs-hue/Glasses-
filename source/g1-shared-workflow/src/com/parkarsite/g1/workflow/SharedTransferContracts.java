@@ -27,6 +27,9 @@ public final class SharedTransferContracts {
         public CatalogSnapshot { media=List.copyOf(media); }
     }
     public interface Clock { ClockSnapshot now(); }
+    /** Per-arm cancellation avoids collisions between controller instances or simultaneous deadlines. */
+    public interface DeadlineScheduler { Cancellation arm(long delayMs, Runnable onTimeout); }
+    public interface Cancellation { void cancel(); }
     public interface BleSession {
         void beginObservation();
         void requestInventory();
