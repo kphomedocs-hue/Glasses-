@@ -36,6 +36,8 @@ public final class HostSharedWorkflowSelfTest {
             SharedTransferContracts.DeadlineScheduler, SharedTransferContracts.CatalogSource {
         int bleStarts,inventory,exit,teardown,readCatalog,sourceCalls;
         boolean groupAbsent=true;
+        List<SharedTransferContracts.PeerEvidence> peerEvidence=List.of(
+            new SharedTransferContracts.PeerEvidence("opaque-test-peer",true,true,true,true));
         final List<SharedTransferContracts.CatalogSnapshot> catalogs=new ArrayList<>();
         int index;
         final List<Runnable> deadlines=new ArrayList<>();
@@ -45,8 +47,7 @@ public final class HostSharedWorkflowSelfTest {
         public void requestTeardown(){teardown++;}
         public boolean groupAbsent(){return groupAbsent;}
         public List<SharedTransferContracts.PeerEvidence> snapshot(){
-            return List.of(new SharedTransferContracts.PeerEvidence(
-                "opaque-test-peer",true,true,true,true));
+            return peerEvidence;
         }
         public SharedTransferContracts.Cancellation arm(long ms,Runnable callback){
             check(ms>0 && ms<=16_000L,"deadline bounded");
@@ -182,6 +183,108 @@ public final class HostSharedWorkflowSelfTest {
         check(c.sourceCalls==1,"no second source read");
 
         System.out.println("V4-07-SHARED-STATE-TO-STORE PASS ("+assertions+" assertions)");
+        // V4-08: adversarial checks against the exact shared state-to-store coordinator,
+        // rather than repeating the disconnected virtual-lab policy tests.
+        int after07=assertions;
+        var third=jpg("V4_ONLY_SYNTHETIC_EXTRA",MARKER.length);
+
+        Fake wrongPeer=fixture(old,added);
+        wrongPeer.peerEvidence=List.of(new SharedTransferContracts.PeerEvidence(
+            "opaque-not-selected",false,true,true,true));
+        var wrongFlow=new SharedTransferCoordinator(wrongPeer.observation(),wrongPeer,()->true);
+        check(wrongFlow.observeBaseline(1)==SharedTransferCoordinator.Verdict.BLOCKED_EVIDENCE,
+            "unselected peer evidence blocks before catalog");
+        check(wrongPeer.readCatalog==0&&wrongPeer.exit==1,
+            "wrong peer cannot reach catalog; cleanup requested");
+
+        Fake noIp=fixture(old,added);
+        noIp.peerEvidence=List.of(new SharedTransferContracts.PeerEvidence(
+            "opaque-no-correlated-ip",true,true,false,true));
+        var noIpFlow=new SharedTransferCoordinator(noIp.observation(),noIp,()->true);
+        check(noIpFlow.observeBaseline(1)==SharedTransferCoordinator.Verdict.BLOCKED_EVIDENCE,
+            "no correlated IP blocks");
+
+        Fake ambiguous=fixture(old,added);
+        ambiguous.peerEvidence=List.of(
+            new SharedTransferContracts.PeerEvidence("opaque-a",true,true,true,true),
+            new SharedTransferContracts.PeerEvidence("opaque-b",true,true,true,true));
+        var ambiguousFlow=new SharedTransferCoordinator(ambiguous.observation(),ambiguous,()->true);
+        check(ambiguousFlow.observeBaseline(1)==SharedTransferCoordinator.Verdict.BLOCKED_EVIDENCE,
+            "multiple candidates blocked without fetch");
+
+        Fake plusTwo=new Fake();
+        plusTwo.catalogs.add(new SharedTransferContracts.CatalogSnapshot(List.of(old)));
+        plusTwo.catalogs.add(new SharedTransferContracts.CatalogSnapshot(List.of(old,added,third)));
+        var plusTwoFlow=new SharedTransferCoordinator(plusTwo.observation(),plusTwo,()->true);
+        check(plusTwoFlow.observeBaseline(1)==SharedTransferCoordinator.Verdict.BASELINE_ACCEPTED,
+            "plus-two scenario baseline");
+        check(plusTwoFlow.observeSingleNewJpg(3)==SharedTransferCoordinator.Verdict.BLOCKED_CATALOG,
+            "two fresh JPGs rejected");
+
+        Fake duplicate=new Fake();
+        duplicate.catalogs.add(new SharedTransferContracts.CatalogSnapshot(List.of(old)));
+        duplicate.catalogs.add(new SharedTransferContracts.CatalogSnapshot(List.of(old,added,added)));
+        var dupFlow=new SharedTransferCoordinator(duplicate.observation(),duplicate,()->true);
+        check(dupFlow.observeBaseline(1)==SharedTransferCoordinator.Verdict.BASELINE_ACCEPTED,
+            "duplicate scenario baseline");
+        check(dupFlow.observeSingleNewJpg(3)==SharedTransferCoordinator.Verdict.BLOCKED_CATALOG,
+            "duplicate opaque catalog identity rejected");
+
+        Fake changedKind=new Fake();
+        changedKind.catalogs.add(new SharedTransferContracts.CatalogSnapshot(List.of(old)));
+        var mutatedOld=new SharedTransferContracts.MediaDescriptor(
+            old.opaqueIdentity(),SharedTransferContracts.MediaKind.OPUS,7L,old.captureEpochMs());
+        changedKind.catalogs.add(new SharedTransferContracts.CatalogSnapshot(List.of(mutatedOld,added)));
+        var changedKindFlow=new SharedTransferCoordinator(changedKind.observation(),changedKind,()->true);
+        check(changedKindFlow.observeBaseline(1)==SharedTransferCoordinator.Verdict.BASELINE_ACCEPTED,
+            "changed kind scenario baseline");
+        check(changedKindFlow.observeSingleNewJpg(1)==SharedTransferCoordinator.Verdict.BLOCKED_CATALOG,
+            "unchanged image count with identity mutation is rejected");
+
+        Fake revoked=fixture(old,added);
+        var revokedFlow=new SharedTransferCoordinator(revoked.observation(),revoked,()->true);
+        check(revokedFlow.observeBaseline(1)==SharedTransferCoordinator.Verdict.BASELINE_ACCEPTED,
+            "revocation scenario baseline");
+        revoked.peerEvidence=List.of();
+        check(revokedFlow.observeSingleNewJpg(2)==SharedTransferCoordinator.Verdict.BLOCKED_EVIDENCE,
+            "peer lost between catalog reads blocks");
+        check(revoked.readCatalog==1,"no second catalog if peer evidence lost");
+
+        Fake beforeBytes=fixture(old,added);
+        var beforeBytesFlow=new SharedTransferCoordinator(beforeBytes.observation(),beforeBytes,()->true);
+        check(beforeBytesFlow.observeBaseline(1)==SharedTransferCoordinator.Verdict.BASELINE_ACCEPTED,
+            "peer withdrawal before bytes baseline");
+        check(beforeBytesFlow.observeSingleNewJpg(2)==SharedTransferCoordinator.Verdict.SINGLE_JPG_SELECTED,
+            "peer withdrawal before bytes delta");
+        beforeBytes.peerEvidence=List.of();
+        Path blockedRoot=Files.createTempDirectory("v4-no-peer-before-fetch-");
+        check(beforeBytesFlow.importSyntheticFixture((item,out)->beforeBytes.sourceCalls++,
+            new JournalAdapter(blockedRoot))==SharedTransferCoordinator.Verdict.BLOCKED_EVIDENCE,
+            "peer evidence must still exist at fetch boundary");
+        check(beforeBytes.sourceCalls==0&&beforeBytes.exit==1,"no byte source and exit requested");
+
+        Fake expired=fixture(old,added);
+        var expiredObs=expired.observation();
+        expired.deadlines.get(0).run(); // injected stale timeout rather than real clock
+        var expiredFlow=new SharedTransferCoordinator(expiredObs,expired,()->true);
+        check(expiredFlow.observeBaseline(1)==SharedTransferCoordinator.Verdict.BLOCKED_EVIDENCE,
+            "expired observation cannot observe catalog");
+        check(expired.readCatalog==0&&expired.exit==1,"timeout blocks and initiates cleanup");
+
+        Fake throwingPermit=fixture(old,added);
+        var throwingFlow=new SharedTransferCoordinator(throwingPermit.observation(),throwingPermit,
+            ()->{throw new IllegalStateException("test permit failed");});
+        check(throwingFlow.observeBaseline(1)==SharedTransferCoordinator.Verdict.BASELINE_ACCEPTED,
+            "throwing permit baseline");
+        check(throwingFlow.observeSingleNewJpg(2)==SharedTransferCoordinator.Verdict.SINGLE_JPG_SELECTED,
+            "throwing permit delta");
+        check(throwingFlow.importSyntheticFixture((item,out)->throwingPermit.sourceCalls++,
+            new JournalAdapter(Files.createTempDirectory("v4-permit-error-")))
+            ==SharedTransferCoordinator.Verdict.BLOCKED_PRESERVATION,
+            "fixture permit failure denies without reading");
+        check(throwingPermit.sourceCalls==0&&throwingPermit.exit==1,"permit error cleanup");
+
+        System.out.println("V4-08-SHARED-ADVERSARIAL PASS ("+(assertions-after07)+" assertions)");
         System.out.println("V4-07 boundaries: synthetic-only fake bytes, real disk/receipt, zero network");
     }
 }
