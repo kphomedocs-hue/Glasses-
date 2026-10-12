@@ -26,5 +26,12 @@ jobs:
           mkdir -p "$RUNNER_TEMP/v4-contract-classes"
           javac --release 17 -d "$RUNNER_TEMP/v4-contract-classes" \
             source/g1-shared-workflow/src/com/parkarsite/g1/workflow/SharedTransferContracts.java \
-            source/g1-shared-workflow/selftest/com/parkarsite/g1/workflow/ContractSelfTest.java
+            source/g1-shared-workflow/src/com/parkarsite/g1/workflow/SharedObservationController.java \
+            source/g1-shared-workflow/selftest/com/parkarsite/g1/workflow/ContractSelfTest.java \
+            source/g1-shared-workflow/selftest/com/parkarsite/g1/workflow/ControllerSelfTest.java
           java -cp "$RUNNER_TEMP/v4-contract-classes" com.parkarsite.g1.workflow.ContractSelfTest
+          java -cp "$RUNNER_TEMP/v4-contract-classes" com.parkarsite.g1.workflow.ControllerSelfTest
+          if grep -Eq 'android[.]|java[.]net[.]|HttpURLConnection|\.streamOnce\(' source/g1-shared-workflow/src/com/parkarsite/g1/workflow/*.java; then
+            echo "V4 shared source illegally references Android/network or executable media source" >&2
+            exit 1
+          fi
