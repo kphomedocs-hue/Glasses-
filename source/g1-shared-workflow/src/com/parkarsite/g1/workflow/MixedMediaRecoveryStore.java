@@ -171,7 +171,7 @@ public final class MixedMediaRecoveryStore {
                 if(v.length!=6 || !v[0].equals("TXN1")
                     || !v[1].matches("[0-9a-f]{64}")
                     || !entry.getFileName().toString().equals(v[1]+".txn")
-                    || !v[2].matches("[0-9]{4}-[0-9]{2}-[0-9]{2}/[0-9]{4,}\\\\.jpg"))
+                    || !v[2].matches("[0-9]{4}-[0-9]{2}-[0-9]{2}/[0-9]{4,}\\.jpg"))
                     throw new IOException("Unrecognized legacy ledger; migration blocked");
                 if(v[2].startsWith(date+"/"))
                     max=Math.max(max,seq(v[2]));
