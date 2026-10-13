@@ -9,6 +9,7 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "0.0.1-read-only-not-for-device"
+        testInstrumentationRunner = "com.parkarsite.g1.preview.OfflineArchiveInstrumentation"
     }
     buildTypes {
         getByName("debug") { isDebuggable = true }
