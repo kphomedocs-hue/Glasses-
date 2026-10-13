@@ -1,3 +1,12 @@
+# LATEST V5.1 STATIC CYAN FORENSICS OVERRIDE — 2026-10-13 READ FIRST
+**V5.1 COMPLETE for narrowly inspected original APK/DEX media-download, local processing, error/retry and EXIT call path.** User-supplied original Cyan APK SHA-256 `1e700628d76fa4fa84047632e2ccce3673f1a01966fbf8c583985568f3aaaf64` verified; all six extracted DEX files byte-identical to APK entries; **27/27 private offline original-bytecode assertions PASS**. Detailed report `docs/research/V5_1_CYAN_MEDIA_DOWNLOAD_EXIT_FORENSICS_2026-10-13.md`; 17-point independent red-team `docs/research/V5_1_CYAN_MEDIA_EXIT_RED_TEAM_2026-10-13.md`; exact assertions and provenance `docs/testing/results/2026-10-13_V5_1_CYAN_MEDIA_EXIT_STATIC_AUDIT.md`. No proprietary binary committed.
+
+Critical distinction: `AlbumDepository$downloadGlassFile$2.onDownloadComplete` advances a PHONE queue. `GFileUtilKt.deleteFile(String)` found in local postprocessing uses `java.io.File.delete` on PHONE. Empty queue triggers BLE `02 01 09` EXIT and P2P/AP teardown; its specific response callback is empty, so acknowledgement-before-cleanup was NOT proved. `onError` retries media downloads; do NOT copy. The **actual firmware** may still consume at GET/EXIT/another asynchronous transition; v0.6.7 physical exact JPG disappeared while v0.6.5 no-media-GET controls retained JPG. **No preserving transfer found/proven. G6A OPEN; G6B BLOCKED; C3 NO-GO.** Never authorize a real media GET or physical test on this static result.
+
+Next V5.2: strictly offline causal evidence matrix, manufacturer-supported preservation source request and a scoped validation decision. Do not re-run V5.1 or replace real DEX with mocked symbol searches. Verify GitHub HEAD and hygiene before proceeding.
+
+---
+
 # LATEST CONTINUATION — 2026-10-13 READ FIRST
 The K Site Capture zero-permission **read-only preview** now displays verified app-private synthetic JPG/MP4/OPUS counts, survives an Activity restart and warns on interrupted imports and corrupted local journals. **API36 UI 4/4 PASS** run `38340827600` and **Android15/API35 UI 4/4 PASS** run `38341334991`. Android16/API36 regression `38341308157` PASS. Preview minSdk lowered to 35 after API35 emulator verification. New details `docs/testing/results/2026-10-13_V4_SITE_CAPTURE_POPULATED_ARCHIVE_ANDROID_RUNTIME.md`, `docs/testing/results/2026-10-13_V4_SITE_CAPTURE_API35_API36_COMPATIBILITY.md` and final section of `LATEST_CHECKPOINT.md`.
 
