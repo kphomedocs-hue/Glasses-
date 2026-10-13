@@ -9,8 +9,12 @@ if [[ "$COUNT" != 1 || "$SERIAL" != emulator-* ]]; then
 fi
 QEMU="$(adb -s "$SERIAL" shell getprop ro.kernel.qemu | tr -d '\r')"
 API="$(adb -s "$SERIAL" shell getprop ro.build.version.sdk | tr -d '\r')"
-if [[ "$QEMU" != 1 || "$API" != 36 ]]; then
-  echo "FAIL: not a verified API36 emulator"; exit 1
+REQUIRED_API="${K_SITE_EMULATOR_API:-36}"
+if [[ "$REQUIRED_API" != 35 && "$REQUIRED_API" != 36 ]]; then
+  echo "FAIL: only API35/API36 virtual execution is supported"; exit 1
+fi
+if [[ "$QEMU" != 1 || "$API" != "$REQUIRED_API" ]]; then
+  echo "FAIL: not the exact requested API$REQUIRED_API emulator"; exit 1
 fi
 
 gradle --no-daemon :app:assembleDebug
@@ -38,7 +42,7 @@ if ! grep -Fq 'Media transfer disabled' <<<"$SCREEN" ||
   echo "FAIL: mandatory visible on-screen original-preservation warning absent"
   exit 1
 fi
-echo "V4-SITE-CAPTURE-UI PASS: API36 emulator visually exposes local archive and transfer-disabled warning"
+echo "V4-SITE-CAPTURE-UI PASS: API$REQUIRED_API emulator visually exposes local archive and transfer-disabled warning"
 echo "V4-SITE-CAPTURE-ISOLATION PASS: no permissions, test APK not uploaded, virtual device only"
 
 # New production-facing local archive UI cases, synthesized in AndroidTest only.
