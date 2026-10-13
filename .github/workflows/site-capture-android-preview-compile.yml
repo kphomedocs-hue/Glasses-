@@ -39,7 +39,7 @@ jobs:
           grep -Fq 'android:allowBackup="false"' app/src/main/AndroidManifest.xml
           grep -Fq 'android:usesCleartextTraffic="false"' app/src/main/AndroidManifest.xml
           grep -Fq 'applicationId = "com.parkarsite.g1.readonlypreview"' app/build.gradle.kts
-          grep -Fq 'minSdk = 36' app/build.gradle.kts
+          grep -Fq 'minSdk = 35' app/build.gradle.kts
           if grep -REn 'android[.]bluetooth|android[.]net[.]wifi|WifiP2pManager|HttpURLConnection|java[.]net[.]|HostFixturePermit|importSyntheticFixture|OneShotByteSource' app/src/main ../../src/main/java; then
             echo 'ERROR: network, fixture or media-transfer capability in preview app'
             exit 1
