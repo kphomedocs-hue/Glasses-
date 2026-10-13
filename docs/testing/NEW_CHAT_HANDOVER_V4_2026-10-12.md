@@ -1,3 +1,10 @@
+# LATEST CONTINUATION — 2026-10-13 READ FIRST
+The K Site Capture zero-permission **read-only preview** now displays verified app-private synthetic JPG/MP4/OPUS counts, survives an Activity restart and warns on interrupted imports and corrupted local journals. **API36 UI 4/4 PASS** run `38340827600` and **Android15/API35 UI 4/4 PASS** run `38341334991`. Android16/API36 regression `38341308157` PASS. Preview minSdk lowered to 35 after API35 emulator verification. New details `docs/testing/results/2026-10-13_V4_SITE_CAPTURE_POPULATED_ARCHIVE_ANDROID_RUNTIME.md`, `docs/testing/results/2026-10-13_V4_SITE_CAPTURE_API35_API36_COMPATIBILITY.md` and final section of `LATEST_CHECKPOINT.md`.
+
+**DO NOT mistake app-private synthetic UI tests for real AIMB-G1 syncing.** Read-only preview has no compiled transfer coordinator, no radio/network/GET permissions, no real peer identity, no real media transferred and no signed production release. Frozen v0.6.7 evidence indicates exact fetched JPG disappeared after GET+EXIT, so original-preserving transfer remains unproved and blocked. **G6A OPEN, G6B BLOCKED.**
+
+---
+
 # NEWEST V4 POST-PLAN OVERRIDE — VERIFIED LOCAL-ONLY ANDROID PREVIEW
 2026-10-12: `apps/site-capture/` now contains a **production-facing offline/local-only facade** and `android-preview/` read-only UI, compiled with zero permissions and no media transport. New host tests [38284068924](https://github.com/kphomedocs-hue/Glasses-/actions/runs/38284068924) PASS (16 assertions), final Android API36 source compile [38285067603](https://github.com/kphomedocs-hue/Glasses-/actions/runs/38285067603) PASS (no installable APK, and no shared transfer-coordinator/fixture-grant classes compiled), final one-emulator visible UI test [38285067667](https://github.com/kphomedocs-hue/Glasses-/actions/runs/38285067667) PASS (temporary virtual-device APK, visible “Media transfer disabled,” no physical installation). See `docs/testing/results/2026-10-12_V4_SITE_CAPTURE_PRODUCTION_OFFLINE_UI_SCAFFOLD.md`, `docs/research/G6A_ORIGINAL_PRESERVATION_VENDOR_EVIDENCE_REQUEST_2026-10-12.md` and END of `LATEST_CHECKPOINT.md`.
 
