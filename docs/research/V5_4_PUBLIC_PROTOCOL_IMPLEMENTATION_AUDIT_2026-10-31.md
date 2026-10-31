@@ -5,7 +5,7 @@
 
 ## Finding
 
-Independent public projects confirm the broad transfer architecture already established in this repository:
+Community implementations for HeyCyan compatible devices describe a transfer architecture similar to the one physically observed on this AIMB-G1. They are secondary evidence for protocol design, not independent physical validation of this unit or its firmware:
 
 1. BLE enters transfer mode and supplies or enables discovery of the glasses network address.
 2. Wi-Fi Direct carries HTTP traffic to the glasses.
@@ -13,7 +13,7 @@ Independent public projects confirm the broad transfer architecture already esta
 4. The phone downloads media from `/files/<filename>`.
 5. The phone stores the result locally and exits transfer mode.
 
-These projects improve implementation details such as network binding, peer selection, timeout handling and local gallery storage. The reviewed public material does **not** document a read-only GET, a keep-original flag, an alternate preserving endpoint, or a supported way to prove that a catalog-hidden item remains in storage.
+These projects describe implementation choices such as network binding, peer selection, timeout handling and local gallery storage. The reviewed public material does **not** document a read-only GET, a keep-original flag, an alternate preserving endpoint, or a supported way to prove that a catalog-hidden item remains in storage.
 
 ## Evidence reviewed
 
@@ -43,7 +43,7 @@ Sources:
 
 ## V5.4 decision
 
-No new preserving transfer path was found. The public-source audit strengthens the protocol description but does not change the preservation decision:
+No preserving transfer path was found in the reviewed public sources. These sources do not strengthen the physical causality evidence or establish AIMB-G1 compatibility; they supply candidate implementation details for later review. The preservation decision is unchanged:
 
 **C3 NO-GO; G6A OPEN; G6B BLOCKED.** Keep real media GET disabled. No physical validation or experimental APK is authorized by this evidence.
 
